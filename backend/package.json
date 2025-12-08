@@ -5,23 +5,28 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/index.js",
-    "start:dev": "tsx watch src/index.ts"
+    "start:dev": "npx prisma generate && tsx watch src/index.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@prisma/adapter-pg": "^7.1.0",
+    "@prisma/client": "^7.1.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.19",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "jsonwebtoken": "^9.0.3"
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.16.3"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
+    "@types/pg": "^8.15.6",
+    "prisma": "^7.1.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }

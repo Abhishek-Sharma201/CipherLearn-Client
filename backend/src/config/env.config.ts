@@ -15,6 +15,7 @@ export const config = {
     USER: process.env.DB_USER || "user",
     PASSWORD: process.env.DB_PASSWORD || "password",
     NAME: process.env.DB_NAME || "database",
+    URL: process.env.DATABASE_URL || "",
   },
   CLOUDINAIRY: {
     CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME || "",

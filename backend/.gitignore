@@ -9,6 +9,9 @@ lerna-debug.log*
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
+prisma/generated/prisma
+prisma/migrations/
+
 # Runtime data
 pids
 *.pid
@@ -139,3 +142,4 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+/src/generated/prisma
