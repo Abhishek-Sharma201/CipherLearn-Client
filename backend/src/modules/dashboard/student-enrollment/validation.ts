@@ -1,11 +1,16 @@
 import joi from "joi";
 
-const student = joi.object({
+const enroll = joi.object({
   name: joi.string().required(),
   email: joi.string().email().required(),
-  batch: joi.string().required(),
+  batchId: joi.number().required(),
+  firstname: joi.string().required(),
+  lastname: joi.string().required(),
+  middletname: joi.string().required(),
+  dob: joi.date().required(),
+  address: joi.string().required(),
 });
 
 export const StudentValidations = {
-  student: student,
+  enroll: enroll,
 };

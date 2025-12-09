@@ -1,5 +1,15 @@
 export type Student = {
-  name: string;
   email: string;
-  batch: string;
+  firstname: string;
+  middlename: string;
+  lastname: string;
+  fullname: string;
+  dob: string;
+  batchId?: number;
+  attendance?: Record<string, {}>;
+  address?: string;
+  updatedAt?: Date;
+  createdAt?: Date;
 };
+
+export type StudentCSV = {};
