@@ -48,3 +48,4 @@ export class Database {
 }
 
 export default Database;
+export const prisma = new Database().prisma;
