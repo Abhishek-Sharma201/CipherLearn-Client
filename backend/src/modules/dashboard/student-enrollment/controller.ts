@@ -51,5 +51,6 @@ export default class StudentEnrollmentController {
         .json({ success: false, message: `Enrollment failed : ${error}` });
     }
   }
+
   public async enrollCSV() {}
 }

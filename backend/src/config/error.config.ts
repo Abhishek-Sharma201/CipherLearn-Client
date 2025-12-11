@@ -26,5 +26,3 @@ export type Feature = (typeof FEATURES)[number];
 export type Code = (typeof CODES)[number];
 
 export type ErrorCode = `${Feature}:${Code}`;
-
-// export default AppError: ErrorCode;

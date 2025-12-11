@@ -12,4 +12,4 @@ export type Student = {
   createdAt?: Date;
 };
 
-export type StudentCSV = {};
+export type StudentCSV = Student[];
