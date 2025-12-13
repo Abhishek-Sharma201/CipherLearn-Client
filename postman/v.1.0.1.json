@@ -1,0 +1,397 @@
+{
+	"info": {
+		"_postman_id": "cipher-learn-api-v1.0.1",
+		"name": "CipherLearn API v1.0.1",
+		"description": "API collection for CipherLearn platform - Based on actual backend routes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"version": "1.0.1"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"description": "Admin authentication required"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"johndoe123\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"SecurePass123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/signup",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"signup"
+							]
+						},
+						"description": "Create a new user account. Requires admin authentication."
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"SecurePass123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Authenticate user and receive access token"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Student Enrollment",
+			"item": [
+				{
+					"name": "Enroll Single Student",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"batchId\": 1,\n  \"firstname\": \"John\",\n  \"lastname\": \"Doe\",\n  \"middletname\": \"Michael\",\n  \"dob\": \"2000-05-15\",\n  \"address\": \"123 Main Street, New York, NY 10001\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/dashboard/student-enrollment/enroll",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dashboard",
+								"student-enrollment",
+								"enroll"
+							]
+						},
+						"description": "Enroll a single student in a batch"
+					},
+					"response": []
+				},
+				{
+					"name": "Enroll Students with CSV",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": [],
+									"description": "CSV file containing student enrollment data"
+								},
+								{
+									"key": "name",
+									"value": "Batch Enrollment 2024",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "admin@example.com",
+									"type": "text"
+								},
+								{
+									"key": "batchId",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "firstname",
+									"value": "Admin",
+									"type": "text"
+								},
+								{
+									"key": "lastname",
+									"value": "User",
+									"type": "text"
+								},
+								{
+									"key": "middletname",
+									"value": "Manager",
+									"type": "text"
+								},
+								{
+									"key": "dob",
+									"value": "1990-01-01",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "Office Address",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/dashboard/student-enrollment/enroll-with-csv",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dashboard",
+								"student-enrollment",
+								"enroll-with-csv"
+							]
+						},
+						"description": "Bulk enroll students using CSV file upload"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Batch",
+			"item": [
+				{
+					"name": "Create Batch",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"description": "Admin authentication required"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Web Development Batch 2024-Q1\",\n  \"timings\": {\n    \"days\": [\"Monday\", \"Wednesday\", \"Friday\"],\n    \"time\": \"18:00-20:00\"\n  },\n  \"totalStudents\": {\n    \"capacity\": 30,\n    \"enrolled\": 0\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/dashboard/batches",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dashboard",
+								"batches"
+							]
+						},
+						"description": "Create a new batch. Requires admin authentication."
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Batches",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/dashboard/batches",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dashboard",
+								"batches"
+							]
+						},
+						"description": "Retrieve all batches"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Batch",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Web Development Batch 2024-Q1 (Updated)\",\n  \"timings\": {\n    \"days\": [\"Tuesday\", \"Thursday\"],\n    \"time\": \"19:00-21:00\"\n  },\n  \"totalStudents\": {\n    \"capacity\": 35,\n    \"enrolled\": 15\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/dashboard/batches/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dashboard",
+								"batches",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Batch ID"
+								}
+							]
+						},
+						"description": "Update an existing batch by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Draft Batch",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"description": "Admin authentication required"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Data Science Batch 2024-Q2 (Draft)\",\n  \"timings\": {\n    \"days\": [\"Saturday\", \"Sunday\"],\n    \"time\": \"10:00-13:00\"\n  },\n  \"totalStudents\": {\n    \"capacity\": 25,\n    \"enrolled\": 0\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/dashboard/batches/draft",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dashboard",
+								"batches",
+								"draft"
+							]
+						},
+						"description": "Create a draft batch. Requires admin authentication."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Draft Batches",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"description": "Admin authentication required"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/dashboard/batches/drafts",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dashboard",
+								"batches",
+								"drafts"
+							]
+						},
+						"description": "Retrieve all draft batches. Requires admin authentication."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Batch",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"description": "Admin authentication required"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/dashboard/batches",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dashboard",
+								"batches"
+							]
+						},
+						"description": "Delete a batch. Requires admin authentication."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string",
+			"description": "Regular user authentication token"
+		},
+		{
+			"key": "admin_token",
+			"value": "",
+			"type": "string",
+			"description": "Admin authentication token for admin-only routes"
+		}
+	]
+}
