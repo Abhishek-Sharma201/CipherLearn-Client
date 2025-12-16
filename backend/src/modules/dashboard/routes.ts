@@ -1,11 +1,12 @@
 import { Router } from "express";
 import studentEnrollmentRoutes from "./student-enrollment/route";
 import batchesRoutes from "./batches/route";
+import attendanceRoutes from "./attendance/route";
 
 const router = Router();
 
 // router.use("/analytics");
-// router.use("/attendance");
+router.use("/attendance", attendanceRoutes);
 router.use("/batches", batchesRoutes);
 // router.use("/fees");
 // router.use("/notes");
