@@ -6,17 +6,41 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Loader2 } from "lucide-react"
 import { useState } from "react"
+import { useSignupMutation } from "@/redux/slices/auth/authApi"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 export default function SignupPage() {
-    const [isLoading, setIsLoading] = useState(false)
+    const [signup, { isLoading }] = useSignupMutation()
+    const router = useRouter()
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: ""
+    })
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, [e.target.id]: e.target.value })
+    }
 
     async function onSubmit(event: React.SyntheticEvent) {
         event.preventDefault()
-        setIsLoading(true)
-
-        setTimeout(() => {
-            setIsLoading(false)
-        }, 3000)
+        if (formData.password !== formData.confirmPassword) {
+            toast.error("Passwords do not match")
+            return
+        }
+        try {
+            await signup({
+                name: formData.name,
+                email: formData.email,
+                password: formData.password
+            }).unwrap()
+            toast.success("Account created successfully")
+            router.push("/login")
+        } catch (err: any) {
+            toast.error(err?.data?.message || "Signup failed")
+        }
     }
 
     return (
@@ -42,6 +66,8 @@ export default function SignupPage() {
                                 autoCorrect="off"
                                 disabled={isLoading}
                                 className="h-11"
+                                value={formData.name}
+                                onChange={handleChange}
                             />
                         </div>
                         <div className="grid gap-2">
@@ -55,6 +81,8 @@ export default function SignupPage() {
                                 autoCorrect="off"
                                 disabled={isLoading}
                                 className="h-11"
+                                value={formData.email}
+                                onChange={handleChange}
                             />
                         </div>
                         <div className="grid gap-2">
@@ -65,6 +93,8 @@ export default function SignupPage() {
                                 placeholder="••••••••"
                                 disabled={isLoading}
                                 className="h-11"
+                                value={formData.password}
+                                onChange={handleChange}
                             />
                         </div>
                         <div className="grid gap-2">
@@ -75,6 +105,8 @@ export default function SignupPage() {
                                 placeholder="••••••••"
                                 disabled={isLoading}
                                 className="h-11"
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
                             />
                         </div>
 

@@ -8,15 +8,25 @@ import { AttendanceChart } from "@/components/dashboard/AttendanceChart"
 import { ActivityFeed } from "@/components/dashboard/ActivityFeed"
 import { StudentDistribution } from "@/components/dashboard/StudentDistribution"
 
+import { useAppSelector } from "@/redux/hooks"
+import { EditProfileDialog } from "@/components/dashboard/EditProfileDialog"
+
 export default function DashboardPage() {
+    const { user } = useAppSelector((state) => state.auth)
+
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-                    <p className="text-muted-foreground">Overview of your institute&apos;s performance.</p>
+                    <h1 className="text-3xl font-bold tracking-tight">
+                        Welcome back, {user?.name || "User"}!
+                    </h1>
+                    <p className="text-muted-foreground">
+                        {user?.role} • Overview of your institute&apos;s performance.
+                    </p>
                 </div>
                 <div className="flex items-center gap-2">
+                    <EditProfileDialog user={user} />
                     {/* CalendarDateRangePicker placeholder */}
                     <Button variant="outline">This Month</Button>
                     <Button className="bg-primary hover:bg-primary/90">

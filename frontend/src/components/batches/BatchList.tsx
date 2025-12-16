@@ -11,11 +11,23 @@ import { Badge } from "@/components/ui/badge"
 //     TableRow
 // } from "@/components/ui/table"
 import { MoreHorizontal, Users, Calendar, Clock, Loader2 } from "lucide-react"
-import { useGetBatchesQuery } from "@/redux/slices/batches/batchesApi"
+import { useGetAllBatchesQuery, useDeleteBatchMutation } from "@/redux/slices/batches/batchesApi"
 import { Batch } from "@/types"
+import { toast } from "sonner"
 
 export function BatchList() {
-    const { data: batches, isLoading } = useGetBatchesQuery({});
+    const { data, isLoading } = useGetAllBatchesQuery({});
+    const [deleteBatch, { isLoading: isDeleting }] = useDeleteBatchMutation();
+    const batches = data?.batches;
+
+    const handleDelete = async (id: number) => {
+        try {
+            await deleteBatch(id).unwrap();
+            toast.success("Batch deleted successfully");
+        } catch (error: any) {
+            toast.error(error?.data?.message || "Failed to delete batch");
+        }
+    };
 
     if (isLoading) {
         return <div className="flex justify-center p-8"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>
@@ -50,8 +62,17 @@ export function BatchList() {
                             </div>
                         </div>
                     </div>
-                    <div className="flex items-center justify-between border-t p-4 bg-muted/50">
+                    <div className="flex items-center justify-between border-t p-4 bg-muted/50 gap-2">
                         <Button variant="ghost" size="sm" className="w-full">View Details</Button>
+                        <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                            onClick={() => handleDelete(batch.id)}
+                            disabled={isDeleting}
+                        >
+                            Delete
+                        </Button>
                     </div>
                 </div>
             ))}

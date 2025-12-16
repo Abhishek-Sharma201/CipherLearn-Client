@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search, Plus, Filter } from "lucide-react"
 import { BatchList } from "@/components/batches/BatchList"
+import { CreateBatchDialog } from "@/components/batches/CreateBatchDialog"
 
 export default function BatchesPage() {
     return (
@@ -13,9 +14,7 @@ export default function BatchesPage() {
                     <h1 className="text-3xl font-bold tracking-tight">Batches</h1>
                     <p className="text-muted-foreground">Manage classes, students, and schedules.</p>
                 </div>
-                <Button className="bg-orange-600 hover:bg-orange-700">
-                    <Plus className="mr-2 h-4 w-4" /> Create New Batch
-                </Button>
+                <CreateBatchDialog />
             </div>
 
             <div className="flex items-center gap-4">

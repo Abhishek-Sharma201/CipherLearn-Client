@@ -109,6 +109,24 @@ export default class AuthService {
     }
   }
 
+  async updateProfile(userId: number, data: { name?: string; email?: string }) {
+    try {
+      const user = await prisma.user.update({
+        where: { id: userId },
+        data,
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+        },
+      });
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async forgotPassword(
     email: string
   ): Promise<{ ok: boolean; resetToken?: string }> {

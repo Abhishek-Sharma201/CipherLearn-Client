@@ -1,11 +1,29 @@
+"use client"
+
 import { Navbar } from "@/components/layout/Navbar"
 import { Sidebar } from "@/components/layout/Sidebar"
+import { useAppSelector } from "@/redux/hooks"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 
 export default function DashboardLayout({
     children,
 }: {
     children: React.ReactNode
 }) {
+    const { token } = useAppSelector((state) => state.auth)
+    const router = useRouter()
+
+    useEffect(() => {
+        if (!token) {
+            router.push("/login")
+        }
+    }, [token, router])
+
+    if (!token) {
+        return null
+    }
+
     return (
         <div className="flex min-h-screen w-full bg-muted/40">
             <Sidebar />

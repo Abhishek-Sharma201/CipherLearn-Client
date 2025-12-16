@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { Prisma } from "../../../../prisma/generated/prisma/client";
 import StudentEnrollmentService from "./service";
+import logger from "../../../utils/logger";
 
 const studentEnrollmentService = new StudentEnrollmentService();
 
@@ -22,7 +23,6 @@ export default class StudentEnrollmentController {
         !firstname ||
         !middlename ||
         !lastname ||
-        !fullname ||
         !address ||
         !batchId ||
         !dob ||
@@ -42,15 +42,30 @@ export default class StudentEnrollmentController {
         batchId,
       });
 
+      logger.info(`Student enrolled: ${student.email}`);
+
       return res
         .status(201)
         .json({ success: true, message: "Student enrolled", student });
     } catch (error) {
+      logger.error("StudentEnrollment.enrollSingle error:", error);
       return res
         .status(500)
         .json({ success: false, message: `Enrollment failed : ${error}` });
     }
   }
 
-  public async enrollCSV() {}
+  public async enrollCSV() { }
+
+  public async getAll(req: Request, res: Response) {
+    try {
+      const students = await studentEnrollmentService.getAll();
+      return res.status(200).json({ success: true, students });
+    } catch (error) {
+      logger.error("StudentEnrollment.getAll error:", error);
+      return res
+        .status(500)
+        .json({ success: false, message: `Failed to fetch students: ${error}` });
+    }
+  }
 }

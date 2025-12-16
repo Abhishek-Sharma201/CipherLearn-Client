@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Plus, Search, FileDown, Upload } from "lucide-react"
 import { StudentTable } from "@/components/students/StudentTable"
+import { AddStudentDialog } from "@/components/students/AddStudentDialog"
+import { ImportStudentCsvDialog } from "@/components/students/ImportStudentCsvDialog"
 
 export default function StudentsPage() {
     return (
@@ -15,15 +17,11 @@ export default function StudentsPage() {
                     <p className="text-muted-foreground">Manage your student enrollment and details.</p>
                 </div>
                 <div className="flex gap-2">
-                    <Button variant="outline">
-                        <Upload className="mr-2 h-4 w-4" /> Import CSV
-                    </Button>
+                    <ImportStudentCsvDialog />
                     <Button variant="outline">
                         <FileDown className="mr-2 h-4 w-4" /> Export
                     </Button>
-                    <Button className="bg-primary hover:bg-primary/90">
-                        <Plus className="mr-2 h-4 w-4" /> Add Student
-                    </Button>
+                    <AddStudentDialog />
                 </div>
             </div>
 

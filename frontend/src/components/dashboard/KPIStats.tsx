@@ -3,7 +3,17 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, BookOpen, IndianRupee, TrendingUp } from "lucide-react"
 
+import { useGetStudentsQuery } from "@/redux/slices/students/studentsApi"
+import { useGetAllBatchesQuery } from "@/redux/slices/batches/batchesApi"
+
 export function KPIStats() {
+    const { data: studentsData } = useGetStudentsQuery({})
+    const { data: batchesData } = useGetAllBatchesQuery({})
+
+    const studentsCount = studentsData?.students?.length || 0
+    const batchesCount = batchesData?.batches?.length || 0
+    const activeBatchesCount = batchesData?.batches?.filter((b: any) => !b.isDeleted)?.length || 0
+
     return (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
@@ -12,7 +22,7 @@ export function KPIStats() {
                     <Users className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">1,248</div>
+                    <div className="text-2xl font-bold">{studentsCount}</div>
                     <p className="text-xs text-muted-foreground">+18% from last month</p>
                 </CardContent>
             </Card>
@@ -22,7 +32,7 @@ export function KPIStats() {
                     <BookOpen className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">12</div>
+                    <div className="text-2xl font-bold">{activeBatchesCount}</div>
                     <p className="text-xs text-muted-foreground">2 new started this week</p>
                 </CardContent>
             </Card>
