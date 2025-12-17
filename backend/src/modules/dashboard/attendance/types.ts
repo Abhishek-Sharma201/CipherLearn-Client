@@ -20,8 +20,20 @@ export type Attendance = {
   attendanceSheetId?: number;
 };
 
+export type DayAttendanceResponse = {
+  day: number;
+  date: string;
+  attendance: {
+    id: number;
+    status: string;
+    method: string;
+    markedBy?: string | null;
+    time?: string | null;
+    studentId: number;
+  } | null;
+};
+
 export type AttendanceMatrixOptions = {
-  week?: number;
-  month?: number;
-  year?: number;
+  month?: number | string;
+  year?: number | string;
 };

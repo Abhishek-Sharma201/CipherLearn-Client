@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  id       Int       @unique @default(autoincrement())
+  id       Int       @id @default(autoincrement())
   name     String
   email    String    @unique
   password String
@@ -22,10 +22,12 @@ model User {
 
   updatedAt DateTime? @updatedAt
   createdAt DateTime? @default(now())
+
+  @@map("users")
 }
 
 model Student {
-  id         Int      @unique @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   firstname  String
   middlename String
   lastname   String
@@ -33,53 +35,78 @@ model Student {
   email      String   @unique
   dob        String
   batchId    Int?
+  batch      Batch?   @relation(fields: [batchId], references: [id])
   attendance Json?
   address    String?
-  isDeleted  Boolean?
+  isDeleted  Boolean? @default(false)
   deletedBy  String?
 
-  updatedAt DateTime? @updatedAt
-  createdAt DateTime? @default(now())
+  updatedAt   DateTime?    @updatedAt
+  createdAt   DateTime?    @default(now())
+  attendances Attendance[]
+
+  @@index([batchId])
+  @@map("students")
 }
 
 model Batch {
-  id            Int      @unique @default(autoincrement())
+  id            Int      @id @default(autoincrement())
   name          String
   totalStudents Int?
   timings       Json?
-  isDeleted     Boolean?
+  isDeleted     Boolean? @default(false)
   deletedBy     String?
 
-  updatedAt DateTime? @updatedAt
-  createdAt DateTime? @default(now())
+  students Student[]
+  sheets   AttendanceSheet[]
+
+  updatedAt   DateTime?    @updatedAt
+  createdAt   DateTime?    @default(now())
+  attendances Attendance[]
+
+  @@map("batches")
 }
 
 model AttendanceSheet {
-  id         Int          @unique @default(autoincrement())
+  id         Int          @id @default(autoincrement())
   batchId    Int
+  batch      Batch        @relation(fields: [batchId], references: [id])
   month      String
   year       String
   attendance Attendance[]
 
   updatedAt DateTime? @updatedAt
   createdAt DateTime? @default(now())
+
+  @@unique([batchId, year, month])
+  @@index([batchId, year, month])
+  @@map("attendance_sheets")
 }
 
 model Attendance {
-  id         Int              @unique @default(autoincrement())
+  id         Int              @id @default(autoincrement())
   studentId  Int
+  student    Student          @relation(fields: [studentId], references: [id])
   batchId    Int
+  batch      Batch            @relation(fields: [batchId], references: [id])
   date       DateTime         @default(now())
-  time       String
-  markedBy   String
-  markedById Int
+  time       String?
+  markedBy   String?
+  markedById Int?
   method     AttendanceMethod @default(MANUAL)
   status     AttendanceStatus @default(ABSENT)
 
-  updatedAt         DateTime?        @updatedAt
-  createdAt         DateTime?        @default(now())
   attendanceSheet   AttendanceSheet? @relation(fields: [attendanceSheetId], references: [id])
   attendanceSheetId Int?
+
+  updatedAt DateTime? @updatedAt
+  createdAt DateTime? @default(now())
+
+  @@unique([studentId, date, batchId])
+  @@index([studentId, date])
+  @@index([batchId, date])
+  @@index([attendanceSheetId])
+  @@map("attendances")
 }
 
 enum UserRoles {

@@ -1,6 +1,5 @@
 import type { Request, Response } from "express";
 import { Prisma } from "../../../../prisma/generated/prisma/client";
-import { prisma } from "../../../config/db.config";
 import AttendanceService from "./service";
 import { AttendanceMatrixOptions } from "./types";
 
@@ -57,22 +56,35 @@ export default class AttendanceController {
         .json({ success: false, message: `Internal Server Error: ${error}` });
     }
   }
-  async getStudentAttendance(req: Request, res: Response) {
+  async getStudentAttendanceMatrix(req: Request, res: Response) {
     try {
       const studentId = Number(req.params.studentId);
-      const { week, month, year }: AttendanceMatrixOptions = req.query;
-      const attendanceRecords = await attendanceService.getStudentAttendance(
-        studentId
+      if (!studentId || Number.isNaN(studentId)) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Invalid studentId" });
+      }
+
+      const monthQ = req.query.month as string | undefined;
+      const yearQ = req.query.year as string | undefined;
+
+      const month = monthQ ? Number(monthQ) : undefined;
+      const year = yearQ ? Number(yearQ) : undefined;
+
+      const result = await attendanceService.getStudentAttendanceMatrix(
+        studentId,
+        { month, year }
       );
+
       return res.status(200).json({
         success: true,
-        message: "Student attendance records fetched successfully",
-        data: attendanceRecords,
+        data: result,
       });
-    } catch (error) {
+    } catch (error: any) {
+      console.error("getStudentAttendanceHandler error:", error);
       return res
         .status(500)
-        .json({ success: false, message: `Internal Server Error: ${error}` });
+        .json({ success: false, message: String(error.message ?? error) });
     }
   }
 

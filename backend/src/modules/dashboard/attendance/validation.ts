@@ -23,7 +23,7 @@ const createAttendanceSheet = Joi.object({
     .optional(),
 });
 
-const createAttendance = Joi.object({
+const markAttendance = Joi.object({
   studentId: Joi.number().required(),
   batchId: Joi.number().required(),
   date: Joi.date().required(),
@@ -33,13 +33,11 @@ const createAttendance = Joi.object({
   status: Joi.string().valid(AttendanceStatus).required(),
 });
 
-
-
 export const AttendanceValidations = {
   attendanceSheet: {
     create: createAttendanceSheet,
   },
   attendance: {
-    create: createAttendance,
+    mark: markAttendance,
   },
 };

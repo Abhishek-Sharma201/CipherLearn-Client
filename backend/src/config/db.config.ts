@@ -26,7 +26,7 @@ export class Database {
     const params = Array.isArray(e.params) ? e.params : [String(e.params)];
     console.log(`Query: ${e.query}`);
     console.log(`Params: ${params.join(", ")}`);
-    console.log(`Duration: ${e.duration}ms`);
+    console.log(`Duration: ${e.duration.toFixed(3)}ms`);
   };
 
   public async connect(): Promise<void> {
