@@ -25,6 +25,6 @@ router.post(
   controller.enrollCSV.bind(controller)
 );
 
-router.get("/students", controller.getAll.bind(controller));
+router.get("/students/:id", controller.getAll.bind(controller));
 
 export default router;
