@@ -11,12 +11,12 @@ import { Badge } from "@/components/ui/badge"
 //     TableRow
 // } from "@/components/ui/table"
 import { MoreHorizontal, Users, Calendar, Clock, Loader2 } from "lucide-react"
-import { useGetAllBatchesQuery, useDeleteBatchMutation } from "@/redux/slices/batches/batchesApi"
+import { useGetBatchesQuery, useDeleteBatchMutation } from "@/redux/slices/batches/batchesApi"
 import { Batch } from "@/types"
 import { toast } from "sonner"
 
 export function BatchList() {
-    const { data, isLoading } = useGetAllBatchesQuery({});
+    const { data, isLoading } = useGetBatchesQuery({});
     const [deleteBatch, { isLoading: isDeleting }] = useDeleteBatchMutation();
     const batches = data?.batches;
 
@@ -41,7 +41,7 @@ export function BatchList() {
                         <div className="flex items-start justify-between">
                             <div className="space-y-1">
                                 <h3 className="font-semibold leading-none tracking-tight">{batch.name}</h3>
-                                <p className="text-sm text-muted-foreground">{batch.subject}</p>
+                                <p className="text-sm text-muted-foreground">Batch ID: {batch.id}</p>
                             </div>
                             <Badge variant={batch.status === 'Active' ? 'default' : 'secondary'}>
                                 {batch.status}
@@ -50,23 +50,23 @@ export function BatchList() {
                         <div className="mt-4 space-y-2">
                             <div className="flex items-center text-sm text-muted-foreground">
                                 <Users className="mr-2 h-4 w-4" />
-                                {batch.students} Students
+                                {batch.totalStudents?.enrolled || 0} / {batch.totalStudents?.capacity || 0} Students
                             </div>
                             <div className="flex items-center text-sm text-muted-foreground">
                                 <Clock className="mr-2 h-4 w-4" />
-                                {batch.time}
+                                {batch.timings?.time || 'N/A'}
                             </div>
                             <div className="flex items-center text-sm text-muted-foreground">
                                 <Calendar className="mr-2 h-4 w-4" />
-                                {batch.days}
+                                {batch.timings?.days?.join(', ') || 'N/A'}
                             </div>
                         </div>
                     </div>
                     <div className="flex items-center justify-between border-t p-4 bg-muted/50 gap-2">
                         <Button variant="ghost" size="sm" className="w-full">View Details</Button>
-                        <Button 
-                            variant="ghost" 
-                            size="sm" 
+                        <Button
+                            variant="ghost"
+                            size="sm"
                             className="text-red-500 hover:text-red-700 hover:bg-red-50"
                             onClick={() => handleDelete(batch.id)}
                             disabled={isDeleting}

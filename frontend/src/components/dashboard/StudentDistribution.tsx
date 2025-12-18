@@ -3,13 +3,13 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts"
 import { useGetStudentsQuery } from "@/redux/slices/students/studentsApi"
-import { useGetAllBatchesQuery } from "@/redux/slices/batches/batchesApi"
+import { useGetBatchesQuery } from "@/redux/slices/batches/batchesApi"
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d']
 
 export function StudentDistribution() {
     const { data: studentsData } = useGetStudentsQuery({})
-    const { data: batchesData } = useGetAllBatchesQuery({})
+    const { data: batchesData } = useGetBatchesQuery({})
 
     const students = studentsData?.students || []
     const batches = batchesData?.batches || []
@@ -17,7 +17,7 @@ export function StudentDistribution() {
     const data = students.reduce((acc: any[], student: any) => {
         const batch = batches.find((b: any) => b.id === student.batchId)
         const batchName = batch ? batch.name : "Unassigned"
-        
+
         const existing = acc.find(item => item.name === batchName)
         if (existing) {
             existing.value += 1

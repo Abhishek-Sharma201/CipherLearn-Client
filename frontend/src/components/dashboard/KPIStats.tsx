@@ -4,11 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, BookOpen, IndianRupee, TrendingUp } from "lucide-react"
 
 import { useGetStudentsQuery } from "@/redux/slices/students/studentsApi"
-import { useGetAllBatchesQuery } from "@/redux/slices/batches/batchesApi"
+import { useGetBatchesQuery } from "@/redux/slices/batches/batchesApi"
 
 export function KPIStats() {
     const { data: studentsData } = useGetStudentsQuery({})
-    const { data: batchesData } = useGetAllBatchesQuery({})
+    const { data: batchesData } = useGetBatchesQuery({})
 
     const studentsCount = studentsData?.students?.length || 0
     const batchesCount = batchesData?.batches?.length || 0

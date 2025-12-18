@@ -1,37 +1,52 @@
 import { api } from '../../api/api';
 
-const dummyAttendance = [
-    { id: 1, name: "Aarav Patel", status: "Present" },
-    { id: 2, name: "Diya Sharma", status: "Present" },
-    { id: 3, name: "Rohan Gupta", status: "Absent" },
-    { id: 4, name: "Ishaan Kumar", status: "Present" },
-    { id: 5, name: "Ananya Singh", status: "Present" },
-];
-
 export const attendanceApi = api.injectEndpoints({
     endpoints: (builder) => ({
+        createAttendanceSheet: builder.mutation({
+            query: (payload) => ({
+                url: '/dashboard/attendance/create-attendance-sheet',
+                method: 'POST',
+                body: payload, // { batchId, month, year }
+            }),
+            invalidatesTags: ['Attendance'],
+        }),
         getAttendance: builder.query({
-            queryFn: async ({ batch, date }) => {
-                await new Promise(resolve => setTimeout(resolve, 500));
-                return { data: dummyAttendance }; // Return same dummy data for any batch/date
-            },
+            query: (batchId) => ({
+                url: `/dashboard/attendance/batch-attendance-sheet/${batchId}`,
+                method: 'GET',
+            }),
             providesTags: ['Attendance'],
         }),
         markAttendance: builder.mutation({
-            queryFn: async ({ id, status }) => {
-                await new Promise(resolve => setTimeout(resolve, 200));
-                return { data: { success: true } };
-            },
+            query: (payload) => ({
+                url: '/dashboard/attendance/mark-attendance',
+                method: 'POST',
+                body: payload, // { studentId, batchId, date, markedBy, markedById, method, status }
+            }),
             invalidatesTags: ['Attendance'],
         }),
+        getStudentAttendanceMatrix: builder.query({
+            query: (studentId) => ({
+                url: `/dashboard/attendance/student-attendance-matrix/${studentId}`,
+                method: 'GET',
+            }),
+            providesTags: ['Attendance'],
+        }),
         saveBatchAttendance: builder.mutation({
-            queryFn: async (payload) => {
-                await new Promise(resolve => setTimeout(resolve, 800));
-                return { data: { success: true, message: "Attendance saved" } };
-            },
-            invalidatesTags: ['Attendance', 'Dashboard'], // Dashboard might show recent activity
-        })
+            query: (payload) => ({
+                url: '/dashboard/attendance/mark-attendance',
+                method: 'POST',
+                body: payload,
+            }),
+            invalidatesTags: ['Attendance', 'Dashboard'],
+        }),
     }),
 });
 
-export const { useGetAttendanceQuery, useMarkAttendanceMutation, useSaveBatchAttendanceMutation } = attendanceApi;
+export const {
+    useCreateAttendanceSheetMutation,
+    useGetAttendanceQuery,
+    useMarkAttendanceMutation,
+    useGetStudentAttendanceMatrixQuery,
+    useSaveBatchAttendanceMutation,
+} = attendanceApi;

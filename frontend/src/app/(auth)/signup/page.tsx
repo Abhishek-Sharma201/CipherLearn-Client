@@ -98,9 +98,9 @@ export default function SignupPage() {
                             />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="confirm-password">Confirm Password</Label>
+                            <Label htmlFor="confirmPassword">Confirm Password</Label>
                             <Input
-                                id="confirm-password"
+                                id="confirmPassword"
                                 type="password"
                                 placeholder="••••••••"
                                 disabled={isLoading}

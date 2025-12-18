@@ -15,13 +15,13 @@ import { Label } from "@/components/ui/label"
 import { Plus } from "lucide-react"
 import { useState } from "react"
 import { useEnrollStudentMutation } from "@/redux/slices/students/studentsApi"
-import { useGetAllBatchesQuery } from "@/redux/slices/batches/batchesApi"
+import { useGetBatchesQuery } from "@/redux/slices/batches/batchesApi"
 import { toast } from "sonner"
 
 export function AddStudentDialog() {
     const [open, setOpen] = useState(false)
     const [enrollStudent, { isLoading }] = useEnrollStudentMutation()
-    const { data: batchesData } = useGetAllBatchesQuery({})
+    const { data: batchesData } = useGetBatchesQuery({})
     const batches = batchesData?.batches || []
 
     const [formData, setFormData] = useState({
@@ -123,7 +123,7 @@ export function AddStudentDialog() {
                                 ))}
                             </select>
                         </div>
-                         <div className="grid grid-cols-4 items-center gap-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="firstname" className="text-right">
                                 First Name
                             </Label>
@@ -135,7 +135,7 @@ export function AddStudentDialog() {
                                 required
                             />
                         </div>
-                         <div className="grid grid-cols-4 items-center gap-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="lastname" className="text-right">
                                 Last Name
                             </Label>
@@ -147,7 +147,7 @@ export function AddStudentDialog() {
                                 required
                             />
                         </div>
-                         <div className="grid grid-cols-4 items-center gap-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="middlename" className="text-right">
                                 Middle Name
                             </Label>
@@ -158,7 +158,7 @@ export function AddStudentDialog() {
                                 className="col-span-3"
                             />
                         </div>
-                         <div className="grid grid-cols-4 items-center gap-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="dob" className="text-right">
                                 DOB
                             </Label>
@@ -171,7 +171,7 @@ export function AddStudentDialog() {
                                 required
                             />
                         </div>
-                         <div className="grid grid-cols-4 items-center gap-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="address" className="text-right">
                                 Address
                             </Label>

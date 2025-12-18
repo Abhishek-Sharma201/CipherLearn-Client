@@ -2,40 +2,59 @@ import { api } from '../../api/api';
 
 export const batchesApi = api.injectEndpoints({
     endpoints: (builder) => ({
+        getBatches: builder.query({
+            query: () => ({
+                url: '/dashboard/batches',
+                method: 'GET',
+            }),
+            providesTags: ['Batches'],
+        }),
         createBatch: builder.mutation({
-            query: (batchData) => ({
+            query: (payload) => ({
                 url: '/dashboard/batches',
                 method: 'POST',
-                body: batchData,
+                body: payload,
             }),
             invalidatesTags: ['Batches'],
         }),
-        getAllBatches: builder.query({
-            query: () => '/dashboard/batches',
-            providesTags: ['Batches'],
-        }),
         updateBatch: builder.mutation({
-            query: ({ id, ...batchData }) => ({
+            query: ({ id, ...payload }) => ({
                 url: `/dashboard/batches/${id}`,
                 method: 'PUT',
-                body: batchData,
+                body: payload,
             }),
             invalidatesTags: ['Batches'],
         }),
         deleteBatch: builder.mutation({
-            query: (idOrIds) => ({
-                url: '/dashboard/batches',
+            query: (id) => ({
+                url: `/dashboard/batches/${id}`,
                 method: 'DELETE',
-                body: { ids: Array.isArray(idOrIds) ? idOrIds : [idOrIds] },
             }),
             invalidatesTags: ['Batches'],
+        }),
+        createDraftBatch: builder.mutation({
+            query: (payload) => ({
+                url: '/dashboard/batches/draft',
+                method: 'POST',
+                body: payload,
+            }),
+            invalidatesTags: ['Batches'],
+        }),
+        getDraftBatches: builder.query({
+            query: () => ({
+                url: '/dashboard/batches/drafts',
+                method: 'GET',
+            }),
+            providesTags: ['Batches'],
         }),
     }),
 });
 
 export const {
+    useGetBatchesQuery,
     useCreateBatchMutation,
-    useGetAllBatchesQuery,
     useUpdateBatchMutation,
     useDeleteBatchMutation,
+    useCreateDraftBatchMutation,
+    useGetDraftBatchesQuery,
 } = batchesApi;
