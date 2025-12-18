@@ -4,20 +4,31 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox" // I need to create this or use simple input
 import { Loader2 } from "lucide-react"
 import { useState } from "react"
+import { useLoginMutation } from "@/redux/slices/auth/authApi"
+import { useAppDispatch } from "@/redux/hooks"
+import { setCredentials } from "@/redux/slices/auth/authSlice"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 export default function LoginPage() {
-    const [isLoading, setIsLoading] = useState(false)
+    const [login, { isLoading }] = useLoginMutation()
+    const dispatch = useAppDispatch()
+    const router = useRouter()
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
 
     async function onSubmit(event: React.SyntheticEvent) {
         event.preventDefault()
-        setIsLoading(true)
-
-        setTimeout(() => {
-            setIsLoading(false)
-        }, 3000)
+        try {
+            const response = await login({ email, password }).unwrap()
+            dispatch(setCredentials({ user: response.data.user, token: response.data.token }))
+            toast.success("Login successful")
+            router.push("/dashboard")
+        } catch (err: any) {
+            toast.error(err?.data?.message || "Login failed")
+        }
     }
 
     return (
@@ -43,6 +54,8 @@ export default function LoginPage() {
                                 autoCorrect="off"
                                 disabled={isLoading}
                                 className="h-11"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
                         <div className="grid gap-2">
@@ -62,6 +75,8 @@ export default function LoginPage() {
                                 autoComplete="current-password"
                                 disabled={isLoading}
                                 className="h-11"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
 

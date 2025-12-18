@@ -1,7 +1,7 @@
 import { Router } from "express";
 import AuthController from "./controller.auth";
 import { AuthValidations, validateRequest } from "./validations.auth";
-import { isAdmin } from "./middleware";
+import { isAdmin, isAuthenticated } from "./middleware";
 
 const router = Router();
 
@@ -14,5 +14,11 @@ router.post(
   controller.signup
 );
 router.post("/login", validateRequest(AuthValidations.login), controller.login);
+
+router.put(
+  "/profile",
+  isAuthenticated,
+  controller.updateProfile.bind(controller)
+);
 
 export default router;

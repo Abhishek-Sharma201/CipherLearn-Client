@@ -2,6 +2,7 @@
 import { Request, Response } from "express";
 import { SignupData, LoginData } from "./types.auth";
 import AuthService from "./service.auth";
+import logger from "../../utils/logger";
 
 const authService = new AuthService();
 
@@ -18,6 +19,8 @@ export default class AuthController {
 
       await authService.signup({ name, email, password });
 
+      logger.info(`User signed up: ${email}`);
+
       return res.status(201).json({
         success: true,
         message: "Registration successful",
@@ -25,6 +28,8 @@ export default class AuthController {
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Registration failed";
+
+      logger.error(`Signup failed for ${req.body.email}: ${message}`);
 
       if (message.toLowerCase().includes("registered")) {
         return res.status(409).json({ success: false, message });
@@ -46,6 +51,8 @@ export default class AuthController {
 
       const result = await authService.login({ email, password });
 
+      logger.info(`User logged in: ${email}`);
+
       return res.status(200).json({
         success: true,
         message: "Login successful",
@@ -56,6 +63,8 @@ export default class AuthController {
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : "Login failed";
+
+      logger.error(`Login failed for ${req.body.email}: ${message}`);
 
       if (message.toLowerCase().includes("credentials")) {
         return res.status(401).json({ success: false, message });
@@ -84,9 +93,11 @@ export default class AuthController {
 
       await authService.logout(token);
 
+      logger.info("User logged out");
+
       return res.status(200).json({ success: true, message: "Logged out" });
     } catch (error) {
-      console.error("logout error:", error);
+      logger.error("logout error:", error);
       return res.status(500).json({ success: false, message: "Logout failed" });
     }
   }
@@ -106,13 +117,14 @@ export default class AuthController {
           .json({ success: false, message: "User not found" });
 
       // In prod, don't return token. We return it here for dev/test convenience.
+      logger.info(`Password reset requested for: ${email}`);
       return res.status(200).json({
         success: true,
         message: "Reset token generated",
         token: result.resetToken,
       });
     } catch (error) {
-      console.error("forgotPassword controller error:", error);
+      logger.error("forgotPassword controller error:", error);
       return res
         .status(500)
         .json({ success: false, message: "Failed to generate reset token" });
@@ -137,14 +149,43 @@ export default class AuthController {
           .status(404)
           .json({ success: false, message: "User not found or reset failed" });
 
+      logger.info(`Password reset successful for: ${email}`);
+
       return res
         .status(200)
         .json({ success: true, message: "Password reset successful" });
     } catch (error) {
-      console.error("resetPassword controller error:", error);
+      logger.error("resetPassword controller error:", error);
       return res
         .status(500)
         .json({ success: false, message: "Password reset failed" });
+    }
+  }
+
+  async updateProfile(req: Request, res: Response) {
+    try {
+      const user = (req as any).user;
+      const userId = user?.id;
+      const { name, email } = req.body;
+
+      if (!userId) {
+        return res.status(401).json({ success: false, message: "Unauthorized" });
+      }
+
+      const updatedUser = await authService.updateProfile(Number(userId), { name, email });
+
+      logger.info(`User profile updated: ${updatedUser.email}`);
+
+      return res.status(200).json({
+        success: true,
+        message: "Profile updated successfully",
+        user: updatedUser,
+      });
+    } catch (error) {
+      logger.error("updateProfile error:", error);
+      return res
+        .status(500)
+        .json({ success: false, message: "Failed to update profile" });
     }
   }
 }

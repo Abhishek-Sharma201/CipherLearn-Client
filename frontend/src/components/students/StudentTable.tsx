@@ -16,7 +16,8 @@ import { useGetStudentsQuery, useDeleteStudentMutation } from "@/redux/slices/st
 import { Loader2 } from "lucide-react"
 
 export function StudentTable() {
-    const { data: students, isLoading, isError } = useGetStudentsQuery({});
+    const { data, isLoading, isError } = useGetStudentsQuery({});
+    const students = data?.students;
     const [deleteStudent, { isLoading: isDeleting }] = useDeleteStudentMutation();
 
     if (isLoading) {

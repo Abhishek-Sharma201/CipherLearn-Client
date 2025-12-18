@@ -1,15 +1,10 @@
-import { Prisma } from "../../../../prisma/generated/prisma/client";
+import { Prisma, Batch } from "../../../../prisma/generated/prisma/client";
 import { prisma } from "../../../config/db.config";
 
 export default class BatchService {
   async create(
     batch: Prisma.BatchCreateInput
-  ): Promise<
-    Omit<
-      Prisma.BatchCreateInput,
-      "id" | "isDeleted" | "deletedBy" | "createdBy" | "updatedBy"
-    >
-  > {
+  ): Promise<Batch> {
     try {
       const newBatch = await prisma.batch.create({
         data: {
@@ -19,7 +14,7 @@ export default class BatchService {
         },
       });
 
-      return newBatch as Prisma.BatchCreateInput;
+      return newBatch;
     } catch (error) {
       throw error;
     }
@@ -27,7 +22,7 @@ export default class BatchService {
 
   async update(
     batch: Prisma.BatchCreateInput
-  ): Promise<Omit<Prisma.BatchCreateInput, "id" | "createdAt">> {
+  ): Promise<Batch> {
     try {
       let exist = await prisma.batch.findUnique({
         where: { id: batch.id },
@@ -42,7 +37,7 @@ export default class BatchService {
         },
       });
 
-      return updated as Prisma.BatchCreateInput;
+      return updated;
     } catch (error) {
       throw error;
     }
@@ -103,5 +98,5 @@ export default class BatchService {
     }
   }
 
-  async promote() {}
+  async promote() { }
 }

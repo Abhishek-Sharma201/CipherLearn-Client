@@ -2,17 +2,35 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts"
+import { useGetStudentsQuery } from "@/redux/slices/students/studentsApi"
+import { useGetAllBatchesQuery } from "@/redux/slices/batches/batchesApi"
 
-const data = [
-    { name: "Physics", value: 400 },
-    { name: "Mathematics", value: 300 },
-    { name: "Chemistry", value: 300 },
-    { name: "Biology", value: 200 },
-]
-
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042']
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d']
 
 export function StudentDistribution() {
+    const { data: studentsData } = useGetStudentsQuery({})
+    const { data: batchesData } = useGetAllBatchesQuery({})
+
+    const students = studentsData?.students || []
+    const batches = batchesData?.batches || []
+
+    const data = students.reduce((acc: any[], student: any) => {
+        const batch = batches.find((b: any) => b.id === student.batchId)
+        const batchName = batch ? batch.name : "Unassigned"
+        
+        const existing = acc.find(item => item.name === batchName)
+        if (existing) {
+            existing.value += 1
+        } else {
+            acc.push({ name: batchName, value: 1 })
+        }
+        return acc
+    }, [])
+
+    if (data.length === 0) {
+        data.push({ name: "No Data", value: 1 }) // Placeholder to avoid empty chart
+    }
+
     return (
         <Card className="col-span-3">
             <CardHeader>
@@ -32,7 +50,7 @@ export function StudentDistribution() {
                                 fill="#8884d8"
                                 dataKey="value"
                             >
-                                {data.map((entry, index) => (
+                                {data.map((entry: any, index: number) => (
                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                 ))}
                             </Pie>

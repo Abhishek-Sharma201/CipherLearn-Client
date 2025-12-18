@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { Prisma, User } from "../../../../prisma/generated/prisma/client";
 import BatchService from "./service";
+import logger from "../../../utils/logger";
 
 const batchService = new BatchService();
 
@@ -15,17 +16,26 @@ export default class BatchController {
           .status(400)
           .json({ success: false, message: "name and timings are required" });
 
+      let capacity = 0;
+      if (typeof totalStudents === 'object' && totalStudents !== null) {
+        capacity = (totalStudents as any).capacity || 0;
+      } else if (typeof totalStudents === 'number') {
+        capacity = totalStudents;
+      }
+
       const created = await batchService.create({
         name,
         timings,
-        totalStudents: totalStudents ?? 0,
+        totalStudents: capacity,
       } as Prisma.BatchCreateInput);
+
+      logger.info(`Batch created: ${created.name}`);
 
       return res
         .status(201)
         .json({ success: true, message: "Batch created", batch: created });
     } catch (error) {
-      console.error("Batch.create error:", error);
+      logger.error("Batch.create error:", error);
       return res
         .status(500)
         .json({ success: false, message: `Create failed: ${error}` });
@@ -49,18 +59,27 @@ export default class BatchController {
       const { name, timings, totalStudents } =
         req.body as Partial<Prisma.BatchCreateInput>;
 
+      let capacity = undefined;
+      if (typeof totalStudents === 'object' && totalStudents !== null) {
+        capacity = (totalStudents as any).capacity;
+      } else if (typeof totalStudents === 'number') {
+        capacity = totalStudents;
+      }
+
       const updated = await batchService.update({
         id,
         name,
         timings,
-        totalStudents,
+        totalStudents: capacity,
       } as Prisma.BatchCreateInput);
+
+      logger.info(`Batch updated: ${updated.id}`);
 
       return res
         .status(200)
         .json({ success: true, message: "Batch updated", batch: updated });
     } catch (error) {
-      console.error("Batch.update error:", error);
+      logger.error("Batch.update error:", error);
       if ((error as Error).message?.includes("not found"))
         return res
           .status(404)
@@ -74,9 +93,18 @@ export default class BatchController {
   public async getAll(req: Request, res: Response) {
     try {
       const batches = await batchService.get();
-      return res.status(200).json({ success: true, batches });
+
+      const formattedBatches = batches.map((batch: any) => ({
+        ...batch,
+        students: batch.totalStudents || 0,
+        time: batch.timings?.time || "",
+        days: Array.isArray(batch.timings?.days) ? batch.timings.days.join(", ") : "",
+        status: batch.isDeleted ? 'Inactive' : 'Active' // Assuming isDeleted determines status
+      }));
+
+      return res.status(200).json({ success: true, batches: formattedBatches });
     } catch (error) {
-      console.error("Batch.getAll error:", error);
+      logger.error("Batch.getAll error:", error);
       return res
         .status(500)
         .json({ success: false, message: `Get failed: ${error}` });
@@ -94,11 +122,12 @@ export default class BatchController {
       const user = req.user as User;
 
       const result = await batchService.draft(ids, user);
+      logger.info(`Batches drafted: ${ids.join(', ')}`);
       return res
         .status(200)
         .json({ success: true, message: "Batches drafted", result });
     } catch (error) {
-      console.error("Batch.draft error:", error);
+      logger.error("Batch.draft error:", error);
       return res
         .status(500)
         .json({ success: false, message: `Draft failed: ${error}` });
@@ -110,7 +139,7 @@ export default class BatchController {
       const drafts = await batchService.getDrafts();
       return res.status(200).json({ success: true, drafts });
     } catch (error) {
-      console.error("Batch.getDrafts error:", error);
+      logger.error("Batch.getDrafts error:", error);
       return res
         .status(500)
         .json({ success: false, message: `Get drafts failed: ${error}` });
@@ -126,11 +155,12 @@ export default class BatchController {
           .json({ success: false, message: "ids array is required" });
 
       const result = await batchService.delete(ids);
+      logger.info(`Batches deleted: ${ids.join(', ')}`);
       return res
         .status(200)
         .json({ success: true, message: "Batches deleted", result });
     } catch (error) {
-      console.error("Batch.delete error:", error);
+      logger.error("Batch.delete error:", error);
       return res
         .status(500)
         .json({ success: false, message: `Delete failed: ${error}` });

@@ -14,11 +14,14 @@ import {
     Layers,
     GraduationCap,
     ChevronLeft,
-    Settings
+    Settings,
+    LogOut
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion";
+import { useAppDispatch } from "@/redux/hooks";
+import { logoutLocal } from "@/redux/slices/auth/authSlice";
 
 const sidebarItems = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
@@ -34,6 +37,7 @@ const sidebarItems = [
 export function Sidebar() {
     const pathname = usePathname()
     const [isCollapsed, setIsCollapsed] = useState(false)
+    const dispatch = useAppDispatch()
 
     // Determine if a link is active. Handle root dashboard path specifically.
     const isActive = (href: string) => {
@@ -116,7 +120,7 @@ export function Sidebar() {
                 </nav>
             </div>
 
-            <div className="border-t p-2">
+            <div className="border-t p-2 space-y-1">
                 <Link
                     href="/settings"
                     className={cn(
@@ -129,6 +133,21 @@ export function Sidebar() {
                         <span>Settings</span>
                     )}
                 </Link>
+                <button
+                    onClick={() => {
+                        dispatch(logoutLocal())
+                        window.location.href = "/login"
+                    }}
+                    className={cn(
+                        "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors hover:bg-red-500/10 hover:text-red-600 text-muted-foreground",
+                        isCollapsed && "justify-center px-2"
+                    )}
+                >
+                    <LogOut className="h-5 w-5" />
+                    {!isCollapsed && (
+                        <span>Logout</span>
+                    )}
+                </button>
             </div>
         </aside>
     )

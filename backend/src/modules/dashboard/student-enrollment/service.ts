@@ -31,5 +31,14 @@ export default class StudentEnrollmentService {
       throw error;
     }
   }
-  public async enrollCSV(csv: StudentCSV) {}
+  public async enrollCSV(csv: StudentCSV) { }
+
+  public async getAll(): Promise<Student[]> {
+    try {
+      const students = await prisma.student.findMany();
+      return students;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

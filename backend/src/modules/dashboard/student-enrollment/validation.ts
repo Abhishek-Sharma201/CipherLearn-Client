@@ -6,8 +6,8 @@ const enroll = joi.object({
   batchId: joi.number().required(),
   firstname: joi.string().required(),
   lastname: joi.string().required(),
-  middletname: joi.string().required(),
-  dob: joi.date().required(),
+  middlename: joi.string().allow(null, '').optional(),
+  dob: joi.string().required(),
   address: joi.string().required(),
 });
 
