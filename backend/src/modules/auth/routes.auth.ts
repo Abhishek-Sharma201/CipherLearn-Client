@@ -9,7 +9,7 @@ const controller = new AuthController();
 
 router.post(
   "/signup",
-  isAdmin,
+  // isAdmin,
   validateRequest(AuthValidations.signUp),
   controller.signup
 );
