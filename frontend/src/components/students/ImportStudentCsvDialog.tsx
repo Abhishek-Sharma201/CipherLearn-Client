@@ -14,12 +14,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Upload } from "lucide-react"
 import { useState } from "react"
-import { useEnrollStudentCsvMutation } from "@/redux/slices/students/studentsApi"
+import { useEnrollStudentsWithCSVMutation } from "@/redux/slices/students/studentsApi"
 import { toast } from "sonner"
 
 export function ImportStudentCsvDialog() {
     const [open, setOpen] = useState(false)
-    const [enrollCsv, { isLoading }] = useEnrollStudentCsvMutation()
+    const [enrollCsv, { isLoading }] = useEnrollStudentsWithCSVMutation()
     const [file, setFile] = useState<File | null>(null)
     const [formData, setFormData] = useState({
         name: "Batch Enrollment",

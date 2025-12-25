@@ -23,8 +23,9 @@ export default function LoginPage() {
         event.preventDefault()
         try {
             const response = await login({ email, password }).unwrap()
-            // Backend returns { user, token, message }
-            dispatch(setCredentials({ user: response.user, token: response.token }))
+            // Backend returns { success, message, data: { user, token } }
+            const { user, token } = response.data || response
+            dispatch(setCredentials({ user, token }))
             toast.success(response.message || "Login successful")
             router.push("/dashboard")
         } catch (err: any) {

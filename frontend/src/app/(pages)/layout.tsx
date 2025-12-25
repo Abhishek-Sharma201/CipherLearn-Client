@@ -4,7 +4,7 @@ import { Navbar } from "@/components/layout/Navbar"
 import { Sidebar } from "@/components/layout/Sidebar"
 import { useAppSelector } from "@/redux/hooks"
 import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 export default function DashboardLayout({
     children,
@@ -13,14 +13,22 @@ export default function DashboardLayout({
 }) {
     const { token } = useAppSelector((state) => state.auth)
     const router = useRouter()
+    const [isClient, setIsClient] = useState(false)
+
+    // Wait for client-side hydration to complete
+    useEffect(() => {
+        setIsClient(true)
+    }, [])
 
     useEffect(() => {
-        if (!token) {
+        // Only check auth after client-side hydration
+        if (isClient && !token) {
             router.push("/login")
         }
-    }, [token, router])
+    }, [isClient, token, router])
 
-    if (!token) {
+    // Show nothing until client-side hydration is complete
+    if (!isClient || !token) {
         return null
     }
 
