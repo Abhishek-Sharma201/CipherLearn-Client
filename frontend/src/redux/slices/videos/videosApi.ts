@@ -8,6 +8,8 @@ export const videosApi = api.injectEndpoints({
                 method: 'GET',
             }),
             providesTags: ['Videos'],
+            // Backend returns { success: true, data: [...] }
+            transformResponse: (response: any) => response.data || [],
         }),
         uploadVideo: builder.mutation({
             query: (payload) => ({

@@ -28,18 +28,15 @@ export type AggregateBatch = {
 
 export type BatchAvgAggregateOutputType = {
   id: number | null
-  totalStudents: number | null
 }
 
 export type BatchSumAggregateOutputType = {
   id: number | null
-  totalStudents: number | null
 }
 
 export type BatchMinAggregateOutputType = {
   id: number | null
   name: string | null
-  totalStudents: number | null
   isDeleted: boolean | null
   deletedBy: string | null
   updatedAt: Date | null
@@ -49,7 +46,6 @@ export type BatchMinAggregateOutputType = {
 export type BatchMaxAggregateOutputType = {
   id: number | null
   name: string | null
-  totalStudents: number | null
   isDeleted: boolean | null
   deletedBy: string | null
   updatedAt: Date | null
@@ -71,18 +67,15 @@ export type BatchCountAggregateOutputType = {
 
 export type BatchAvgAggregateInputType = {
   id?: true
-  totalStudents?: true
 }
 
 export type BatchSumAggregateInputType = {
   id?: true
-  totalStudents?: true
 }
 
 export type BatchMinAggregateInputType = {
   id?: true
   name?: true
-  totalStudents?: true
   isDeleted?: true
   deletedBy?: true
   updatedAt?: true
@@ -92,7 +85,6 @@ export type BatchMinAggregateInputType = {
 export type BatchMaxAggregateInputType = {
   id?: true
   name?: true
-  totalStudents?: true
   isDeleted?: true
   deletedBy?: true
   updatedAt?: true
@@ -200,7 +192,7 @@ export type BatchGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 export type BatchGroupByOutputType = {
   id: number
   name: string
-  totalStudents: number | null
+  totalStudents: runtime.JsonValue | null
   timings: runtime.JsonValue | null
   isDeleted: boolean | null
   deletedBy: string | null
@@ -234,7 +226,7 @@ export type BatchWhereInput = {
   NOT?: Prisma.BatchWhereInput | Prisma.BatchWhereInput[]
   id?: Prisma.IntFilter<"Batch"> | number
   name?: Prisma.StringFilter<"Batch"> | string
-  totalStudents?: Prisma.IntNullableFilter<"Batch"> | number | null
+  totalStudents?: Prisma.JsonNullableFilter<"Batch">
   timings?: Prisma.JsonNullableFilter<"Batch">
   isDeleted?: Prisma.BoolNullableFilter<"Batch"> | boolean | null
   deletedBy?: Prisma.StringNullableFilter<"Batch"> | string | null
@@ -265,7 +257,7 @@ export type BatchWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.BatchWhereInput[]
   NOT?: Prisma.BatchWhereInput | Prisma.BatchWhereInput[]
   name?: Prisma.StringFilter<"Batch"> | string
-  totalStudents?: Prisma.IntNullableFilter<"Batch"> | number | null
+  totalStudents?: Prisma.JsonNullableFilter<"Batch">
   timings?: Prisma.JsonNullableFilter<"Batch">
   isDeleted?: Prisma.BoolNullableFilter<"Batch"> | boolean | null
   deletedBy?: Prisma.StringNullableFilter<"Batch"> | string | null
@@ -298,7 +290,7 @@ export type BatchScalarWhereWithAggregatesInput = {
   NOT?: Prisma.BatchScalarWhereWithAggregatesInput | Prisma.BatchScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Batch"> | number
   name?: Prisma.StringWithAggregatesFilter<"Batch"> | string
-  totalStudents?: Prisma.IntNullableWithAggregatesFilter<"Batch"> | number | null
+  totalStudents?: Prisma.JsonNullableWithAggregatesFilter<"Batch">
   timings?: Prisma.JsonNullableWithAggregatesFilter<"Batch">
   isDeleted?: Prisma.BoolNullableWithAggregatesFilter<"Batch"> | boolean | null
   deletedBy?: Prisma.StringNullableWithAggregatesFilter<"Batch"> | string | null
@@ -308,7 +300,7 @@ export type BatchScalarWhereWithAggregatesInput = {
 
 export type BatchCreateInput = {
   name: string
-  totalStudents?: number | null
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: boolean | null
   deletedBy?: string | null
@@ -322,7 +314,7 @@ export type BatchCreateInput = {
 export type BatchUncheckedCreateInput = {
   id?: number
   name: string
-  totalStudents?: number | null
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: boolean | null
   deletedBy?: string | null
@@ -335,7 +327,7 @@ export type BatchUncheckedCreateInput = {
 
 export type BatchUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  totalStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -349,7 +341,7 @@ export type BatchUpdateInput = {
 export type BatchUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  totalStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -363,7 +355,7 @@ export type BatchUncheckedUpdateInput = {
 export type BatchCreateManyInput = {
   id?: number
   name: string
-  totalStudents?: number | null
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: boolean | null
   deletedBy?: string | null
@@ -373,7 +365,7 @@ export type BatchCreateManyInput = {
 
 export type BatchUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  totalStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -384,7 +376,7 @@ export type BatchUpdateManyMutationInput = {
 export type BatchUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  totalStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -410,13 +402,11 @@ export type BatchCountOrderByAggregateInput = {
 
 export type BatchAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  totalStudents?: Prisma.SortOrder
 }
 
 export type BatchMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  totalStudents?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedBy?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -426,7 +416,6 @@ export type BatchMaxOrderByAggregateInput = {
 export type BatchMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  totalStudents?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedBy?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -435,7 +424,6 @@ export type BatchMinOrderByAggregateInput = {
 
 export type BatchSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  totalStudents?: Prisma.SortOrder
 }
 
 export type BatchScalarRelationFilter = {
@@ -489,7 +477,7 @@ export type BatchUpdateOneRequiredWithoutAttendancesNestedInput = {
 
 export type BatchCreateWithoutStudentsInput = {
   name: string
-  totalStudents?: number | null
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: boolean | null
   deletedBy?: string | null
@@ -502,7 +490,7 @@ export type BatchCreateWithoutStudentsInput = {
 export type BatchUncheckedCreateWithoutStudentsInput = {
   id?: number
   name: string
-  totalStudents?: number | null
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: boolean | null
   deletedBy?: string | null
@@ -530,7 +518,7 @@ export type BatchUpdateToOneWithWhereWithoutStudentsInput = {
 
 export type BatchUpdateWithoutStudentsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  totalStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -543,7 +531,7 @@ export type BatchUpdateWithoutStudentsInput = {
 export type BatchUncheckedUpdateWithoutStudentsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  totalStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -555,7 +543,7 @@ export type BatchUncheckedUpdateWithoutStudentsInput = {
 
 export type BatchCreateWithoutSheetsInput = {
   name: string
-  totalStudents?: number | null
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: boolean | null
   deletedBy?: string | null
@@ -568,7 +556,7 @@ export type BatchCreateWithoutSheetsInput = {
 export type BatchUncheckedCreateWithoutSheetsInput = {
   id?: number
   name: string
-  totalStudents?: number | null
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: boolean | null
   deletedBy?: string | null
@@ -596,7 +584,7 @@ export type BatchUpdateToOneWithWhereWithoutSheetsInput = {
 
 export type BatchUpdateWithoutSheetsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  totalStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -609,7 +597,7 @@ export type BatchUpdateWithoutSheetsInput = {
 export type BatchUncheckedUpdateWithoutSheetsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  totalStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -621,7 +609,7 @@ export type BatchUncheckedUpdateWithoutSheetsInput = {
 
 export type BatchCreateWithoutAttendancesInput = {
   name: string
-  totalStudents?: number | null
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: boolean | null
   deletedBy?: string | null
@@ -634,7 +622,7 @@ export type BatchCreateWithoutAttendancesInput = {
 export type BatchUncheckedCreateWithoutAttendancesInput = {
   id?: number
   name: string
-  totalStudents?: number | null
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: boolean | null
   deletedBy?: string | null
@@ -662,7 +650,7 @@ export type BatchUpdateToOneWithWhereWithoutAttendancesInput = {
 
 export type BatchUpdateWithoutAttendancesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  totalStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -675,7 +663,7 @@ export type BatchUpdateWithoutAttendancesInput = {
 export type BatchUncheckedUpdateWithoutAttendancesInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  totalStudents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -802,7 +790,7 @@ export type $BatchPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     name: string
-    totalStudents: number | null
+    totalStudents: runtime.JsonValue | null
     timings: runtime.JsonValue | null
     isDeleted: boolean | null
     deletedBy: string | null
@@ -1236,7 +1224,7 @@ export interface Prisma__BatchClient<T, Null = never, ExtArgs extends runtime.Ty
 export interface BatchFieldRefs {
   readonly id: Prisma.FieldRef<"Batch", 'Int'>
   readonly name: Prisma.FieldRef<"Batch", 'String'>
-  readonly totalStudents: Prisma.FieldRef<"Batch", 'Int'>
+  readonly totalStudents: Prisma.FieldRef<"Batch", 'Json'>
   readonly timings: Prisma.FieldRef<"Batch", 'Json'>
   readonly isDeleted: Prisma.FieldRef<"Batch", 'Boolean'>
   readonly deletedBy: Prisma.FieldRef<"Batch", 'String'>

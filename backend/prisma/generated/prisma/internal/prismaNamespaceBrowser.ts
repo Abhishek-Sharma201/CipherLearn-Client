@@ -56,7 +56,8 @@ export const ModelName = {
   Batch: 'Batch',
   AttendanceSheet: 'AttendanceSheet',
   Attendance: 'Attendance',
-  YoutubeVideo: 'YoutubeVideo'
+  YoutubeVideo: 'YoutubeVideo',
+  Note: 'Note'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -167,6 +168,22 @@ export const YoutubeVideoScalarFieldEnum = {
 } as const
 
 export type YoutubeVideoScalarFieldEnum = (typeof YoutubeVideoScalarFieldEnum)[keyof typeof YoutubeVideoScalarFieldEnum]
+
+
+export const NoteScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  content: 'content',
+  batchId: 'batchId',
+  category: 'category',
+  isDeleted: 'isDeleted',
+  deletedBy: 'deletedBy',
+  deletedAt: 'deletedAt',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type NoteScalarFieldEnum = (typeof NoteScalarFieldEnum)[keyof typeof NoteScalarFieldEnum]
 
 
 export const SortOrder = {

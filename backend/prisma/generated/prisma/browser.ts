@@ -47,3 +47,8 @@ export type Attendance = Prisma.AttendanceModel
  * 
  */
 export type YoutubeVideo = Prisma.YoutubeVideoModel
+/**
+ * Model Note
+ * 
+ */
+export type Note = Prisma.NoteModel

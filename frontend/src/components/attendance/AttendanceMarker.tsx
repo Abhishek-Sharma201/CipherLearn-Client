@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table"
 import { CheckCircle2, Loader2 } from "lucide-react"
 import { useGetAttendanceQuery, useSaveBatchAttendanceMutation } from "@/redux/slices/attendance/attendanceApi"
+import { useGetBatchesQuery } from "@/redux/slices/batches/batchesApi"
 import { useSelector, useDispatch } from "react-redux"
 import { setBatch, setDate } from "@/redux/slices/attendance/attendanceSlice"
 import { RootState } from "@/redux/store"
@@ -19,8 +20,13 @@ import { RootState } from "@/redux/store"
 export function AttendanceMarker() {
     const dispatch = useDispatch();
     const { currentBatch, date } = useSelector((state: RootState) => state.attendance);
+    const { data: batchesData } = useGetBatchesQuery(undefined);
+    const batches = batchesData?.batches || [];
 
-    const { data: students, isLoading } = useGetAttendanceQuery(currentBatch);
+    // Skip API call if no batch is selected
+    const { data: students, isLoading } = useGetAttendanceQuery(currentBatch, {
+        skip: !currentBatch || currentBatch === ''
+    });
     const [saveAttendance, { isLoading: isSaving }] = useSaveBatchAttendanceMutation();
 
     const handleSave = async () => {
@@ -35,9 +41,12 @@ export function AttendanceMarker() {
                     value={currentBatch}
                     onChange={(e) => dispatch(setBatch(e.target.value))}
                 >
-                    <option>Physics Class 11</option>
-                    <option>Math Class 10</option>
-                    <option>Chem Class 12</option>
+                    <option value="">Select a batch</option>
+                    {batches.map((batch: any) => (
+                        <option key={batch.id} value={batch.id}>
+                            {batch.name}
+                        </option>
+                    ))}
                 </select>
 
                 <input
@@ -48,7 +57,11 @@ export function AttendanceMarker() {
                 />
             </div>
 
-            {isLoading ? (
+            {!currentBatch || currentBatch === '' ? (
+                <div className="flex justify-center items-center p-8 border rounded-lg bg-muted/50">
+                    <p className="text-muted-foreground">Please select a batch to mark attendance</p>
+                </div>
+            ) : isLoading ? (
                 <div className="flex justify-center p-8"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>
             ) : (
                 <>

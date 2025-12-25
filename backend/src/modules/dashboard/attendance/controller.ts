@@ -42,6 +42,15 @@ export default class AttendanceController {
   async getBatchAttendanceSheet(req: Request, res: Response) {
     try {
       const batchId = Number(req.params.batchId);
+
+      // Validate batchId
+      if (!req.params.batchId || isNaN(batchId) || batchId <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Valid batchId parameter is required"
+        });
+      }
+
       const attendanceSheets = await attendanceService.getBatchAttendanceSheet(
         batchId
       );
@@ -88,5 +97,5 @@ export default class AttendanceController {
     }
   }
 
-  async markQRAttendance(req: Request, res: Response) {}
+  async markQRAttendance(req: Request, res: Response) { }
 }

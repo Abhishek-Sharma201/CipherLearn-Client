@@ -6,6 +6,9 @@ import YoutubeVideoController from "./controller";
 const router = Router();
 const controller = new YoutubeVideoController();
 
+// Get all videos (with optional batchId filter)
+router.get("/", controller.getAll.bind(controller));
+
 router.post(
   "/upload",
   validateRequest(YoutubeVideoValidations.upload),

@@ -33,9 +33,11 @@ export default class YoutubeVideoController {
 
   async getAll(req: Request, res: Response) {
     try {
-      const { batchId } = req.params;
+      // Get batchId from query parameter (optional)
+      const batchIdStr = req.query.batchId as string | undefined;
+      const batchId = batchIdStr ? Number(batchIdStr) : undefined;
 
-      const youtubeVideos = await youtubeVideoService.getAll(Number(batchId));
+      const youtubeVideos = await youtubeVideoService.getAll(batchId);
       return res.status(200).json({ success: true, data: youtubeVideos });
     } catch (error) {
       return res.status(500).json({ error: `Internal Server Error: ${error}` });

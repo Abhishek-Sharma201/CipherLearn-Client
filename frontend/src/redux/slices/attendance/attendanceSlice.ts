@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    currentBatch: 'Physics Class 11',
+    currentBatch: '', // Will be set when user selects a batch
     date: new Date().toISOString().split('T')[0],
     view: 'mark', // mark, history, report
 };

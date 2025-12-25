@@ -27,7 +27,7 @@ export default class YoutubeVideoService {
     }
   }
 
-  async getAll(batchId: number) {
+  async getAll(batchId?: number) {
     try {
       let select: Prisma.YoutubeVideoSelect = {
         id: true,
@@ -37,8 +37,15 @@ export default class YoutubeVideoService {
         visibility: true,
         createdAt: true,
       };
+
+      // Build where clause - filter by batchId only if provided
+      const whereClause: Prisma.YoutubeVideoWhereInput = {
+        isDeleted: false,
+        ...(batchId && { batchId: batchId })
+      };
+
       const youtubeVideos = await prisma.youtubeVideo.findMany({
-        where: { isDeleted: false, batchId: batchId },
+        where: whereClause,
         select: select,
       });
       return youtubeVideos;
