@@ -19,6 +19,7 @@ export class Database {
       ],
     });
 
+    // @ts-ignore
     this.prisma.$on("query", this.defaultQueryLogger);
   }
 

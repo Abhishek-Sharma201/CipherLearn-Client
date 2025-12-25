@@ -3,6 +3,7 @@
 import { Bell, Search, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { ModeToggle } from "@/components/mode-toggle"
 
 export function Navbar() {
     return (
@@ -29,6 +30,7 @@ export function Navbar() {
                 </form>
 
                 <div className="flex items-center gap-2">
+                    <ModeToggle />
                     <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-foreground">
                         <Bell className="h-5 w-5" />
                         <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-600 border-2 border-background" />

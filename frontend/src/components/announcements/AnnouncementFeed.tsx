@@ -8,7 +8,7 @@ import { useGetAnnouncementsQuery } from "@/redux/slices/announcements/announcem
 import { Announcement } from "@/types"
 
 export function AnnouncementFeed() {
-    const { data: announcements, isLoading } = useGetAnnouncementsQuery({});
+    const { data: announcements, isLoading } = useGetAnnouncementsQuery(undefined);
 
     if (isLoading) {
         return <div className="flex justify-center p-8"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>
@@ -28,7 +28,7 @@ export function AnnouncementFeed() {
                             <div>
                                 <h3 className="font-semibold">{item.title}</h3>
                                 <p className="text-xs text-muted-foreground flex items-center mt-1">
-                                    {item.author} • <Calendar className="mx-1 h-3 w-3" /> {item.dae}
+                                    {item.author} • <Calendar className="mx-1 h-3 w-3" /> {item.date}
                                 </p>
                             </div>
                             {item.pinned && (

@@ -14,6 +14,9 @@ router.post(
   controller.signup
 );
 router.post("/login", validateRequest(AuthValidations.login), controller.login);
+router.post("/logout", controller.logout.bind(controller));
+router.post("/request-password-reset", controller.forgotPassword.bind(controller));
+router.post("/reset-password", controller.resetPassword.bind(controller));
 
 router.put(
   "/profile",

@@ -3,6 +3,7 @@ import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { ReduxProvider } from "@/redux/provider";
 import { AuthRehydrate } from "@/components/AuthRehydrate";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -28,14 +29,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${inter.variable} ${poppins.variable} antialiased font-sans`}
-        suppressHydrationWarning
       >
         <ReduxProvider>
-          <AuthRehydrate />
-          {children}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <AuthRehydrate />
+            {children}
+          </ThemeProvider>
         </ReduxProvider>
       </body>
     </html>
