@@ -20,7 +20,7 @@ export function AttendanceMarker() {
     const dispatch = useDispatch();
     const { currentBatch, date } = useSelector((state: RootState) => state.attendance);
 
-    const { data: students, isLoading } = useGetAttendanceQuery({ batch: currentBatch, date });
+    const { data: students, isLoading } = useGetAttendanceQuery(currentBatch);
     const [saveAttendance, { isLoading: isSaving }] = useSaveBatchAttendanceMutation();
 
     const handleSave = async () => {

@@ -16,7 +16,7 @@ import { Batch } from "@/types"
 import { toast } from "sonner"
 
 export function BatchList() {
-    const { data, isLoading } = useGetBatchesQuery({});
+    const { data, isLoading } = useGetBatchesQuery(undefined);
     const [deleteBatch, { isLoading: isDeleting }] = useDeleteBatchMutation();
     const batches = data?.batches;
 

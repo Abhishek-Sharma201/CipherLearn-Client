@@ -7,7 +7,7 @@ import { useGetVideosQuery } from "@/redux/slices/videos/videosApi"
 import { Video } from "@/types"
 
 export function VideoGrid() {
-    const { data: videos, isLoading } = useGetVideosQuery({});
+    const { data: videos, isLoading } = useGetVideosQuery(undefined);
 
     if (isLoading) {
         return <div className="flex justify-center p-8"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>

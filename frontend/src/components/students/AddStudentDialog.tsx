@@ -21,7 +21,7 @@ import { toast } from "sonner"
 export function AddStudentDialog() {
     const [open, setOpen] = useState(false)
     const [enrollStudent, { isLoading }] = useEnrollStudentMutation()
-    const { data: batchesData } = useGetBatchesQuery({})
+    const { data: batchesData } = useGetBatchesQuery(undefined)
     const batches = batchesData?.batches || []
 
     const [formData, setFormData] = useState({
