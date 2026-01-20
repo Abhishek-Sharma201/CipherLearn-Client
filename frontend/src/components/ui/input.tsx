@@ -15,20 +15,16 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 <input
                     type={type}
                     className={cn(
-                        // Base styles - Geist input foundation
-                        "flex h-10 w-full rounded-md border bg-background px-3 py-2",
-                        "text-sm ring-offset-background placeholder:text-muted-foreground/60",
-                        "file:border-0 file:bg-transparent file:text-sm file:font-medium",
-                        // Border states - Geist Color 4/5/6
-                        "border-input transition-colors duration-150",
+                        "flex h-10 w-full rounded-lg border bg-background px-3 py-2",
+                        "text-sm placeholder:text-muted-foreground",
+                        "border-input transition-colors",
                         "hover:border-border-hover",
-                        "focus-visible:outline-none focus-visible:border-border-active",
+                        "focus-visible:outline-none focus-visible:border-foreground",
                         "focus-visible:ring-1 focus-visible:ring-ring",
-                        // Disabled state
                         "disabled:cursor-not-allowed disabled:opacity-50",
-                        // Error state
-                        error && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive",
-                        className
+                        icon && "pl-10",
+                        suffix && "pr-10",
+                        error && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive"
                     )}
                     ref={ref}
                     {...props}

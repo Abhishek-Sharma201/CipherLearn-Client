@@ -1,7 +1,7 @@
 "use client"
 
 import { UserPlus } from "lucide-react"
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts"
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { useGetEnrollmentTrendsQuery } from "@/redux/slices/analytics/analyticsApi"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Card, CardContent } from "@/components/ui/card"
@@ -72,7 +72,7 @@ export function RevenueChart() {
                                     <stop offset="95%" stopColor="var(--foreground)" stopOpacity={0} />
                                 </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.2} />
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" opacity={0.4} />
                             <XAxis
                                 dataKey="name"
                                 tick={{ fontSize: 9, fill: 'var(--muted-foreground)', fontWeight: 500 }}
@@ -85,7 +85,7 @@ export function RevenueChart() {
                             />
                             <YAxis
                                 tick={{ fontSize: 9, fill: 'var(--muted-foreground)', fontWeight: 500 }}
-                                axisLine={{ stroke: 'var(--border)', opacity: 0.5 }}
+                                axisLine={false}
                                 tickLine={false}
                             />
                             <Tooltip
@@ -96,7 +96,7 @@ export function RevenueChart() {
                                     fontSize: '11px',
                                     fontWeight: '600',
                                     padding: '12px',
-                                    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'
+                                    boxShadow: '0 4px 12px -2px rgba(0, 0, 0, 0.1)'
                                 }}
                                 labelStyle={{ fontWeight: 'bold', marginBottom: '4px', textTransform: 'uppercase', fontSize: '10px', letterSpacing: '0.05em' }}
                                 formatter={(value: number) => [`${value} students`, 'Enrollments']}

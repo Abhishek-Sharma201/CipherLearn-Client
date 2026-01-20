@@ -44,54 +44,45 @@ export function Sidebar() {
 
     return (
         <aside
-            className={`sticky top-0 z-40 h-screen transition-all duration-300 border-r border-border shrink-0 bg-card ${
-                isCollapsed ? 'w-16' : 'w-64'
+            className={`sticky top-0 z-40 h-screen transition-all duration-200 border-r border-border shrink-0 bg-background ${
+                isCollapsed ? 'w-14' : 'w-56'
             }`}
         >
-            {/* Header */}
-            <div className="flex h-16 items-center justify-between px-4 border-b border-border">
+            {/* Header - Vercel compact style */}
+            <div className="flex h-14 items-center justify-between px-3 border-b border-border">
                 {!isCollapsed && (
                     <div className="flex items-center gap-2">
-                        <div className="h-9 w-9 rounded-lg flex items-center justify-center bg-foreground text-background font-bold text-sm">
-                            CI
+                        <div className="h-7 w-7 rounded-md flex items-center justify-center bg-foreground text-background font-semibold text-xs">
+                            CL
                         </div>
-                        <span className="font-bold text-lg text-foreground">CipherLearn</span>
+                        <span className="font-semibold text-sm text-foreground">CipherLearn</span>
                     </div>
                 )}
                 <Button
                     variant="ghost"
                     size="icon"
                     onClick={() => setIsCollapsed(!isCollapsed)}
-                    className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent"
+                    className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-accent"
                 >
-                    {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+                    {isCollapsed ? <ChevronRight className="h-3.5 w-3.5" /> : <ChevronLeft className="h-3.5 w-3.5" />}
                 </Button>
             </div>
 
-            {/* Navigation */}
-            <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+            {/* Navigation - Vercel minimal spacing */}
+            <nav className="flex-1 px-2 py-4 space-y-0.5 overflow-y-auto gap-8 ">
                 {navItems.map((item) => {
                     const isActive = pathname === item.href
                     return (
                         <Link
                             key={item.href}
                             href={item.href}
-                            className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 group relative ${
+                            className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium transition-colors relative mb-0.5 ${
                                 isActive
-                                    ? 'text-foreground bg-accent'
-                                    : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                                    ? 'text-foreground bg-secondary'
+                                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
                             }`}
                         >
-                            {/* Active indicator */}
-                            {isActive && (
-                                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-full bg-foreground" />
-                            )}
-
-                            <item.icon
-                                className={`h-5 w-5 shrink-0 transition-all ${
-                                    isActive ? 'text-foreground' : 'group-hover:text-foreground'
-                                }`}
-                            />
+                            <item.icon className="h-4 w-4 shrink-0" />
                             {!isCollapsed && (
                                 <span className="truncate">{item.label}</span>
                             )}
@@ -101,15 +92,15 @@ export function Sidebar() {
             </nav>
 
             {/* Footer - Logout */}
-            <div className="p-3 border-t border-border">
+            <div className="p-2 border-t border-border">
                 <Button
                     variant="ghost"
                     onClick={handleLogout}
-                    className={`w-full justify-start gap-3 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-all ${
-                        isCollapsed ? 'justify-center' : ''
+                    className={`w-full h-8 justify-start gap-2 text-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10 ${
+                        isCollapsed ? 'justify-center px-0' : 'px-2'
                     }`}
                 >
-                    <LogOut className="h-5 w-5 shrink-0" />
+                    <LogOut className="h-4 w-4 shrink-0" />
                     {!isCollapsed && <span>Logout</span>}
                 </Button>
             </div>

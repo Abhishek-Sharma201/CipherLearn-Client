@@ -12,11 +12,19 @@ export function KPIStats() {
         return (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 {[1, 2, 3, 4].map((i) => (
-                    <Card key={i} className="h-[140px] flex flex-col justify-between border-border/60">
-                        <div className="p-6 space-y-4">
-                            <Skeleton className="h-4 w-24 bg-muted/40" />
-                            <Skeleton className="h-8 w-16 bg-muted/60" />
-                            <Skeleton className="h-4 w-32 bg-muted/30" />
+                    <Card key={i} className="p-4">
+                        <div className="flex flex-col gap-3">
+                            <div className="flex items-center justify-between">
+                                <Skeleton className="h-3 w-20" />
+                                <Skeleton className="h-4 w-4 rounded" />
+                            </div>
+                            <div>
+                                <Skeleton className="h-7 w-12 mb-2" />
+                                <div className="flex items-center gap-1.5">
+                                    <Skeleton className="h-3 w-10" />
+                                    <Skeleton className="h-3 w-16" />
+                                </div>
+                            </div>
                         </div>
                     </Card>
                 ))}
@@ -60,23 +68,23 @@ export function KPIStats() {
             {statsData.map((stat, index) => {
                 const trendUp = stat.trend >= 0
                 return (
-                    <Card key={index} className="p-6 group cursor-pointer hover:border-foreground/20 hover:shadow-sm transition-all border-border/60">
-                        <div className="flex flex-col h-full justify-between gap-4">
+                    <Card key={index} className="p-4">
+                        <div className="flex flex-col gap-3">
                             <div className="flex items-center justify-between">
-                                <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.1em] opacity-80">{stat.title}</span>
-                                <stat.icon className="h-3.5 w-3.5 text-muted-foreground/50 group-hover:text-foreground transition-colors" />
+                                <span className="text-xs font-medium text-muted-foreground">{stat.title}</span>
+                                <stat.icon className="h-4 w-4 text-muted-foreground" />
                             </div>
 
                             <div>
-                                <div className="text-2xl font-bold tracking-tighter text-foreground">
+                                <div className="text-2xl font-semibold text-foreground">
                                     {stat.value}
                                 </div>
-                                <div className="flex items-center gap-2 mt-1">
-                                    <span className={`text-[10px] font-semibold flex items-center gap-0.5 ${trendUp ? 'text-emerald-500' : 'text-rose-500'}`}>
+                                <div className="flex items-center gap-1.5 mt-1">
+                                    <span className={`text-xs font-medium flex items-center gap-0.5 ${trendUp ? 'text-success' : 'text-error'}`}>
                                         {trendUp ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
                                         {stat.trend > 0 ? '+' : ''}{stat.trend}%
                                     </span>
-                                    <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider opacity-50">{stat.trendLabel}</span>
+                                    <span className="text-xs text-muted-foreground">{stat.trendLabel}</span>
                                 </div>
                             </div>
                         </div>

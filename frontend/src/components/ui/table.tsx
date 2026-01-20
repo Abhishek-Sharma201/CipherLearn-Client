@@ -57,9 +57,8 @@ const TableRow = React.forwardRef<
     <tr
         ref={ref}
         className={cn(
-            // Geist table row - Color 4 border, Color 2 hover
-            "border-b border-border transition-colors duration-150",
-            "hover:bg-secondary data-[state=selected]:bg-muted",
+            "border-b border-border transition-colors",
+            "hover:bg-secondary",
             className
         )}
         {...props}
@@ -74,9 +73,8 @@ const TableHead = React.forwardRef<
     <th
         ref={ref}
         className={cn(
-            // Geist table header
-            "h-10 px-4 text-left align-middle font-medium text-xs",
-            "text-muted-foreground uppercase tracking-wider",
+            "h-10 px-3 text-left align-middle font-medium text-xs",
+            "text-muted-foreground",
             "[&:has([role=checkbox])]:pr-0",
             className
         )}
@@ -92,7 +90,7 @@ const TableCell = React.forwardRef<
     <td
         ref={ref}
         className={cn(
-            "p-3 align-middle text-sm [&:has([role=checkbox])]:pr-0",
+            "px-3 py-2 align-middle text-sm [&:has([role=checkbox])]:pr-0",
             className
         )}
         {...props}
