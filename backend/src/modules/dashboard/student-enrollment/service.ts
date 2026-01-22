@@ -14,15 +14,19 @@ export default class StudentEnrollmentService {
 
       const { batchId, ...studentData } = student;
 
+      // Construct fullname properly - filter out empty middlenames for display
+      const fullname = [
+        student.firstname,
+        student.middlename ? student.middlename : null,
+        student.lastname
+      ]
+        .filter(Boolean)
+        .join(' ');
+
       const newStudent = await prisma.student.create({
         data: {
           ...studentData,
-          fullname:
-            student.firstname +
-            " " +
-            student.middlename +
-            " " +
-            student.lastname,
+          fullname,
           batch: {
             connect: { id: batchId },
           },
@@ -34,7 +38,7 @@ export default class StudentEnrollmentService {
       throw error;
     }
   }
-  public async enrollCSV(csv: StudentCSV) {}
+  public async enrollCSV(csv: StudentCSV) { }
 
   public async getAll(batchId: number): Promise<Student[]> {
     try {

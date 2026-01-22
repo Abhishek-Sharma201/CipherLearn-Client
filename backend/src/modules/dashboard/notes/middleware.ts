@@ -31,7 +31,12 @@ export const validateRequest = (
     }
 
     // Replace request data with validated and sanitized data
-    req[source] = value;
+    // Note: req.query is a getter-only property, so we need to use Object.assign
+    if (source === "query") {
+      Object.assign(req.query, value);
+    } else {
+      req[source] = value;
+    }
     next();
   };
 };

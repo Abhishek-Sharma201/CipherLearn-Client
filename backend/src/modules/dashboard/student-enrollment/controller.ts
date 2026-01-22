@@ -13,7 +13,6 @@ export default class StudentEnrollmentController {
         dob,
         email,
         firstname,
-        fullname,
         lastname,
         middlename,
         address,
@@ -22,7 +21,6 @@ export default class StudentEnrollmentController {
 
       if (
         !firstname ||
-        !middlename ||
         !lastname ||
         !address ||
         !batchId ||
@@ -36,9 +34,8 @@ export default class StudentEnrollmentController {
         dob,
         email,
         firstname,
-        fullname,
         lastname,
-        middlename,
+        middlename: middlename || '',
         address,
         batchId,
       });
@@ -56,7 +53,7 @@ export default class StudentEnrollmentController {
     }
   }
 
-  public async enrollCSV() {}
+  public async enrollCSV() { }
 
   public async getAll(req: Request, res: Response) {
     try {

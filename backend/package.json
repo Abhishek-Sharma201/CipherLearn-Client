@@ -8,7 +8,8 @@
     "start:dev": "npx prisma generate && tsx watch src/index.ts",
     "build": "tsc",
     "prisma:g": "npx prisma generate",
-    "prisma:m:d": "npx prisma migrate dev"
+    "prisma:m:d": "npx prisma migrate dev",
+    "prisma:studio": "set NODE_TLS_REJECT_UNAUTHORIZED=0 && npx prisma studio"
   },
   "keywords": [],
   "author": "",

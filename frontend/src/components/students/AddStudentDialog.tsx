@@ -25,7 +25,6 @@ export function AddStudentDialog() {
     const batches = batchesData?.batches || []
 
     const [formData, setFormData] = useState({
-        name: "",
         email: "",
         batchId: "",
         firstname: "",
@@ -49,7 +48,6 @@ export function AddStudentDialog() {
             toast.success("Student enrolled successfully")
             setOpen(false)
             setFormData({
-                name: "",
                 email: "",
                 batchId: "",
                 firstname: "",
@@ -79,18 +77,6 @@ export function AddStudentDialog() {
                 </DialogHeader>
                 <form onSubmit={handleSubmit}>
                     <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="name" className="text-right">
-                                Full Name
-                            </Label>
-                            <Input
-                                id="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                className="col-span-3"
-                                required
-                            />
-                        </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="email" className="text-right">
                                 Email
