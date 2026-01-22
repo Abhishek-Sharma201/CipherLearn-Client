@@ -12,48 +12,72 @@ import { UserRoles } from "../../../../prisma/generated/prisma/enums";
 import jwt from "jsonwebtoken";
 import logger from "../../../utils/logger";
 import {
-  CheckEnrollmentResponse,
+  CheckUserStatusResponse,
   LoginResponse,
   VerifyOTPResponse,
 } from "./types";
 
 /**
- * Check if email is enrolled as a student
+ * Check if email is registered as a student or teacher
+ * Replaces the old checkEnrollment function
  */
-export const checkEnrollment = async (
+export const checkUserStatus = async (
   email: string
-): Promise<CheckEnrollmentResponse> => {
-  const student = await prisma.student.findFirst({
-    where: { email: email.toLowerCase(), isDeleted: false },
-  });
-
-  if (!student) {
-    return {
-      success: true,
-      isEnrolled: false,
-      hasAccount: false,
-      message: "Email is not enrolled in our system",
-    };
-  }
-
-  // Check if user account already exists
+): Promise<CheckUserStatusResponse> => {
   const user = await prisma.user.findUnique({
     where: { email: email.toLowerCase() },
   });
 
+  // If no user found, email is not registered
+  if (!user) {
+    return {
+      success: true,
+      isRegistered: false,
+      hasPassword: false,
+      message: "Email is not registered in our system",
+    };
+  }
+
+  // Only allow STUDENT and TEACHER roles for app authentication
+  if (user.role !== UserRoles.STUDENT && user.role !== UserRoles.TEACHER) {
+    return {
+      success: true,
+      isRegistered: false,
+      hasPassword: false,
+      message: "Email is not registered in our system",
+    };
+  }
+
   return {
     success: true,
-    isEnrolled: true,
-    hasAccount: !!user,
-    studentName: student.fullname,
-    message: user
-      ? "Student account exists. Please login."
-      : "Student is enrolled. Please setup your password.",
+    isRegistered: true,
+    hasPassword: user.isPasswordSet && user.password !== null,
+    role: user.role,
+    userName: user.name,
+    message: user.isPasswordSet && user.password
+      ? "Account exists. Please login."
+      : "Please setup your password.",
   };
 };
 
 /**
- * Setup password for first-time student
+ * @deprecated Use checkUserStatus instead
+ * Kept for backward compatibility
+ */
+export const checkEnrollment = async (email: string) => {
+  const result = await checkUserStatus(email);
+  return {
+    success: result.success,
+    isEnrolled: result.isRegistered,
+    hasAccount: result.hasPassword,
+    studentName: result.userName,
+    message: result.message,
+  };
+};
+
+/**
+ * Setup password for first-time student or teacher
+ * Works with existing User records (created during enrollment/teacher creation)
  */
 export const setupPassword = async (
   email: string,
@@ -63,55 +87,52 @@ export const setupPassword = async (
 ): Promise<{ success: boolean; message: string }> => {
   const normalizedEmail = email.toLowerCase();
 
-  // Check if student is enrolled
-  const student = await prisma.student.findFirst({
-    where: { email: normalizedEmail, isDeleted: false },
-  });
-
-  if (!student) {
-    await logLoginAttempt(normalizedEmail, ipAddress, false, userAgent);
-    return { success: false, message: "Email is not enrolled in our system" };
-  }
-
-  // Check if account already exists
-  const existingUser = await prisma.user.findUnique({
+  // Find existing user
+  const user = await prisma.user.findUnique({
     where: { email: normalizedEmail },
   });
 
-  if (existingUser) {
+  // Check if user exists and has app role (STUDENT or TEACHER)
+  if (!user || (user.role !== UserRoles.STUDENT && user.role !== UserRoles.TEACHER)) {
+    await logLoginAttempt(normalizedEmail, ipAddress, false, userAgent);
+    return { success: false, message: "Email is not registered in our system" };
+  }
+
+  // Check if password is already set
+  if (user.isPasswordSet && user.password) {
     return {
       success: false,
-      message: "Account already exists. Please login instead.",
+      message: "Password already set. Please login instead.",
     };
   }
 
-  // Create user account
+  // Set the password
   const hashedPassword = generateHash(password);
 
-  await prisma.user.create({
+  await prisma.user.update({
+    where: { id: user.id },
     data: {
-      name: student.fullname,
-      email: normalizedEmail,
       password: hashedPassword,
-      role: UserRoles.STUDENT,
+      isPasswordSet: true,
     },
   });
 
   await logLoginAttempt(normalizedEmail, ipAddress, true, userAgent);
 
   // Send welcome email (non-blocking)
-  sendWelcomeEmail(normalizedEmail, student.fullname).catch((err) =>
+  sendWelcomeEmail(normalizedEmail, user.name).catch((err) =>
     logger.error("Failed to send welcome email:", err)
   );
 
   return {
     success: true,
-    message: "Account created successfully. You can now login.",
+    message: "Password set successfully. You can now login.",
   };
 };
 
 /**
- * Student login
+ * Student or Teacher login
+ * Supports both STUDENT and TEACHER roles
  */
 export const login = async (
   email: string,
@@ -131,6 +152,12 @@ export const login = async (
     return { success: false, message: "Invalid email or password" };
   }
 
+  // Check if user has app role (STUDENT or TEACHER)
+  if (user.role !== UserRoles.STUDENT && user.role !== UserRoles.TEACHER) {
+    await logLoginAttempt(normalizedEmail, ipAddress, false, userAgent);
+    return { success: false, message: "Access denied" };
+  }
+
   // Check if account is locked
   if (user.lockedUntil && user.lockedUntil > new Date()) {
     const remainingMinutes = Math.ceil(
@@ -143,29 +170,21 @@ export const login = async (
     };
   }
 
+  // Check if password is set
+  if (!user.isPasswordSet || !user.password) {
+    return {
+      success: false,
+      message: "Please set up your password first",
+      requiresPasswordSetup: true,
+    };
+  }
+
   // Verify password
   const isPasswordValid = compareHash(password, user.password);
 
   if (!isPasswordValid) {
     await handleFailedLogin(user.id, normalizedEmail, ipAddress, userAgent);
     return { success: false, message: "Invalid email or password" };
-  }
-
-  // Check if user is a student
-  if (user.role !== UserRoles.STUDENT) {
-    await logLoginAttempt(normalizedEmail, ipAddress, false, userAgent);
-    return { success: false, message: "Access denied. Students only." };
-  }
-
-  // Find student record
-  const student = await prisma.student.findFirst({
-    where: { email: normalizedEmail, isDeleted: false },
-    include: { batch: true },
-  });
-
-  if (!student) {
-    await logLoginAttempt(normalizedEmail, ipAddress, false, userAgent);
-    return { success: false, message: "Student profile not found" };
   }
 
   // Reset failed attempts on successful login
@@ -180,25 +199,45 @@ export const login = async (
   const accessToken = generateLoginToken({ id: user.id, email: user.email });
   const refreshToken = generateRefreshToken(user.id);
 
+  // Build response with role-specific data
+  const responseData: LoginResponse["data"] = {
+    accessToken,
+    refreshToken,
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
+  };
+
+  // Add student profile data if STUDENT role
+  if (user.role === UserRoles.STUDENT) {
+    const student = await prisma.student.findFirst({
+      where: { userId: user.id, isDeleted: false },
+      include: { batch: true },
+    });
+
+    // Fallback to email lookup for backward compatibility
+    const studentByEmail = student || await prisma.student.findFirst({
+      where: { email: normalizedEmail, isDeleted: false },
+      include: { batch: true },
+    });
+
+    if (studentByEmail) {
+      responseData.student = {
+        id: studentByEmail.id,
+        fullname: studentByEmail.fullname,
+        batchId: studentByEmail.batchId,
+        batchName: studentByEmail.batch?.name || null,
+      };
+    }
+  }
+
   return {
     success: true,
     message: "Login successful",
-    data: {
-      accessToken,
-      refreshToken,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
-      student: {
-        id: student.id,
-        fullname: student.fullname,
-        batchId: student.batchId,
-        batchName: student.batch?.name || null,
-      },
-    },
+    data: responseData,
   };
 };
 
@@ -282,6 +321,7 @@ export const refreshAccessToken = async (
 
 /**
  * Request password reset (sends OTP)
+ * Supports both STUDENT and TEACHER roles
  */
 export const forgotPassword = async (
   email: string,
@@ -294,14 +334,18 @@ export const forgotPassword = async (
     where: { email: normalizedEmail },
   });
 
-  // Find student (for name in email)
-  const student = await prisma.student.findFirst({
-    where: { email: normalizedEmail, isDeleted: false },
-  });
-
   // Always return success to prevent email enumeration
-  if (!user || !student || user.role !== UserRoles.STUDENT) {
+  if (!user || (user.role !== UserRoles.STUDENT && user.role !== UserRoles.TEACHER)) {
     logger.info(`Password reset requested for non-existent email: ${normalizedEmail}`);
+    return {
+      success: true,
+      message: "If your email is registered, you will receive an OTP shortly.",
+    };
+  }
+
+  // Check if password is set (user must have a password to reset it)
+  if (!user.isPasswordSet || !user.password) {
+    logger.info(`Password reset requested for user without password: ${normalizedEmail}`);
     return {
       success: true,
       message: "If your email is registered, you will receive an OTP shortly.",
@@ -331,7 +375,7 @@ export const forgotPassword = async (
   const emailSent = await sendPasswordResetEmail(
     normalizedEmail,
     otp,
-    student.fullname
+    user.name
   );
 
   if (!emailSent) {
@@ -462,6 +506,7 @@ export const resetPassword = async (
 
 /**
  * Get current user profile
+ * Supports both STUDENT and TEACHER roles
  */
 export const getCurrentUser = async (userId: number) => {
   const user = await prisma.user.findUnique({
@@ -479,10 +524,23 @@ export const getCurrentUser = async (userId: number) => {
     return null;
   }
 
-  const student = await prisma.student.findFirst({
-    where: { email: user.email, isDeleted: false },
-    include: { batch: true },
-  });
+  // Only get student profile if user is a STUDENT
+  let student = null;
+  if (user.role === UserRoles.STUDENT) {
+    // First try to find by userId
+    student = await prisma.student.findFirst({
+      where: { userId: userId, isDeleted: false },
+      include: { batch: true },
+    });
+
+    // Fallback to email lookup for backward compatibility
+    if (!student) {
+      student = await prisma.student.findFirst({
+        where: { email: user.email, isDeleted: false },
+        include: { batch: true },
+      });
+    }
+  }
 
   return { user, student };
 };

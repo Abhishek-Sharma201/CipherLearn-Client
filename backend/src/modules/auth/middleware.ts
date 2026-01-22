@@ -191,6 +191,109 @@ export const isAuthenticated = async (
 };
 
 /**
+ * Middleware to check if user is a Student or Teacher (App user)
+ * Used for routes accessible to both roles
+ */
+export const isAppUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+      return res.status(401).json({
+        success: false,
+        message: "No authorization header provided",
+      });
+    }
+
+    const token = authHeader.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "No token provided",
+      });
+    }
+
+    // Check if token is blacklisted (logged out)
+    const blacklisted = await isTokenBlacklisted(token);
+    if (blacklisted) {
+      return res.status(401).json({
+        success: false,
+        message: "Token has been revoked. Please login again.",
+      });
+    }
+
+    const decoded = verifyToken(token);
+
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        password: true,
+        role: true,
+        createdAt: true,
+        lockedUntil: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Check if account is locked
+    if (user.lockedUntil && user.lockedUntil > new Date()) {
+      return res.status(403).json({
+        success: false,
+        message: "Account is locked. Please try again later.",
+      });
+    }
+
+    // Only STUDENT and TEACHER can access app routes
+    if (user.role !== UserRoles.STUDENT && user.role !== UserRoles.TEACHER) {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied",
+      });
+    }
+
+    req.user = user;
+
+    // Load student profile if STUDENT role
+    if (user.role === UserRoles.STUDENT) {
+      // First try to find by userId
+      let student = await prisma.student.findFirst({
+        where: { userId: user.id, isDeleted: false },
+        include: { batch: true },
+      });
+
+      // Fallback to email lookup for backward compatibility
+      if (!student) {
+        student = await prisma.student.findFirst({
+          where: { email: user.email, isDeleted: false },
+          include: { batch: true },
+        });
+      }
+
+      req.student = student ?? undefined;
+    }
+
+    next();
+  } catch (error) {
+    return res
+      .status(403)
+      .json({ success: false, message: `Access denied : ${error}` });
+  }
+};
+
+/**
  * Middleware to check if user is a Student
  * Used for student app routes
  */
@@ -263,13 +366,19 @@ export const isStudent = async (
       });
     }
 
-    // Find the student record linked to this user
-    const student = await prisma.student.findFirst({
-      where: { email: user.email, isDeleted: false },
-      include: {
-        batch: true,
-      },
+    // Find the student record linked to this user (prefer userId, fallback to email)
+    let student = await prisma.student.findFirst({
+      where: { userId: user.id, isDeleted: false },
+      include: { batch: true },
     });
+
+    // Fallback to email lookup for backward compatibility
+    if (!student) {
+      student = await prisma.student.findFirst({
+        where: { email: user.email, isDeleted: false },
+        include: { batch: true },
+      });
+    }
 
     if (!student) {
       return res.status(404).json({

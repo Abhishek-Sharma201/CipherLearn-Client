@@ -2,11 +2,27 @@ export interface CheckEnrollmentRequest {
   email: string;
 }
 
+/**
+ * @deprecated Use CheckUserStatusResponse instead
+ */
 export interface CheckEnrollmentResponse {
   success: boolean;
   isEnrolled: boolean;
   hasAccount: boolean;
   studentName?: string;
+  message: string;
+}
+
+export interface CheckUserStatusRequest {
+  email: string;
+}
+
+export interface CheckUserStatusResponse {
+  success: boolean;
+  isRegistered: boolean;
+  hasPassword: boolean;
+  role?: string;
+  userName?: string;
   message: string;
 }
 
@@ -24,6 +40,7 @@ export interface LoginRequest {
 export interface LoginResponse {
   success: boolean;
   message: string;
+  requiresPasswordSetup?: boolean;
   data?: {
     accessToken: string;
     refreshToken: string;
@@ -33,7 +50,7 @@ export interface LoginResponse {
       email: string;
       role: string;
     };
-    student: {
+    student?: {
       id: number;
       fullname: string;
       batchId: number | null;

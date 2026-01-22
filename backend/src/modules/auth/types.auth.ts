@@ -4,8 +4,11 @@ export type User = {
   id: number;
   name: string;
   email: string;
-  password: string;
+  password: string | null;
   role: UserRoles;
+  isPasswordSet?: boolean;
+  lockedUntil?: Date | null;
+  createdAt?: Date | null;
 };
 
 export type SignupData = {

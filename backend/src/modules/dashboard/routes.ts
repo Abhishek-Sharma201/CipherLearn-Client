@@ -9,6 +9,7 @@ import assignmentsRoutes from "./assignments/route";
 import announcementsRoutes from "./announcements/route";
 import studyMaterialsRoutes from "./study-materials/route";
 import feesRoutes from "./fees/route";
+import teachersRoutes from "./teachers/route";
 
 const router = Router();
 
@@ -21,6 +22,7 @@ router.use("/fees", feesRoutes);
 router.use("/notes", notesRoutes);
 router.use("/student-enrollment", studentEnrollmentRoutes);
 router.use("/study-materials", studyMaterialsRoutes);
+router.use("/teachers", teachersRoutes);
 router.use("/youtube-videos", youtubeVideoRoutes);
 
 export default router;

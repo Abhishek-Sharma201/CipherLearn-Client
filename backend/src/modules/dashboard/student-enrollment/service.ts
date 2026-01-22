@@ -1,4 +1,4 @@
-import { Prisma, Student } from "../../../../prisma/generated/prisma/client";
+import { Prisma, Student, UserRoles } from "../../../../prisma/generated/prisma/client";
 import { prisma } from "../../../config/db.config";
 import {
   EnrollStudentInput,
@@ -12,15 +12,28 @@ import { parseCSV, normalizeDateFormat, generateSampleCSV } from "./csv.utils";
 export default class StudentEnrollmentService {
   /**
    * Enroll a single student
+   * Creates both User (with password=null, isPasswordSet=false) and Student records
    */
   public async enrollSingle(student: EnrollStudentInput): Promise<Student> {
     try {
+      const normalizedEmail = student.email.toLowerCase();
+
+      // Check if student already exists
       const alreadyExist = await prisma.student.findUnique({
-        where: { email: student.email },
+        where: { email: normalizedEmail },
       });
 
       if (alreadyExist) {
         throw new Error("Student with this email already exists");
+      }
+
+      // Check if user with this email already exists
+      const existingUser = await prisma.user.findUnique({
+        where: { email: normalizedEmail },
+      });
+
+      if (existingUser) {
+        throw new Error("A user with this email already exists");
       }
 
       // Validate batch exists
@@ -32,23 +45,42 @@ export default class StudentEnrollmentService {
         throw new Error(`Batch with ID ${student.batchId} not found`);
       }
 
+      const fullname =
+        student.firstname +
+        " " +
+        (student.middlename ? student.middlename + " " : "") +
+        student.lastname;
+
       const { batchId, ...studentData } = student;
 
-      const newStudent = await prisma.student.create({
-        data: {
-          ...studentData,
-          fullname:
-            student.firstname +
-            " " +
-            (student.middlename ? student.middlename + " " : "") +
-            student.lastname,
-          batch: {
-            connect: { id: batchId },
+      // Create User + Student together in a transaction
+      const result = await prisma.$transaction(async (tx) => {
+        // Create User with password=null, isPasswordSet=false
+        const user = await tx.user.create({
+          data: {
+            name: fullname,
+            email: normalizedEmail,
+            password: null,
+            role: UserRoles.STUDENT,
+            isPasswordSet: false,
           },
-        },
+        });
+
+        // Create Student with userId linking to the new User
+        const newStudent = await tx.student.create({
+          data: {
+            ...studentData,
+            email: normalizedEmail,
+            fullname,
+            userId: user.id,
+            batchId: batchId,
+          },
+        });
+
+        return newStudent;
       });
 
-      return newStudent;
+      return result;
     } catch (error) {
       throw error;
     }
@@ -73,15 +105,24 @@ export default class StudentEnrollmentService {
 
       const { rows, errors } = parseCSV(fileContent);
 
-      // Check for duplicate emails in database
-      const emailsInDB = await prisma.student.findMany({
+      // Check for duplicate student emails in database
+      const studentEmailsInDB = await prisma.student.findMany({
         where: {
           email: { in: rows.map((r) => r.email.toLowerCase()) },
         },
         select: { email: true },
       });
 
-      const existingEmails = new Set(emailsInDB.map((s) => s.email.toLowerCase()));
+      // Check for duplicate user emails in database
+      const userEmailsInDB = await prisma.user.findMany({
+        where: {
+          email: { in: rows.map((r) => r.email.toLowerCase()) },
+        },
+        select: { email: true },
+      });
+
+      const existingStudentEmails = new Set(studentEmailsInDB.map((s) => s.email.toLowerCase()));
+      const existingUserEmails = new Set(userEmailsInDB.map((u) => u.email.toLowerCase()));
 
       // Check for duplicate emails within CSV
       const emailCounts = new Map<string, number>();
@@ -96,11 +137,17 @@ export default class StudentEnrollmentService {
         }
         emailCounts.set(email, (emailCounts.get(email) || 0) + 1);
 
-        if (existingEmails.has(email)) {
+        if (existingStudentEmails.has(email)) {
           errors.push({
             row: index + 2,
             email: row.email,
-            error: "Email already exists in database",
+            error: "Student with this email already exists in database",
+          });
+        } else if (existingUserEmails.has(email)) {
+          errors.push({
+            row: index + 2,
+            email: row.email,
+            error: "User with this email already exists in database",
           });
         }
       });
@@ -123,6 +170,7 @@ export default class StudentEnrollmentService {
 
   /**
    * Import students from CSV
+   * Creates both User (with password=null, isPasswordSet=false) and Student records for each row
    */
   public async enrollCSV(
     fileContent: string,
@@ -150,15 +198,24 @@ export default class StudentEnrollmentService {
         };
       }
 
-      // Get existing emails to check for duplicates
-      const emailsInDB = await prisma.student.findMany({
+      // Get existing student emails to check for duplicates
+      const studentEmailsInDB = await prisma.student.findMany({
         where: {
           email: { in: rows.map((r) => r.email.toLowerCase()) },
         },
         select: { email: true },
       });
 
-      const existingEmails = new Set(emailsInDB.map((s) => s.email.toLowerCase()));
+      // Get existing user emails to check for duplicates
+      const userEmailsInDB = await prisma.user.findMany({
+        where: {
+          email: { in: rows.map((r) => r.email.toLowerCase()) },
+        },
+        select: { email: true },
+      });
+
+      const existingStudentEmails = new Set(studentEmailsInDB.map((s) => s.email.toLowerCase()));
+      const existingUserEmails = new Set(userEmailsInDB.map((u) => u.email.toLowerCase()));
 
       // Track emails being imported to catch duplicates in CSV
       const importedEmails = new Set<string>();
@@ -169,12 +226,22 @@ export default class StudentEnrollmentService {
         const row = rows[i];
         const email = row.email.toLowerCase();
 
-        // Skip if email already exists or was already imported
-        if (existingEmails.has(email)) {
+        // Skip if student email already exists
+        if (existingStudentEmails.has(email)) {
           importErrors.push({
             row: i + 2,
             email: row.email,
-            error: "Email already exists in database",
+            error: "Student with this email already exists in database",
+          });
+          continue;
+        }
+
+        // Skip if user email already exists
+        if (existingUserEmails.has(email)) {
+          importErrors.push({
+            row: i + 2,
+            email: row.email,
+            error: "User with this email already exists in database",
           });
           continue;
         }
@@ -189,23 +256,41 @@ export default class StudentEnrollmentService {
         }
 
         try {
-          const student = await prisma.student.create({
-            data: {
-              firstname: row.firstname.trim(),
-              middlename: row.middlename?.trim() || "",
-              lastname: row.lastname.trim(),
-              fullname:
-                row.firstname.trim() +
-                " " +
-                (row.middlename ? row.middlename.trim() + " " : "") +
-                row.lastname.trim(),
-              email: email,
-              dob: normalizeDateFormat(row.dob),
-              address: row.address?.trim() || "",
-              batch: {
-                connect: { id: batchId },
+          const fullname =
+            row.firstname.trim() +
+            " " +
+            (row.middlename ? row.middlename.trim() + " " : "") +
+            row.lastname.trim();
+
+          // Create User + Student together in a transaction
+          const student = await prisma.$transaction(async (tx) => {
+            // Create User with password=null, isPasswordSet=false
+            const user = await tx.user.create({
+              data: {
+                name: fullname,
+                email: email,
+                password: null,
+                role: UserRoles.STUDENT,
+                isPasswordSet: false,
               },
-            },
+            });
+
+            // Create Student with userId linking to the new User
+            const newStudent = await tx.student.create({
+              data: {
+                firstname: row.firstname.trim(),
+                middlename: row.middlename?.trim() || "",
+                lastname: row.lastname.trim(),
+                fullname,
+                email: email,
+                dob: normalizeDateFormat(row.dob),
+                address: row.address?.trim() || "",
+                userId: user.id,
+                batchId: batchId,
+              },
+            });
+
+            return newStudent;
           });
 
           importedEmails.add(email);

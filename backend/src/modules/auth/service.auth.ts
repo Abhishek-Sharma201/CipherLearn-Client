@@ -28,6 +28,7 @@ export default class AuthService {
           name: data.name,
           email: data.email,
           password: hashPassword,
+          isPasswordSet: true,
           role: checkAdminEmail(data.email)
             ? UserRoles.ADMIN
             : UserRoles.TEACHER,
@@ -60,6 +61,11 @@ export default class AuthService {
 
       if (!user) {
         throw new Error("Email not registered");
+      }
+
+      // Check if password is set (required for dashboard login)
+      if (!user.password) {
+        throw new Error("Password not set. Please set up your password first.");
       }
 
       const compare = compareHash(data.password, user.password);
@@ -110,7 +116,7 @@ export default class AuthService {
 
       await prisma.user.update({
         where: { email },
-        data: { password: hashed },
+        data: { password: hashed, isPasswordSet: true },
       });
 
       return true;
