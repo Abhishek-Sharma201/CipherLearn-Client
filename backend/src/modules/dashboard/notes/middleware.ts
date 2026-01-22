@@ -1,6 +1,17 @@
 import { Request, Response, NextFunction } from "express";
 import { ObjectSchema } from "joi";
 
+// Extend Express Request to include validated data
+declare global {
+  namespace Express {
+    interface Request {
+      validatedQuery?: Record<string, unknown>;
+      validatedParams?: Record<string, unknown>;
+      validatedBody?: Record<string, unknown>;
+    }
+  }
+}
+
 /**
  * Middleware to validate request data using Joi schemas
  * @param schema - Joi validation schema
@@ -30,12 +41,16 @@ export const validateRequest = (
       return;
     }
 
-    // Replace request data with validated and sanitized data
-    // Note: req.query is a getter-only property, so we need to use Object.assign
+    // Store validated data in custom properties instead of overwriting read-only properties
+    // Express 5 makes req.query, req.params read-only, so we use custom properties
     if (source === "query") {
-      Object.assign(req.query, value);
-    } else {
-      req[source] = value;
+      req.validatedQuery = value;
+    } else if (source === "params") {
+      req.validatedParams = value;
+    } else if (source === "body") {
+      // req.body is still writable in Express 5
+      req.body = value;
+      req.validatedBody = value;
     }
     next();
   };
