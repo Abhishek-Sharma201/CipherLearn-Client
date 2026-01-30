@@ -5,6 +5,7 @@ import { useSelector } from "react-redux"
 import { RootState } from "@/redux/store"
 import { AnnouncementsList } from "@/components/announcements/AnnouncementsList"
 import { AddAnnouncementDialog } from "@/components/announcements/AddAnnouncementDialog"
+import { StudentAnnouncementsView } from "@/components/announcements/StudentAnnouncementsView"
 import { AnnouncementPriority } from "@/redux/slices/announcements/announcementsApi"
 
 export default function AnnouncementsPage() {
@@ -13,7 +14,27 @@ export default function AnnouncementsPage() {
 
     const { user } = useSelector((state: RootState) => state.auth)
     const isAdmin = user?.role === "ADMIN"
+    const isStudent = user?.role === "STUDENT"
 
+    // Student view - simplified announcements
+    if (isStudent) {
+        return (
+            <div className="py-8 px-6 max-w-3xl mx-auto animate-fade-in">
+                <div className="border-b border-border/40 pb-8 mb-8">
+                    <h1 className="text-2xl font-bold tracking-tighter">
+                        Announcements
+                    </h1>
+                    <p className="text-muted-foreground mt-1 text-sm font-medium">
+                        Stay updated with the latest news and important notices.
+                    </p>
+                </div>
+
+                <StudentAnnouncementsView limit={20} showHeader={false} />
+            </div>
+        )
+    }
+
+    // Admin/Teacher view - full management
     return (
         <div className="space-y-10 py-8 px-6 max-w-[1400px] mx-auto animate-fade-in">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8 border-b border-border/40 pb-10">

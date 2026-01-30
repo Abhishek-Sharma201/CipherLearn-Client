@@ -612,4 +612,166 @@ export default class StudentEnrollmentService {
       throw error;
     }
   }
+
+  /**
+   * Get students with attendance stats for a batch
+   */
+  public async getStudentsWithStats(batchId: number): Promise<any[]> {
+    try {
+      // Validate batch exists
+      const batch = await prisma.batch.findUnique({
+        where: { id: batchId },
+      });
+
+      if (!batch) {
+        throw new Error("Batch not found");
+      }
+
+      // Get all students in the batch
+      const students = await prisma.student.findMany({
+        where: { batchId, isDeleted: false },
+        include: {
+          batch: {
+            select: { id: true, name: true },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+      });
+
+      // Get attendance records for last 30 days
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+      const attendanceRecords = await prisma.attendance.findMany({
+        where: {
+          batchId,
+          date: { gte: thirtyDaysAgo },
+        },
+        select: {
+          studentId: true,
+          status: true,
+        },
+      });
+
+      // Calculate stats for each student
+      const statsMap = new Map<number, { present: number; absent: number }>();
+
+      attendanceRecords.forEach((record) => {
+        if (!statsMap.has(record.studentId)) {
+          statsMap.set(record.studentId, { present: 0, absent: 0 });
+        }
+        const stats = statsMap.get(record.studentId)!;
+        if (record.status === "PRESENT") {
+          stats.present++;
+        } else {
+          stats.absent++;
+        }
+      });
+
+      // Combine students with stats
+      return students.map((student) => {
+        const stats = statsMap.get(student.id);
+        const totalDays = stats ? stats.present + stats.absent : 0;
+        const percentage = totalDays > 0 ? (stats!.present / totalDays) * 100 : 0;
+
+        return {
+          ...student,
+          attendanceStats: stats
+            ? {
+                totalDays,
+                presentDays: stats.present,
+                absentDays: stats.absent,
+                percentage: Math.round(percentage * 10) / 10,
+              }
+            : undefined,
+        };
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get detailed student profile with all related data
+   */
+  public async getDetailedProfile(id: number): Promise<any> {
+    try {
+      const student = await prisma.student.findUnique({
+        where: { id, isDeleted: false },
+        include: {
+          batch: {
+            select: {
+              id: true,
+              name: true,
+              timings: true,
+            },
+          },
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              isPasswordSet: true,
+              createdAt: true,
+            },
+          },
+        },
+      });
+
+      if (!student) {
+        throw new Error("Student not found");
+      }
+
+      // Get attendance records (last 30 days)
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+      const attendanceRecords = await prisma.attendance.findMany({
+        where: {
+          studentId: id,
+          date: { gte: thirtyDaysAgo },
+        },
+        orderBy: { date: "desc" },
+        take: 30,
+      });
+
+      // Calculate attendance stats
+      const present = attendanceRecords.filter((r) => r.status === "PRESENT").length;
+      const absent = attendanceRecords.filter((r) => r.status === "ABSENT").length;
+      const total = present + absent;
+      const percentage = total > 0 ? (present / total) * 100 : 0;
+
+      // Get fees summary
+      const feeReceipts = await prisma.feeReceipt.findMany({
+        where: { studentId: id },
+        select: {
+          totalAmount: true,
+          paidAmount: true,
+          remainingAmount: true,
+          status: true,
+        },
+      });
+
+      const feesSummary = {
+        totalDue: feeReceipts.reduce((sum, r) => sum + r.totalAmount, 0),
+        totalPaid: feeReceipts.reduce((sum, r) => sum + r.paidAmount, 0),
+        totalPending: feeReceipts.reduce((sum, r) => sum + r.remainingAmount, 0),
+        overdueReceipts: feeReceipts.filter((r) => r.status === "OVERDUE").length,
+      };
+
+      return {
+        ...student,
+        attendanceRecords,
+        attendanceStats: {
+          totalDays: total,
+          presentDays: present,
+          absentDays: absent,
+          percentage: Math.round(percentage * 10) / 10,
+        },
+        feesSummary,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
 }

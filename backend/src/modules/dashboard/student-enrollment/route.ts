@@ -56,6 +56,9 @@ router.post(
 // Get a single student by ID
 router.get("/student/:id", controller.getById.bind(controller));
 
+// Get detailed student profile with all related data (Admin only)
+router.get("/student/:id/detailed", isAdmin, controller.getDetailedProfile.bind(controller));
+
 // Update a student (Admin only)
 router.put("/student/:id", isAdmin, controller.update.bind(controller));
 
@@ -68,6 +71,12 @@ router.delete("/student/:id", isAdmin, controller.delete.bind(controller));
 
 // Get all students (optionally filter by batch)
 router.get("/students", controller.getAll.bind(controller));
+
+// Get students with attendance stats for a batch (Admin only)
+// Note: This route must come before /students/:id to avoid conflicts
+router.get("/students/:id/with-stats", isAdmin, controller.getStudentsWithStats.bind(controller));
+
+// Get all students for a specific batch
 router.get("/students/:id", controller.getAll.bind(controller));
 
 // =====================

@@ -487,4 +487,67 @@ export default class StudentEnrollmentController {
       });
     }
   }
+
+  /**
+   * Get students with attendance stats for a batch
+   * GET /student-enrollment/students/:id/with-stats
+   */
+  public async getStudentsWithStats(req: Request, res: Response) {
+    try {
+      const batchId = Number(req.params.id);
+
+      if (!batchId || isNaN(batchId)) {
+        return res.status(400).json({
+          success: false,
+          message: "Valid batch ID is required",
+        });
+      }
+
+      const students = await studentEnrollmentService.getStudentsWithStats(batchId);
+
+      return res.status(200).json({
+        success: true,
+        data: students,
+      });
+    } catch (error: any) {
+      logger.error("StudentEnrollment.getStudentsWithStats error:", error);
+
+      if (error.message === "Batch not found") {
+        return res.status(404).json({ success: false, message: error.message });
+      }
+
+      return res.status(500).json({
+        success: false,
+        message: `Failed to fetch students with stats: ${error.message}`,
+      });
+    }
+  }
+
+  /**
+   * Get detailed student profile with all related data
+   * GET /student-enrollment/student/:id/detailed
+   */
+  public async getDetailedProfile(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      const profile = await studentEnrollmentService.getDetailedProfile(Number(id));
+
+      return res.status(200).json({
+        success: true,
+        data: profile,
+      });
+    } catch (error: any) {
+      logger.error("StudentEnrollment.getDetailedProfile error:", error);
+
+      if (error.message === "Student not found") {
+        return res.status(404).json({ success: false, message: error.message });
+      }
+
+      return res.status(500).json({
+        success: false,
+        message: `Failed to fetch detailed profile: ${error.message}`,
+      });
+    }
+  }
 }

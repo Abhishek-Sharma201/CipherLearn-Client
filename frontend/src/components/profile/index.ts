@@ -1,0 +1,1 @@
+export { StudentAppProfile } from './StudentAppProfile'

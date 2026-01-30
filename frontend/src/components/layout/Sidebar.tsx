@@ -15,20 +15,35 @@ import {
     FileUp,
     Receipt,
     Settings,
+    Bell,
+    User,
+    GraduationCap,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useAppSelector } from "@/redux/hooks"
 
-const navItems = [
+interface NavItem {
+    href: string
+    label: string
+    icon: React.ComponentType<{ className?: string }>
+    roles?: ('ADMIN' | 'TEACHER' | 'STUDENT')[]
+}
+
+// Navigation items with role-based access
+const navItems: NavItem[] = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/batches", label: "Batches", icon: BookOpen },
-    { href: "/students", label: "Students", icon: Users },
+    { href: "/announcements", label: "Announcements", icon: Bell },
+    { href: "/batches", label: "Batches", icon: BookOpen, roles: ['ADMIN', 'TEACHER'] },
+    { href: "/students", label: "Students", icon: Users, roles: ['ADMIN', 'TEACHER'] },
     { href: "/attendance", label: "Attendance", icon: ClipboardList },
     { href: "/fees", label: "Fees", icon: Receipt },
     { href: "/assignments", label: "Assignments", icon: FileUp },
-    { href: "/notes", label: "Notes", icon: FileText },
+    { href: "/study-materials", label: "Materials", icon: GraduationCap },
+    { href: "/notes", label: "Notes", icon: FileText, roles: ['ADMIN', 'TEACHER'] },
     { href: "/videos", label: "Videos", icon: Video },
+    { href: "/profile", label: "My Profile", icon: User },
     { href: "/settings", label: "Settings", icon: Settings },
 ]
 
@@ -36,11 +51,19 @@ export function Sidebar() {
     const pathname = usePathname()
     const router = useRouter()
     const [isCollapsed, setIsCollapsed] = useState(false)
+    const { user } = useAppSelector((state) => state.auth)
 
     const handleLogout = () => {
         localStorage.removeItem("token")
+        localStorage.removeItem("user")
         router.push("/login")
     }
+
+    // Filter nav items based on user role
+    const filteredNavItems = navItems.filter(item => {
+        if (!item.roles) return true // No roles specified means all users can access
+        return user?.role && item.roles.includes(user.role)
+    })
 
     return (
         <aside
@@ -70,8 +93,8 @@ export function Sidebar() {
 
             {/* Navigation - Vercel minimal spacing */}
             <nav className="flex-1 px-2 py-4 space-y-0.5 overflow-y-auto gap-8 ">
-                {navItems.map((item) => {
-                    const isActive = pathname === item.href
+                {filteredNavItems.map((item) => {
+                    const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
                     return (
                         <Link
                             key={item.href}
@@ -90,6 +113,21 @@ export function Sidebar() {
                     )
                 })}
             </nav>
+
+            {/* User info (when not collapsed) */}
+            {!isCollapsed && user && (
+                <div className="px-3 py-2 border-t border-border">
+                    <div className="flex items-center gap-2 px-2 py-1">
+                        <div className="h-6 w-6 rounded-full bg-foreground/10 flex items-center justify-center text-foreground text-[10px] font-bold">
+                            {user.name?.charAt(0).toUpperCase() || 'U'}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-xs font-medium truncate">{user.name}</p>
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{user.role}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Footer - Logout */}
             <div className="p-2 border-t border-border">

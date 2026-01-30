@@ -2174,6 +2174,593 @@
 				}
 			]
 		}
+		,
+		{
+			"name": "Teachers",
+			"description": "Teacher Management",
+			"item": [
+				{
+					"name": "Create Teacher",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{authToken}}"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Jane Teacher\",\n    \"email\": \"jane@cipherlearn.com\",\n    \"password\": \"Password@123\",\n    \"phone\": \"9876543210\",\n    \"subject\": \"Mathematics\",\n    \"qualification\": \"M.Sc. Mathematics\",\n    \"experience\": 5\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/teachers",
+							"host": ["{{baseUrl}}"],
+							"path": ["dashboard", "teachers"]
+						},
+						"description": "Create a new teacher"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Teachers",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{authToken}}"}],
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/teachers",
+							"host": ["{{baseUrl}}"],
+							"path": ["dashboard", "teachers"]
+						},
+						"description": "Get all teachers"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Teacher By ID",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{authToken}}"}],
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/teachers/{{teacherId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["dashboard", "teachers", "{{teacherId}}"]
+						},
+						"description": "Get teacher details"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Teacher",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{authToken}}"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Jane Doe\",\n    \"phone\": \"9999999999\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/teachers/{{teacherId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["dashboard", "teachers", "{{teacherId}}"]
+						},
+						"description": "Update teacher details"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Teacher",
+					"request": {
+						"method": "DELETE",
+						"header": [{"key": "Authorization", "value": "Bearer {{authToken}}"}],
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/teachers/{{teacherId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["dashboard", "teachers", "{{teacherId}}"]
+						},
+						"description": "Delete a teacher"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Study Materials",
+			"description": "Study Materials Management",
+			"item": [
+				{
+					"name": "Get Categories",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{authToken}}"}],
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/study-materials/categories",
+							"host": ["{{baseUrl}}"],
+							"path": ["dashboard", "study-materials", "categories"]
+						},
+						"description": "Get study material categories"
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Material",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Authorization", "value": "Bearer {{authToken}}"}],
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/study-materials",
+							"host": ["{{baseUrl}}"],
+							"path": ["dashboard", "study-materials"]
+						},
+						"description": "Upload new study material (Multipart)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Materials",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{authToken}}"}],
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/study-materials",
+							"host": ["{{baseUrl}}"],
+							"path": ["dashboard", "study-materials"]
+						},
+						"description": "Get all study materials"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Material By ID",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{authToken}}"}],
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/study-materials/{{materialId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["dashboard", "study-materials", "{{materialId}}"]
+						},
+						"description": "Get material details"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Material",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Authorization", "value": "Bearer {{authToken}}"}],
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/study-materials/{{materialId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["dashboard", "study-materials", "{{materialId}}"]
+						},
+						"description": "Update study material"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Material",
+					"request": {
+						"method": "DELETE",
+						"header": [{"key": "Authorization", "value": "Bearer {{authToken}}"}],
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/study-materials/{{materialId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["dashboard", "study-materials", "{{materialId}}"]
+						},
+						"description": "Delete study material"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Announcements",
+			"description": "Announcements Management",
+			"item": [
+				{
+					"name": "Create Announcement",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{authToken}}"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Exam Schedule\",\n    \"content\": \"Mid-term exams start next week.\",\n    \"targetAudience\": \"BATCH\",\n    \"batchId\": \"{{batchId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/announcements",
+							"host": ["{{baseUrl}}"],
+							"path": ["dashboard", "announcements"]
+						},
+						"description": "Create new announcement"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Announcements",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{authToken}}"}],
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/announcements",
+							"host": ["{{baseUrl}}"],
+							"path": ["dashboard", "announcements"]
+						},
+						"description": "Get all announcements"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Announcement By ID",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{authToken}}"}],
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/announcements/{{announcementId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["dashboard", "announcements", "{{announcementId}}"]
+						},
+						"description": "Get announcement details"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Announcement",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{authToken}}"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Updated Schedule\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/announcements/{{announcementId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["dashboard", "announcements", "{{announcementId}}"]
+						},
+						"description": "Update announcement"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Announcement",
+					"request": {
+						"method": "DELETE",
+						"header": [{"key": "Authorization", "value": "Bearer {{authToken}}"}],
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/announcements/{{announcementId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["dashboard", "announcements", "{{announcementId}}"]
+						},
+						"description": "Delete announcement"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Active (Student View)",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{authToken}}"}],
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/announcements/active",
+							"host": ["{{baseUrl}}"],
+							"path": ["dashboard", "announcements", "active"]
+						},
+						"description": "Get active announcements for students"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Assignments",
+			"description": "Assignments Management",
+			"item": [
+				{
+					"name": "Slots",
+					"item": [
+						{
+							"name": "Create Slot",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{authToken}}"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Math Homework 1\",\n    \"description\": \"Solve chapter 1 problems\",\n    \"batchId\": \"{{batchId}}\",\n    \"subject\": \"Mathematics\",\n    \"totalMarks\": 100,\n    \"dueDate\": \"2024-12-31T23:59:59.000Z\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/dashboard/assignments/slots",
+									"host": ["{{baseUrl}}"],
+									"path": ["dashboard", "assignments", "slots"]
+								},
+								"description": "Create assignment slot"
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Slots",
+							"request": {
+								"method": "GET",
+								"header": [{"key": "Authorization", "value": "Bearer {{authToken}}"}],
+								"url": {
+									"raw": "{{baseUrl}}/dashboard/assignments/slots",
+									"host": ["{{baseUrl}}"],
+									"path": ["dashboard", "assignments", "slots"]
+								},
+								"description": "Get all assignment slots"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Slot By ID",
+							"request": {
+								"method": "GET",
+								"header": [{"key": "Authorization", "value": "Bearer {{authToken}}"}],
+								"url": {
+									"raw": "{{baseUrl}}/dashboard/assignments/slots/{{slotId}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["dashboard", "assignments", "slots", "{{slotId}}"]
+								},
+								"description": "Get slot details"
+							},
+							"response": []
+						},
+						{
+							"name": "Update Slot",
+							"request": {
+								"method": "PUT",
+								"header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{authToken}}"}],
+								"url": {
+									"raw": "{{baseUrl}}/dashboard/assignments/slots/{{slotId}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["dashboard", "assignments", "slots", "{{slotId}}"]
+								},
+								"description": "Update slot"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Slot",
+							"request": {
+								"method": "DELETE",
+								"header": [{"key": "Authorization", "value": "Bearer {{authToken}}"}],
+								"url": {
+									"raw": "{{baseUrl}}/dashboard/assignments/slots/{{slotId}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["dashboard", "assignments", "slots", "{{slotId}}"]
+								},
+								"description": "Delete slot"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Slot Stats",
+							"request": {
+								"method": "GET",
+								"header": [{"key": "Authorization", "value": "Bearer {{authToken}}"}],
+								"url": {
+									"raw": "{{baseUrl}}/dashboard/assignments/slots/{{slotId}}/stats",
+									"host": ["{{baseUrl}}"],
+									"path": ["dashboard", "assignments", "slots", "{{slotId}}", "stats"]
+								},
+								"description": "Get slot statistics"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Submissions",
+					"item": [
+						{
+							"name": "Submit Assignment (Student)",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{authToken}}"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"slotId\": \"{{slotId}}\",\n    \"description\": \"Here is my submission\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/dashboard/assignments/submissions",
+									"host": ["{{baseUrl}}"],
+									"path": ["dashboard", "assignments", "submissions"]
+								},
+								"description": "Submit assignment"
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Submissions",
+							"request": {
+								"method": "GET",
+								"header": [{"key": "Authorization", "value": "Bearer {{authToken}}"}],
+								"url": {
+									"raw": "{{baseUrl}}/dashboard/assignments/submissions",
+									"host": ["{{baseUrl}}"],
+									"path": ["dashboard", "assignments", "submissions"]
+								},
+								"description": "Get all submissions"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Submission By ID",
+							"request": {
+								"method": "GET",
+								"header": [{"key": "Authorization", "value": "Bearer {{authToken}}"}],
+								"url": {
+									"raw": "{{baseUrl}}/dashboard/assignments/submissions/{{submissionId}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["dashboard", "assignments", "submissions", "{{submissionId}}"]
+								},
+								"description": "Get submission details"
+							},
+							"response": []
+						},
+						{
+							"name": "Review Submission",
+							"request": {
+								"method": "PUT",
+								"header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{authToken}}"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"marksObtained\": 90,\n    \"feedback\": \"Good job\",\n    \"status\": \"GRADED\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/dashboard/assignments/submissions/{{submissionId}}/review",
+									"host": ["{{baseUrl}}"],
+									"path": ["dashboard", "assignments", "submissions", "{{submissionId}}", "review"]
+								},
+								"description": "Review submission"
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Student App Auth",
+			"description": "Student Authentication",
+			"item": [
+				{
+					"name": "Check Enrollment",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"student@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/app/auth/check-enrollment",
+							"host": ["{{baseUrl}}"],
+							"path": ["app", "auth", "check-enrollment"]
+						},
+						"description": "Check if student is enrolled"
+					},
+					"response": []
+				},
+				{
+					"name": "Setup Password",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"student@example.com\",\n    \"enrollmentId\": \"ENR123456\",\n    \"password\": \"Student@123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/app/auth/setup-password",
+							"host": ["{{baseUrl}}"],
+							"path": ["app", "auth", "setup-password"]
+						},
+						"description": "Setup password for first time"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"student@example.com\",\n    \"password\": \"Student@123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/app/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["app", "auth", "login"]
+						},
+						"description": "Student login"
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/app/auth/refresh-token",
+							"host": ["{{baseUrl}}"],
+							"path": ["app", "auth", "refresh-token"]
+						},
+						"description": "Refresh auth token"
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"student@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/app/auth/forgot-password",
+							"host": ["{{baseUrl}}"],
+							"path": ["app", "auth", "forgot-password"]
+						},
+						"description": "Request password reset"
+					},
+					"response": []
+				},
+				{
+					"name": "Verify OTP",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"student@example.com\",\n    \"otp\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/app/auth/verify-otp",
+							"host": ["{{baseUrl}}"],
+							"path": ["app", "auth", "verify-otp"]
+						},
+						"description": "Verify reset OTP"
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"student@example.com\",\n    \"otp\": \"123456\",\n    \"newPassword\": \"NewPassword@123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/app/auth/reset-password",
+							"host": ["{{baseUrl}}"],
+							"path": ["app", "auth", "reset-password"]
+						},
+						"description": "Reset password"
+					},
+					"response": []
+				},
+				{
+					"name": "Me",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{authToken}}"}],
+						"url": {
+							"raw": "{{baseUrl}}/app/auth/me",
+							"host": ["{{baseUrl}}"],
+							"path": ["app", "auth", "me"]
+						},
+						"description": "Get current student profile"
+					},
+					"response": []
+				}
+			]
+		}
 	],
 	"auth": {
 		"type": "bearer",

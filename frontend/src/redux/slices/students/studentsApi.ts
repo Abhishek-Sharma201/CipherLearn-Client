@@ -5,7 +5,8 @@ import {
     StudentsApiResponse,
     EnrollStudentInput,
     CSVPreviewData,
-    CSVImportResult
+    CSVImportResult,
+    AttendanceRecord
 } from '@/types';
 
 // Local types for update input if not in central types
@@ -17,6 +18,59 @@ export interface UpdateStudentInput {
     dob?: string;
     address?: string;
     batchId?: number;
+}
+
+// Extended student with attendance stats for admin view
+export interface StudentWithStats extends Student {
+    batch?: {
+        id: number;
+        name: string;
+    };
+    attendanceStats?: {
+        totalDays: number;
+        presentDays: number;
+        absentDays: number;
+        percentage: number;
+    };
+}
+
+// Detailed student profile for admin view
+export interface StudentDetailedProfile extends Student {
+    batch?: {
+        id: number;
+        name: string;
+        timings?: {
+            days: string[];
+            time: string;
+        };
+    };
+    user?: {
+        id: number;
+        name: string;
+        email: string;
+        isPasswordSet: boolean;
+        createdAt: string;
+    };
+    attendanceRecords?: AttendanceRecord[];
+    attendanceStats?: {
+        totalDays: number;
+        presentDays: number;
+        absentDays: number;
+        percentage: number;
+        monthlyBreakdown?: {
+            month: number;
+            year: number;
+            present: number;
+            absent: number;
+            total: number;
+        }[];
+    };
+    feesSummary?: {
+        totalDue: number;
+        totalPaid: number;
+        totalPending: number;
+        overdueReceipts: number;
+    };
 }
 
 export const studentsApi = api.injectEndpoints({
@@ -46,6 +100,15 @@ export const studentsApi = api.injectEndpoints({
             providesTags: ['Students'],
         }),
 
+        // Get students with attendance stats for a batch (admin view)
+        getStudentsWithStats: builder.query<StudentWithStats[], number>({
+            query: (batchId) => `/dashboard/student-enrollment/students/${batchId}/with-stats`,
+            transformResponse: (response: ApiResponse<StudentWithStats[]>): StudentWithStats[] => {
+                return response.data || [];
+            },
+            providesTags: ['Students', 'Attendance'],
+        }),
+
         // Get single student
         getStudentById: builder.query<Student, number>({
             query: (id) => `/dashboard/student-enrollment/student/${id}`,
@@ -56,6 +119,18 @@ export const studentsApi = api.injectEndpoints({
                 return response.data;
             },
             providesTags: ['Students'],
+        }),
+
+        // Get detailed student profile (admin view with all data)
+        getStudentDetailedProfile: builder.query<StudentDetailedProfile, number>({
+            query: (id) => `/dashboard/student-enrollment/student/${id}/detailed`,
+            transformResponse: (response: ApiResponse<StudentDetailedProfile>): StudentDetailedProfile => {
+                if (!response.data) {
+                    throw new Error("Student profile data not found in response");
+                }
+                return response.data;
+            },
+            providesTags: ['Students', 'Attendance', 'Fees'],
         }),
 
         // Enroll single student
@@ -182,7 +257,9 @@ export const studentsApi = api.injectEndpoints({
 
 export const {
     useGetStudentsQuery,
+    useGetStudentsWithStatsQuery,
     useGetStudentByIdQuery,
+    useGetStudentDetailedProfileQuery,
     useEnrollStudentMutation,
     useUpdateStudentMutation,
     useDeleteStudentMutation,
