@@ -15,21 +15,43 @@ import {
     FileUp,
     Receipt,
     Settings,
+    Megaphone,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 
-const navItems = [
-    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/batches", label: "Batches", icon: BookOpen },
-    { href: "/students", label: "Students", icon: Users },
-    { href: "/attendance", label: "Attendance", icon: ClipboardList },
-    { href: "/fees", label: "Fees", icon: Receipt },
-    { href: "/assignments", label: "Assignments", icon: FileUp },
-    { href: "/notes", label: "Notes", icon: FileText },
-    { href: "/videos", label: "Videos", icon: Video },
-    { href: "/settings", label: "Settings", icon: Settings },
+const navGroups = [
+    {
+        label: "Main",
+        items: [
+            { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+        ]
+    },
+    {
+        label: "Manage",
+        items: [
+            { href: "/batches", label: "Batches", icon: BookOpen },
+            { href: "/students", label: "Students", icon: Users },
+            { href: "/attendance", label: "Attendance", icon: ClipboardList },
+            { href: "/fees", label: "Fees", icon: Receipt },
+        ]
+    },
+    {
+        label: "Learn",
+        items: [
+            { href: "/assignments", label: "Assignments", icon: FileUp },
+            { href: "/notes", label: "Notes", icon: FileText },
+            { href: "/videos", label: "Videos", icon: Video },
+            { href: "/announcements", label: "Announcements", icon: Megaphone },
+        ]
+    },
+    {
+        label: "Account",
+        items: [
+            { href: "/settings", label: "Settings", icon: Settings },
+        ]
+    }
 ]
 
 export function Sidebar() {
@@ -68,27 +90,40 @@ export function Sidebar() {
                 </Button>
             </div>
 
-            {/* Navigation - Vercel minimal spacing */}
-            <nav className="flex-1 px-2 py-4 space-y-0.5 overflow-y-auto gap-8 ">
-                {navItems.map((item) => {
-                    const isActive = pathname === item.href
-                    return (
-                        <Link
-                            key={item.href}
-                            href={item.href}
-                            className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium transition-colors relative mb-0.5 ${
-                                isActive
-                                    ? 'text-foreground bg-secondary'
-                                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
-                            }`}
-                        >
-                            <item.icon className="h-4 w-4 shrink-0" />
-                            {!isCollapsed && (
-                                <span className="truncate">{item.label}</span>
-                            )}
-                        </Link>
-                    )
-                })}
+            {/* Navigation - Organized by groups with proper spacing */}
+            <nav className="flex-1 px-2 py-3 overflow-y-auto">
+                {navGroups.map((group, groupIndex) => (
+                    <div key={group.label} className={groupIndex > 0 ? 'mt-4' : ''}>
+                        {!isCollapsed && (
+                            <div className="px-2 mb-1.5">
+                                <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/70">
+                                    {group.label}
+                                </span>
+                            </div>
+                        )}
+                        <div className="space-y-0.5">
+                            {group.items.map((item) => {
+                                const isActive = pathname === item.href
+                                return (
+                                    <Link
+                                        key={item.href}
+                                        href={item.href}
+                                        className={`flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-[13px] font-medium transition-colors ${
+                                            isActive
+                                                ? 'text-foreground bg-secondary'
+                                                : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                                        }`}
+                                    >
+                                        <item.icon className="h-4 w-4 shrink-0" />
+                                        {!isCollapsed && (
+                                            <span className="truncate">{item.label}</span>
+                                        )}
+                                    </Link>
+                                )
+                            })}
+                        </div>
+                    </div>
+                ))}
             </nav>
 
             {/* Footer - Logout */}
@@ -96,8 +131,8 @@ export function Sidebar() {
                 <Button
                     variant="ghost"
                     onClick={handleLogout}
-                    className={`w-full h-8 justify-start gap-2 text-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10 ${
-                        isCollapsed ? 'justify-center px-0' : 'px-2'
+                    className={`w-full h-8 justify-start gap-2.5 text-[13px] text-muted-foreground hover:text-destructive hover:bg-destructive/10 ${
+                        isCollapsed ? 'justify-center px-0' : 'px-2.5'
                     }`}
                 >
                     <LogOut className="h-4 w-4 shrink-0" />

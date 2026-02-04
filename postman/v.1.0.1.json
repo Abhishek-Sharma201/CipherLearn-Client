@@ -34,8 +34,13 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}/auth/signup",
-							"host": ["{{baseUrl}}"],
-							"path": ["auth", "signup"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"signup"
+							]
 						},
 						"description": "Register a new user account.\n\n**Required fields:**\n- name: Full name of the user\n- email: Valid email address\n- password: Minimum 6 characters with at least one uppercase, one lowercase, and one number"
 					},
@@ -87,8 +92,13 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}/auth/login",
-							"host": ["{{baseUrl}}"],
-							"path": ["auth", "login"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
 						},
 						"description": "Login to get authentication token.\n\n**Note:** The token and user role are automatically saved to environment variables after successful login."
 					},
@@ -106,8 +116,13 @@
 						],
 						"url": {
 							"raw": "{{baseUrl}}/auth/logout",
-							"host": ["{{baseUrl}}"],
-							"path": ["auth", "logout"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
 						},
 						"description": "Logout and invalidate the current session"
 					},
@@ -133,8 +148,13 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}/auth/profile",
-							"host": ["{{baseUrl}}"],
-							"path": ["auth", "profile"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"profile"
+							]
 						},
 						"description": "Update the current user's profile information"
 					},
@@ -185,8 +205,13 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/batches",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "batches"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"batches"
+							]
 						},
 						"description": "Create a new batch for student enrollment."
 					},
@@ -223,8 +248,13 @@
 						],
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/batches",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "batches"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"batches"
+							]
 						},
 						"description": "Get all batches with their details"
 					},
@@ -242,8 +272,14 @@
 						],
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/batches/{{batchId}}",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "batches", "{{batchId}}"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"batches",
+								"{{batchId}}"
+							]
 						},
 						"description": "Get details of a specific batch by ID"
 					},
@@ -269,8 +305,14 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/batches/{{batchId}}",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "batches", "{{batchId}}"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"batches",
+								"{{batchId}}"
+							]
 						},
 						"description": "Update an existing batch's details"
 					},
@@ -296,8 +338,14 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/batches/draft",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "batches", "draft"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"batches",
+								"draft"
+							]
 						},
 						"description": "Move batch(es) to draft status (soft delete)"
 					},
@@ -315,8 +363,14 @@
 						],
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/batches/drafts",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "batches", "drafts"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"batches",
+								"drafts"
+							]
 						},
 						"description": "Get all draft (soft-deleted) batches"
 					},
@@ -342,8 +396,13 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/batches",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "batches"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"batches"
+							]
 						},
 						"description": "Delete one or more batches"
 					},
@@ -361,8 +420,15 @@
 						],
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/batches/hard-delete/{{batchId}}",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "batches", "hard-delete", "{{batchId}}"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"batches",
+								"hard-delete",
+								"{{batchId}}"
+							]
 						},
 						"description": "**DANGER ZONE:** Permanently delete a batch with ALL related data including students, attendance records, videos, and notes. This action cannot be undone!"
 					},
@@ -380,8 +446,14 @@
 						],
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/batches/purge-deleted",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "batches", "purge-deleted"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"batches",
+								"purge-deleted"
+							]
 						},
 						"description": "**DANGER ZONE:** Permanently delete ALL soft-deleted batches with their related data. This action cannot be undone!"
 					},
@@ -432,8 +504,14 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/student-enrollment/enroll",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "student-enrollment", "enroll"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"student-enrollment",
+								"enroll"
+							]
 						},
 						"description": "Enroll a single student into a batch."
 					},
@@ -470,8 +548,14 @@
 						],
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/student-enrollment/students",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "student-enrollment", "students"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"student-enrollment",
+								"students"
+							]
 						},
 						"description": "Get all students across all batches"
 					},
@@ -489,8 +573,15 @@
 						],
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/student-enrollment/students/{{batchId}}",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "student-enrollment", "students", "{{batchId}}"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"student-enrollment",
+								"students",
+								"{{batchId}}"
+							]
 						},
 						"description": "Get all students enrolled in a specific batch"
 					},
@@ -508,8 +599,15 @@
 						],
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/student-enrollment/student/{{studentId}}",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "student-enrollment", "student", "{{studentId}}"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"student-enrollment",
+								"student",
+								"{{studentId}}"
+							]
 						},
 						"description": "Get details of a specific student by ID"
 					},
@@ -527,8 +625,14 @@
 						],
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/student-enrollment/my-profile",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "student-enrollment", "my-profile"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"student-enrollment",
+								"my-profile"
+							]
 						},
 						"description": "Get the current authenticated user's student profile. Used by students for QR attendance."
 					},
@@ -554,8 +658,15 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/student-enrollment/student/{{studentId}}",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "student-enrollment", "student", "{{studentId}}"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"student-enrollment",
+								"student",
+								"{{studentId}}"
+							]
 						},
 						"description": "Update a student's information"
 					},
@@ -573,8 +684,15 @@
 						],
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/student-enrollment/student/{{studentId}}",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "student-enrollment", "student", "{{studentId}}"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"student-enrollment",
+								"student",
+								"{{studentId}}"
+							]
 						},
 						"description": "Soft delete a student from the system"
 					},
@@ -592,8 +710,15 @@
 						],
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/student-enrollment/csv/template",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "student-enrollment", "csv", "template"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"student-enrollment",
+								"csv",
+								"template"
+							]
 						},
 						"description": "Download a sample CSV template for bulk student import"
 					},
@@ -626,8 +751,15 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/student-enrollment/csv/preview",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "student-enrollment", "csv", "preview"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"student-enrollment",
+								"csv",
+								"preview"
+							]
 						},
 						"description": "Preview CSV data before importing"
 					},
@@ -660,8 +792,15 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/student-enrollment/csv/import",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "student-enrollment", "csv", "import"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"student-enrollment",
+								"csv",
+								"import"
+							]
 						},
 						"description": "Import students from a CSV file"
 					},
@@ -679,8 +818,15 @@
 						],
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/student-enrollment/hard-delete/{{studentId}}",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "student-enrollment", "hard-delete", "{{studentId}}"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"student-enrollment",
+								"hard-delete",
+								"{{studentId}}"
+							]
 						},
 						"description": "**DANGER ZONE:** Permanently delete a student with ALL their attendance records. This action cannot be undone!"
 					},
@@ -706,8 +852,14 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/student-enrollment/hard-delete-many",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "student-enrollment", "hard-delete-many"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"student-enrollment",
+								"hard-delete-many"
+							]
 						},
 						"description": "**DANGER ZONE:** Permanently delete multiple students with ALL their attendance records. This action cannot be undone!"
 					},
@@ -725,8 +877,14 @@
 						],
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/student-enrollment/purge-deleted",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "student-enrollment", "purge-deleted"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"student-enrollment",
+								"purge-deleted"
+							]
 						},
 						"description": "**DANGER ZONE:** Permanently delete ALL soft-deleted students with their attendance records. This action cannot be undone!"
 					},
@@ -761,8 +919,14 @@
 								},
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/attendance/mark-attendance",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "attendance", "mark-attendance"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"attendance",
+										"mark-attendance"
+									]
 								},
 								"description": "Mark attendance for a single student.\n\n**Status options:** PRESENT, ABSENT"
 							},
@@ -788,8 +952,14 @@
 								},
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/attendance/mark-bulk",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "attendance", "mark-bulk"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"attendance",
+										"mark-bulk"
+									]
 								},
 								"description": "Mark attendance for multiple students at once"
 							},
@@ -831,8 +1001,16 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/attendance/qr/generate/{{batchId}}",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "attendance", "qr", "generate", "{{batchId}}"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"attendance",
+										"qr",
+										"generate",
+										"{{batchId}}"
+									]
 								},
 								"description": "Generate a QR code for a batch.\n\nThe QR code is valid for the current day only."
 							},
@@ -850,8 +1028,16 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/attendance/qr/status/{{batchId}}",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "attendance", "qr", "status", "{{batchId}}"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"attendance",
+										"qr",
+										"status",
+										"{{batchId}}"
+									]
 								},
 								"description": "Check if a valid QR code exists for the batch today"
 							},
@@ -877,8 +1063,15 @@
 								},
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/attendance/qr/mark",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "attendance", "qr", "mark"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"attendance",
+										"qr",
+										"mark"
+									]
 								},
 								"description": "Mark attendance by scanning QR code.\n\n**Validation:**\n- QR must be valid and not expired\n- Student must be enrolled in the batch\n- Student email must match authenticated user"
 							},
@@ -901,8 +1094,15 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/attendance/batch-attendance-sheet/{{batchId}}",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "attendance", "batch-attendance-sheet", "{{batchId}}"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"attendance",
+										"batch-attendance-sheet",
+										"{{batchId}}"
+									]
 								},
 								"description": "Get all attendance records for a batch"
 							},
@@ -920,8 +1120,16 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/attendance/batch/{{batchId}}/date?date=2024-01-15",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "attendance", "batch", "{{batchId}}", "date"],
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"attendance",
+										"batch",
+										"{{batchId}}",
+										"date"
+									],
 									"query": [
 										{
 											"key": "date",
@@ -945,8 +1153,15 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/attendance/student-attendance-matrix/{{studentId}}?month=1&year=2024",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "attendance", "student-attendance-matrix", "{{studentId}}"],
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"attendance",
+										"student-attendance-matrix",
+										"{{studentId}}"
+									],
 									"query": [
 										{
 											"key": "month",
@@ -974,8 +1189,15 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/attendance/report/{{batchId}}?startDate=2024-01-01&endDate=2024-01-31",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "attendance", "report", "{{batchId}}"],
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"attendance",
+										"report",
+										"{{batchId}}"
+									],
 									"query": [
 										{
 											"key": "startDate",
@@ -1019,8 +1241,14 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/youtube-videos/upload",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "youtube-videos", "upload"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"youtube-videos",
+								"upload"
+							]
 						},
 						"description": "Add a new YouTube video for a batch"
 					},
@@ -1038,8 +1266,13 @@
 						],
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/youtube-videos?page=1&limit=10",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "youtube-videos"],
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"youtube-videos"
+							],
 							"query": [
 								{
 									"key": "page",
@@ -1067,8 +1300,15 @@
 						],
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/youtube-videos/batch/{{batchId}}",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "youtube-videos", "batch", "{{batchId}}"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"youtube-videos",
+								"batch",
+								"{{batchId}}"
+							]
 						},
 						"description": "Get all videos for a specific batch"
 					},
@@ -1086,8 +1326,14 @@
 						],
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/youtube-videos/{{videoId}}",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "youtube-videos", "{{videoId}}"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"youtube-videos",
+								"{{videoId}}"
+							]
 						},
 						"description": "Delete a video"
 					},
@@ -1136,8 +1382,13 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/notes",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "notes"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"notes"
+							]
 						},
 						"description": "Create a new note with optional file attachments"
 					},
@@ -1155,8 +1406,13 @@
 						],
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/notes?page=1&limit=10",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "notes"],
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"notes"
+							],
 							"query": [
 								{
 									"key": "page",
@@ -1184,8 +1440,14 @@
 						],
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/notes/{{noteId}}",
-							"host": ["{{baseUrl}}"],
-							"path": ["dashboard", "notes", "{{noteId}}"]
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"notes",
+								"{{noteId}}"
+							]
 						},
 						"description": "Soft delete a note"
 					},
@@ -1221,8 +1483,14 @@
 								},
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/fees/structures",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "fees", "structures"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"fees",
+										"structures"
+									]
 								},
 								"description": "Create a new fee structure for a batch.\n\n**Frequency options:** MONTHLY, QUARTERLY, SEMI_ANNUAL, ANNUAL, ONE_TIME\n\n**Required fields:**\n- batchId: Target batch ID\n- name: Fee structure name\n- amount: Fee amount\n- frequency: Payment frequency"
 							},
@@ -1240,8 +1508,16 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/fees/structures/batch/{{batchId}}",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "fees", "structures", "batch", "{{batchId}}"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"fees",
+										"structures",
+										"batch",
+										"{{batchId}}"
+									]
 								},
 								"description": "Get all fee structures for a specific batch"
 							},
@@ -1267,8 +1543,15 @@
 								},
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/fees/structures/{{feeStructureId}}",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "fees", "structures", "{{feeStructureId}}"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"fees",
+										"structures",
+										"{{feeStructureId}}"
+									]
 								},
 								"description": "Update an existing fee structure"
 							},
@@ -1286,8 +1569,15 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/fees/structures/{{feeStructureId}}",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "fees", "structures", "{{feeStructureId}}"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"fees",
+										"structures",
+										"{{feeStructureId}}"
+									]
 								},
 								"description": "Delete a fee structure"
 							},
@@ -1338,8 +1628,14 @@
 								},
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/fees/receipts",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "fees", "receipts"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"fees",
+										"receipts"
+									]
 								},
 								"description": "Create a single fee receipt.\n\n**Payment modes:** CASH, UPI, BANK_TRANSFER, CHEQUE, ONLINE\n\n**Status is auto-calculated:**\n- PAID: paidAmount >= totalAmount\n- PARTIAL: paidAmount > 0 but < totalAmount\n- PENDING: paidAmount = 0 and not overdue\n- OVERDUE: paidAmount < totalAmount and past due date"
 							},
@@ -1365,8 +1661,15 @@
 								},
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/fees/receipts/bulk",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "fees", "receipts", "bulk"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"fees",
+										"receipts",
+										"bulk"
+									]
 								},
 								"description": "Bulk create fee receipts for all students in a batch.\n\nCreates PENDING receipts for each student who doesn't already have a receipt for the specified month/year."
 							},
@@ -1384,8 +1687,14 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/fees/receipts?page=1&limit=20&batchId={{batchId}}&status=PENDING",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "fees", "receipts"],
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"fees",
+										"receipts"
+									],
 									"query": [
 										{
 											"key": "page",
@@ -1423,8 +1732,15 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/fees/receipts/{{receiptId}}",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "fees", "receipts", "{{receiptId}}"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"fees",
+										"receipts",
+										"{{receiptId}}"
+									]
 								},
 								"description": "Get a specific fee receipt by ID with full details"
 							},
@@ -1450,8 +1766,15 @@
 								},
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/fees/receipts/{{receiptId}}",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "fees", "receipts", "{{receiptId}}"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"fees",
+										"receipts",
+										"{{receiptId}}"
+									]
 								},
 								"description": "Update a fee receipt. Status is auto-recalculated based on paid amount."
 							},
@@ -1469,8 +1792,15 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/fees/receipts/{{receiptId}}",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "fees", "receipts", "{{receiptId}}"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"fees",
+										"receipts",
+										"{{receiptId}}"
+									]
 								},
 								"description": "Delete a fee receipt"
 							},
@@ -1488,8 +1818,15 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/fees/receipts/summary?batchId={{batchId}}&academicYear=2024",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "fees", "receipts", "summary"],
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"fees",
+										"receipts",
+										"summary"
+									],
 									"query": [
 										{
 											"key": "batchId",
@@ -1525,8 +1862,16 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/fees/student/{{studentId}}/summary",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "fees", "student", "{{studentId}}", "summary"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"fees",
+										"student",
+										"{{studentId}}",
+										"summary"
+									]
 								},
 								"description": "Get fee summary for a specific student (Admin only).\n\n**Returns:**\n- Total due, paid, pending amounts\n- Receipt counts (total, paid, pending, overdue)"
 							},
@@ -1544,8 +1889,14 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/fees/my-receipts",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "fees", "my-receipts"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"fees",
+										"my-receipts"
+									]
 								},
 								"description": "Get fee receipts for the authenticated student.\n\n**Note:** Requires the authenticated user to have a linked student profile."
 							},
@@ -1563,8 +1914,14 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/fees/my-summary",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "fees", "my-summary"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"fees",
+										"my-summary"
+									]
 								},
 								"description": "Get fee summary for the authenticated student.\n\n**Note:** Requires the authenticated user to have a linked student profile."
 							},
@@ -1593,8 +1950,14 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/analytics/batch-count",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "analytics", "batch-count"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"analytics",
+										"batch-count"
+									]
 								},
 								"description": "Get total number of batches"
 							},
@@ -1612,8 +1975,14 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/analytics/student-count",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "analytics", "student-count"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"analytics",
+										"student-count"
+									]
 								},
 								"description": "Get total number of students"
 							},
@@ -1631,8 +2000,16 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/analytics/batch/{{batchId}}/student-count",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "analytics", "batch", "{{batchId}}", "student-count"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"analytics",
+										"batch",
+										"{{batchId}}",
+										"student-count"
+									]
 								},
 								"description": "Get student count for a specific batch"
 							},
@@ -1655,8 +2032,14 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/analytics/dashboard-stats",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "analytics", "dashboard-stats"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"analytics",
+										"dashboard-stats"
+									]
 								},
 								"description": "Get comprehensive dashboard statistics including total students, batches, today's attendance, and monthly growth"
 							},
@@ -1674,8 +2057,14 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/analytics/batch-distribution",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "analytics", "batch-distribution"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"analytics",
+										"batch-distribution"
+									]
 								},
 								"description": "Get batch-wise student distribution for pie charts"
 							},
@@ -1693,8 +2082,14 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/analytics/recent-activities?limit=10",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "analytics", "recent-activities"],
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"analytics",
+										"recent-activities"
+									],
 									"query": [
 										{
 											"key": "limit",
@@ -1723,8 +2118,14 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/analytics/enrollment-trends?months=12",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "analytics", "enrollment-trends"],
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"analytics",
+										"enrollment-trends"
+									],
 									"query": [
 										{
 											"key": "months",
@@ -1748,8 +2149,14 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/analytics/attendance-trends?days=30&batchId={{batchId}}",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "analytics", "attendance-trends"],
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"analytics",
+										"attendance-trends"
+									],
 									"query": [
 										{
 											"key": "days",
@@ -1778,8 +2185,14 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/analytics/monthly-attendance-trends?months=6&batchId={{batchId}}",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "analytics", "monthly-attendance-trends"],
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"analytics",
+										"monthly-attendance-trends"
+									],
 									"query": [
 										{
 											"key": "months",
@@ -1813,8 +2226,17 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/analytics/batch/{{batchId}}/attendance/day?date=2024-01-15",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "analytics", "batch", "{{batchId}}", "attendance", "day"],
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"analytics",
+										"batch",
+										"{{batchId}}",
+										"attendance",
+										"day"
+									],
 									"query": [
 										{
 											"key": "date",
@@ -1838,8 +2260,17 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/dashboard/analytics/batch/{{batchId}}/attendance/month?month=1&year=2024",
-									"host": ["{{baseUrl}}"],
-									"path": ["dashboard", "analytics", "batch", "{{batchId}}", "attendance", "month"],
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"analytics",
+										"batch",
+										"{{batchId}}",
+										"attendance",
+										"month"
+									],
 									"query": [
 										{
 											"key": "month",
@@ -1879,8 +2310,13 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/app/profile",
-									"host": ["{{baseUrl}}"],
-									"path": ["app", "profile"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"app",
+										"profile"
+									]
 								},
 								"description": "Get the authenticated student's profile including batch information.\n\n**Returns:**\n- id, fullname, email, dob, address\n- batch: { id, name }"
 							},
@@ -1904,8 +2340,13 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/app/dashboard",
-									"host": ["{{baseUrl}}"],
-									"path": ["app", "dashboard"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"app",
+										"dashboard"
+									]
 								},
 								"description": "Get student dashboard data including attendance stats and recent activities.\n\n**Returns:**\n- attendanceStats: { present, absent, total, percentage }\n- upcomingAssignments, recentGrades, announcements"
 							},
@@ -1923,8 +2364,14 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/app/dashboard/today-lectures",
-									"host": ["{{baseUrl}}"],
-									"path": ["app", "dashboard", "today-lectures"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"app",
+										"dashboard",
+										"today-lectures"
+									]
 								},
 								"description": "Get today's lecture schedule for the student's batch.\n\n**Returns:**\n- Array of lectures with time slots and subjects"
 							},
@@ -1942,8 +2389,14 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/app/dashboard/quick-access",
-									"host": ["{{baseUrl}}"],
-									"path": ["app", "dashboard", "quick-access"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"app",
+										"dashboard",
+										"quick-access"
+									]
 								},
 								"description": "Get quick access links and counts for the student.\n\n**Returns:**\n- pendingAssignments, unreadAnnouncements, availableResources"
 							},
@@ -1967,8 +2420,13 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/app/attendance?month=1&year=2024",
-									"host": ["{{baseUrl}}"],
-									"path": ["app", "attendance"],
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"app",
+										"attendance"
+									],
 									"query": [
 										{
 											"key": "month",
@@ -2006,8 +2464,14 @@
 								},
 								"url": {
 									"raw": "{{baseUrl}}/app/attendance/mark-qr",
-									"host": ["{{baseUrl}}"],
-									"path": ["app", "attendance", "mark-qr"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"app",
+										"attendance",
+										"mark-qr"
+									]
 								},
 								"description": "Mark attendance by scanning QR code (for students).\n\n**Note:** qrData should be the base64-encoded QR payload obtained from scanning the QR code.\n\n**Validation:**\n- QR must be valid and not expired\n- Student must be enrolled in the batch\n- Attendance not already marked for today\n- QR code must belong to the student's batch"
 							},
@@ -2017,7 +2481,7 @@
 				},
 				{
 					"name": "Assignments",
-					"description": "Student assignments endpoints",
+					"description": "Student assignments endpoints including submission and review (role-based access)",
 					"item": [
 						{
 							"name": "Get My Assignments",
@@ -2031,10 +2495,228 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/app/assignments",
-									"host": ["{{baseUrl}}"],
-									"path": ["app", "assignments"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"app",
+										"assignments"
+									]
 								},
 								"description": "Get all assignments for the student's batch.\n\n**Returns:**\n- Array of assignments with title, description, dueDate, status"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Assignment Stats",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/app/assignments/stats",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"app",
+										"assignments",
+										"stats"
+									]
+								},
+								"description": "Get assignment statistics for the authenticated student.\n\n**Returns:**\n- total: Total assignments count\n- submitted: Submitted assignments count\n- pending: Pending assignments count\n- graded: Graded submissions count\n- averageScore: Average score across graded submissions"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Assignment By ID",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/app/assignments/{{assignmentId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"app",
+										"assignments",
+										"{{assignmentId}}"
+									]
+								},
+								"description": "Get a specific assignment by ID with full details.\n\n**Returns:**\n- Assignment details including title, description, dueDate, totalMarks\n- attachments: Array of file attachments\n- For students: includes their submission status"
+							},
+							"response": []
+						},
+						{
+							"name": "Submit Assignment",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "files",
+											"type": "file",
+											"src": "",
+											"description": "Assignment submission files (multiple allowed)"
+										},
+										{
+											"key": "comment",
+											"value": "Here is my completed assignment",
+											"type": "text",
+											"description": "Optional comment with submission"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/app/assignments/{{assignmentId}}/submit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"app",
+										"assignments",
+										"{{assignmentId}}",
+										"submit"
+									]
+								},
+								"description": "Submit an assignment (Student only).\n\n**Note:** Students can only submit before the due date unless late submissions are allowed.\n\n**Body (multipart/form-data):**\n- files: One or more files to submit\n- comment: Optional text comment\n\n**Returns:**\n- Submission details with id, submittedAt, files"
+							},
+							"response": []
+						},
+						{
+							"name": "Get My Submission",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/app/assignments/{{assignmentId}}/my-submission",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"app",
+										"assignments",
+										"{{assignmentId}}",
+										"my-submission"
+									]
+								},
+								"description": "Get the authenticated student's submission for an assignment.\n\n**Returns:**\n- Submission details including files, comment, submittedAt\n- Review details if graded: score, feedback, reviewedAt"
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Submissions (Teacher/Admin)",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/app/assignments/{{assignmentId}}/submissions?status=pending",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"app",
+										"assignments",
+										"{{assignmentId}}",
+										"submissions"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "pending",
+											"description": "Optional: Filter by status (pending, graded, all)"
+										}
+									]
+								},
+								"description": "Get all submissions for an assignment (Teacher/Admin only).\n\n**Query params:**\n- status: Filter by 'pending', 'graded', or 'all' (default: all)\n\n**Returns:**\n- Array of submissions with student info, files, and review status"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Submission By ID (Teacher/Admin)",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/app/assignments/submissions/{{submissionId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"app",
+										"assignments",
+										"submissions",
+										"{{submissionId}}"
+									]
+								},
+								"description": "Get a specific submission by ID (Teacher/Admin only).\n\n**Returns:**\n- Full submission details with student info\n- Files with download URLs\n- Review details if graded"
+							},
+							"response": []
+						},
+						{
+							"name": "Review Submission (Teacher/Admin)",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"score\": 85,\n    \"feedback\": \"Great work! Well-structured solution with clear explanations.\",\n    \"status\": \"GRADED\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/app/assignments/submissions/{{submissionId}}/review",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"app",
+										"assignments",
+										"submissions",
+										"{{submissionId}}",
+										"review"
+									]
+								},
+								"description": "Review and grade a submission (Teacher/Admin only).\n\n**Body:**\n- score: Numeric score (0 to assignment's totalMarks)\n- feedback: Text feedback for the student\n- status: 'GRADED' or 'RETURNED'\n\n**Returns:**\n- Updated submission with review details"
 							},
 							"response": []
 						}
@@ -2056,8 +2738,13 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/app/announcements",
-									"host": ["{{baseUrl}}"],
-									"path": ["app", "announcements"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"app",
+										"announcements"
+									]
 								},
 								"description": "Get all announcements for the student's batch.\n\n**Returns:**\n- Array of announcements with title, content, createdAt"
 							},
@@ -2081,8 +2768,14 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/app/resources/videos",
-									"host": ["{{baseUrl}}"],
-									"path": ["app", "resources", "videos"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"app",
+										"resources",
+										"videos"
+									]
 								},
 								"description": "Get all YouTube videos for the student's batch.\n\n**Returns:**\n- Array of videos with id, title, description, url, category"
 							},
@@ -2100,8 +2793,14 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/app/resources/notes",
-									"host": ["{{baseUrl}}"],
-									"path": ["app", "resources", "notes"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"app",
+										"resources",
+										"notes"
+									]
 								},
 								"description": "Get all notes for the student's batch.\n\n**Returns:**\n- Array of notes with id, title, content (file URLs), category"
 							},
@@ -2119,8 +2818,14 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/app/resources/study-materials",
-									"host": ["{{baseUrl}}"],
-									"path": ["app", "resources", "study-materials"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"app",
+										"resources",
+										"study-materials"
+									]
 								},
 								"description": "Get all study materials for the student's batch.\n\n**Returns:**\n- Array of materials with id, title, description, files, category"
 							},
@@ -2144,8 +2849,14 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/app/fees/receipts",
-									"host": ["{{baseUrl}}"],
-									"path": ["app", "fees", "receipts"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"app",
+										"fees",
+										"receipts"
+									]
 								},
 								"description": "Get all fee receipts for the authenticated student.\n\n**Returns:**\n- Array of receipts with receiptNumber, totalAmount, paidAmount, status, dueDate"
 							},
@@ -2163,8 +2874,14 @@
 								],
 								"url": {
 									"raw": "{{baseUrl}}/app/fees/summary",
-									"host": ["{{baseUrl}}"],
-									"path": ["app", "fees", "summary"]
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"app",
+										"fees",
+										"summary"
+									]
 								},
 								"description": "Get fees summary for the authenticated student.\n\n**Returns:**\n- totalDue, totalPaid, totalPending\n- receiptCounts: { total, paid, pending, overdue }"
 							},

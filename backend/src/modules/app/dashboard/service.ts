@@ -119,7 +119,7 @@ class DashboardService {
       profileService.getProfile(studentId),
       this.getTodayLectures(batchId),
       attendanceService.getAttendancePerformance(studentId, batchId),
-      assignmentsService.getUpcomingAssignments(studentId, batchId),
+      assignmentsService.getStudentAssignments(studentId, batchId),
       announcementsService.getAnnouncements(5),
       this.getQuickAccessCounts(studentId, batchId),
       feesService.getFeesSummary(studentId),

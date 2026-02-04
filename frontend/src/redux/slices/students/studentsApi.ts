@@ -29,8 +29,6 @@ export const studentsApi = api.injectEndpoints({
                 }
                 return '/dashboard/student-enrollment/students';
             },
-            // The API might return { data: [...] } or { students: [...] } or just [...]
-            // We use StudentsApiResponse to type the raw response before transformation
             transformResponse: (response: StudentsApiResponse | { students?: Student[] } | Student[]): Student[] => {
                 if (Array.isArray(response)) {
                     return response;
@@ -43,7 +41,13 @@ export const studentsApi = api.injectEndpoints({
                 }
                 return [];
             },
-            providesTags: ['Students'],
+            providesTags: (result) =>
+                result
+                    ? [
+                        ...result.map(({ id }) => ({ type: 'Students' as const, id })),
+                        { type: 'Students', id: 'LIST' }
+                    ]
+                    : [{ type: 'Students', id: 'LIST' }],
         }),
 
         // Get single student
@@ -55,7 +59,7 @@ export const studentsApi = api.injectEndpoints({
                 }
                 return response.data;
             },
-            providesTags: ['Students'],
+            providesTags: (_result, _error, id) => [{ type: 'Students', id }],
         }),
 
         // Enroll single student
@@ -65,26 +69,70 @@ export const studentsApi = api.injectEndpoints({
                 method: 'POST',
                 body: data,
             }),
-            invalidatesTags: ['Students', 'Dashboard', 'Batches'],
+            invalidatesTags: [{ type: 'Students', id: 'LIST' }, 'Dashboard', 'Batches'],
         }),
 
-        // Update student
+        // Update student with optimistic update
         updateStudent: builder.mutation<ApiResponse<Student>, { id: number; data: UpdateStudentInput }>({
             query: ({ id, data }) => ({
                 url: `/dashboard/student-enrollment/student/${id}`,
                 method: 'PUT',
                 body: data,
             }),
-            invalidatesTags: ['Students'],
+            async onQueryStarted({ id, data }, { dispatch, queryFulfilled }) {
+                // Optimistic update for the list
+                const patchResult = dispatch(
+                    studentsApi.util.updateQueryData('getStudents', undefined, (draft) => {
+                        const student = draft.find(s => s.id === id);
+                        if (student) {
+                            Object.assign(student, {
+                                firstname: data.firstname ?? student.firstname,
+                                lastname: data.lastname ?? student.lastname,
+                                middlename: data.middlename ?? student.middlename,
+                                email: data.email ?? student.email,
+                            });
+                        }
+                    })
+                );
+                try {
+                    await queryFulfilled;
+                } catch {
+                    patchResult.undo();
+                }
+            },
+            invalidatesTags: (_result, _error, { id }) => [
+                { type: 'Students', id },
+                { type: 'Students', id: 'LIST' }
+            ],
         }),
 
-        // Delete student
+        // Delete student with optimistic update
         deleteStudent: builder.mutation<ApiResponse<void>, number>({
             query: (id) => ({
                 url: `/dashboard/student-enrollment/student/${id}`,
                 method: 'DELETE',
             }),
-            invalidatesTags: ['Students', 'Dashboard', 'Batches'],
+            async onQueryStarted(id, { dispatch, queryFulfilled }) {
+                const patchResult = dispatch(
+                    studentsApi.util.updateQueryData('getStudents', undefined, (draft) => {
+                        const index = draft.findIndex(s => s.id === id);
+                        if (index !== -1) {
+                            draft.splice(index, 1);
+                        }
+                    })
+                );
+                try {
+                    await queryFulfilled;
+                } catch {
+                    patchResult.undo();
+                }
+            },
+            invalidatesTags: (_result, _error, id) => [
+                { type: 'Students', id },
+                { type: 'Students', id: 'LIST' },
+                'Dashboard',
+                'Batches'
+            ],
         }),
 
         // Preview CSV import
@@ -109,7 +157,7 @@ export const studentsApi = api.injectEndpoints({
             transformResponse: (response: ApiResponse<CSVImportResult>): CSVImportResult => {
                 return response.data!;
             },
-            invalidatesTags: ['Students', 'Dashboard', 'Batches'],
+            invalidatesTags: [{ type: 'Students', id: 'LIST' }, 'Dashboard', 'Batches'],
         }),
 
         // Download CSV template
@@ -121,7 +169,6 @@ export const studentsApi = api.injectEndpoints({
         }),
 
         // Get current user's student profile (for student users)
-        // This matches the authenticated user's email with their student record
         getMyStudentProfile: builder.query<StudentProfile, void>({
             query: () => '/dashboard/student-enrollment/my-profile',
             transformResponse: (response: ApiResponse<StudentProfile>): StudentProfile => {
@@ -139,7 +186,7 @@ export const studentsApi = api.injectEndpoints({
             transformResponse: (response: ApiResponse<Student[]>): Student[] => {
                 return response.data || [];
             },
-            providesTags: ['Students'],
+            providesTags: [{ type: 'Students', id: 'DELETED' }],
         }),
 
         // Restore soft-deleted students
@@ -149,7 +196,12 @@ export const studentsApi = api.injectEndpoints({
                 method: 'PUT',
                 body: { ids },
             }),
-            invalidatesTags: ['Students', 'Dashboard', 'Batches'],
+            invalidatesTags: [
+                { type: 'Students', id: 'LIST' },
+                { type: 'Students', id: 'DELETED' },
+                'Dashboard',
+                'Batches'
+            ],
         }),
 
         // DANGER ZONE - Hard Delete Operations
@@ -158,7 +210,13 @@ export const studentsApi = api.injectEndpoints({
                 url: `/dashboard/student-enrollment/hard-delete/${id}`,
                 method: 'DELETE',
             }),
-            invalidatesTags: ['Students', 'Dashboard', 'Batches', 'Attendance'],
+            invalidatesTags: [
+                { type: 'Students', id: 'LIST' },
+                { type: 'Students', id: 'DELETED' },
+                'Dashboard',
+                'Batches',
+                'Attendance'
+            ],
         }),
 
         hardDeleteManyStudents: builder.mutation<ApiResponse<{ deleted: number }>, number[]>({
@@ -167,7 +225,13 @@ export const studentsApi = api.injectEndpoints({
                 method: 'DELETE',
                 body: { ids },
             }),
-            invalidatesTags: ['Students', 'Dashboard', 'Batches', 'Attendance'],
+            invalidatesTags: [
+                { type: 'Students', id: 'LIST' },
+                { type: 'Students', id: 'DELETED' },
+                'Dashboard',
+                'Batches',
+                'Attendance'
+            ],
         }),
 
         purgeDeletedStudents: builder.mutation<ApiResponse<{ deleted: number }>, void>({
@@ -175,7 +239,13 @@ export const studentsApi = api.injectEndpoints({
                 url: '/dashboard/student-enrollment/purge-deleted',
                 method: 'DELETE',
             }),
-            invalidatesTags: ['Students', 'Dashboard', 'Batches', 'Attendance'],
+            invalidatesTags: [
+                { type: 'Students', id: 'LIST' },
+                { type: 'Students', id: 'DELETED' },
+                'Dashboard',
+                'Batches',
+                'Attendance'
+            ],
         }),
     }),
 });
