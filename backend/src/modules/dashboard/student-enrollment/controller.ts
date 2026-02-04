@@ -1,9 +1,37 @@
 import type { Request, Response } from "express";
+import type { ObjectSchema, ValidationError as JoiValidationError } from "joi";
 import StudentEnrollmentService from "./service";
 import logger from "../../../utils/logger";
-import { EnrollStudentInput } from "./types";
+import {
+  formatErrorResponse,
+  getStatusCode,
+  BadRequestError,
+  UnauthorizedError,
+  ValidationError,
+} from "../../../errors";
+import { EnrollStudentInput, UpdateStudentInput } from "./types";
+import { StudentValidations } from "./validation";
 
+const FEATURE = "student-enrollment" as const;
 const studentEnrollmentService = new StudentEnrollmentService();
+
+/**
+ * Helper to handle Joi validation errors
+ */
+function handleJoiValidation<T>(
+  schema: ObjectSchema<T>,
+  data: unknown
+): T {
+  const { error, value } = schema.validate(data);
+  if (error) {
+    const errors = error.details.map((detail) => ({
+      field: detail.path.map(String).join("."),
+      message: detail.message.replace(/"/g, ""),
+    }));
+    throw new ValidationError("Validation failed", FEATURE, errors);
+  }
+  return value;
+}
 
 export default class StudentEnrollmentController {
   /**
@@ -12,41 +40,14 @@ export default class StudentEnrollmentController {
    */
   public async enrollSingle(req: Request, res: Response) {
     try {
-      const {
-        dob,
-        email,
-        firstname,
-        fullname,
-        lastname,
-        middlename,
-        address,
-        batchId,
-      }: EnrollStudentInput = req.body;
+      const validatedData = handleJoiValidation(
+        StudentValidations.enroll,
+        req.body
+      );
 
-      if (
-        !firstname ||
-        !lastname ||
-        !address ||
-        !batchId ||
-        !dob ||
-        !email
-      ) {
-        return res.status(400).json({
-          success: false,
-          message: "All fields are required!",
-        });
-      }
-
-      const student = await studentEnrollmentService.enrollSingle({
-        dob,
-        email,
-        firstname,
-        fullname,
-        lastname,
-        middlename: middlename || "",
-        address,
-        batchId,
-      });
+      const student = await studentEnrollmentService.enrollSingle(
+        validatedData as EnrollStudentInput
+      );
 
       logger.info(`Student enrolled: ${student.email}`);
 
@@ -55,21 +56,11 @@ export default class StudentEnrollmentController {
         message: "Student enrolled successfully",
         data: student,
       });
-    } catch (error: any) {
+    } catch (error) {
       logger.error("StudentEnrollment.enrollSingle error:", error);
 
-      if (error.message.includes("already exists")) {
-        return res.status(409).json({ success: false, message: error.message });
-      }
-
-      if (error.message.includes("not found")) {
-        return res.status(404).json({ success: false, message: error.message });
-      }
-
-      return res.status(500).json({
-        success: false,
-        message: `Enrollment failed: ${error.message}`,
-      });
+      const statusCode = getStatusCode(error);
+      return res.status(statusCode).json(formatErrorResponse(error));
     }
   }
 
@@ -83,17 +74,11 @@ export default class StudentEnrollmentController {
       const { batchId } = req.body;
 
       if (!file) {
-        return res.status(400).json({
-          success: false,
-          message: "CSV file is required",
-        });
+        throw new BadRequestError("CSV file is required", FEATURE);
       }
 
       if (!batchId) {
-        return res.status(400).json({
-          success: false,
-          message: "Batch ID is required",
-        });
+        throw new BadRequestError("Batch ID is required", FEATURE);
       }
 
       const fileContent = file.buffer.toString("utf-8");
@@ -107,17 +92,11 @@ export default class StudentEnrollmentController {
         message: "CSV preview generated",
         data: preview,
       });
-    } catch (error: any) {
+    } catch (error) {
       logger.error("StudentEnrollment.previewCSV error:", error);
 
-      if (error.message.includes("not found")) {
-        return res.status(404).json({ success: false, message: error.message });
-      }
-
-      return res.status(500).json({
-        success: false,
-        message: `Preview failed: ${error.message}`,
-      });
+      const statusCode = getStatusCode(error);
+      return res.status(statusCode).json(formatErrorResponse(error));
     }
   }
 
@@ -131,17 +110,11 @@ export default class StudentEnrollmentController {
       const { batchId } = req.body;
 
       if (!file) {
-        return res.status(400).json({
-          success: false,
-          message: "CSV file is required",
-        });
+        throw new BadRequestError("CSV file is required", FEATURE);
       }
 
       if (!batchId) {
-        return res.status(400).json({
-          success: false,
-          message: "Batch ID is required",
-        });
+        throw new BadRequestError("Batch ID is required", FEATURE);
       }
 
       const fileContent = file.buffer.toString("utf-8");
@@ -159,17 +132,11 @@ export default class StudentEnrollmentController {
         message: `Import completed: ${result.successful} successful, ${result.failed} failed`,
         data: result,
       });
-    } catch (error: any) {
+    } catch (error) {
       logger.error("StudentEnrollment.enrollCSV error:", error);
 
-      if (error.message.includes("not found")) {
-        return res.status(404).json({ success: false, message: error.message });
-      }
-
-      return res.status(500).json({
-        success: false,
-        message: `Import failed: ${error.message}`,
-      });
+      const statusCode = getStatusCode(error);
+      return res.status(statusCode).json(formatErrorResponse(error));
     }
   }
 
@@ -183,17 +150,11 @@ export default class StudentEnrollmentController {
 
       const students = await studentEnrollmentService.getAll(batchId);
       return res.status(200).json({ success: true, data: students });
-    } catch (error: any) {
+    } catch (error) {
       logger.error("StudentEnrollment.getAll error:", error);
 
-      if (error.message === "Batch not found") {
-        return res.status(404).json({ success: false, message: error.message });
-      }
-
-      return res.status(500).json({
-        success: false,
-        message: `Failed to fetch students: ${error.message}`,
-      });
+      const statusCode = getStatusCode(error);
+      return res.status(statusCode).json(formatErrorResponse(error));
     }
   }
 
@@ -207,17 +168,11 @@ export default class StudentEnrollmentController {
 
       const student = await studentEnrollmentService.getById(Number(id));
       return res.status(200).json({ success: true, data: student });
-    } catch (error: any) {
+    } catch (error) {
       logger.error("StudentEnrollment.getById error:", error);
 
-      if (error.message === "Student not found") {
-        return res.status(404).json({ success: false, message: error.message });
-      }
-
-      return res.status(500).json({
-        success: false,
-        message: `Failed to fetch student: ${error.message}`,
-      });
+      const statusCode = getStatusCode(error);
+      return res.status(statusCode).json(formatErrorResponse(error));
     }
   }
 
@@ -228,30 +183,27 @@ export default class StudentEnrollmentController {
   public async update(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const data = req.body;
 
-      const student = await studentEnrollmentService.update(Number(id), data);
+      const validatedData = handleJoiValidation(
+        StudentValidations.update,
+        req.body
+      );
+
+      const student = await studentEnrollmentService.update(
+        Number(id),
+        validatedData as UpdateStudentInput
+      );
 
       return res.status(200).json({
         success: true,
         message: "Student updated successfully",
         data: student,
       });
-    } catch (error: any) {
+    } catch (error) {
       logger.error("StudentEnrollment.update error:", error);
 
-      if (error.message.includes("not found")) {
-        return res.status(404).json({ success: false, message: error.message });
-      }
-
-      if (error.message.includes("already in use")) {
-        return res.status(409).json({ success: false, message: error.message });
-      }
-
-      return res.status(500).json({
-        success: false,
-        message: `Update failed: ${error.message}`,
-      });
+      const statusCode = getStatusCode(error);
+      return res.status(statusCode).json(formatErrorResponse(error));
     }
   }
 
@@ -265,7 +217,7 @@ export default class StudentEnrollmentController {
       const user = req.user;
 
       if (!user) {
-        return res.status(401).json({ success: false, message: "Unauthorized" });
+        throw new UnauthorizedError("Authentication required", FEATURE);
       }
 
       await studentEnrollmentService.delete(Number(id), user.name);
@@ -274,17 +226,11 @@ export default class StudentEnrollmentController {
         success: true,
         message: "Student deleted successfully",
       });
-    } catch (error: any) {
+    } catch (error) {
       logger.error("StudentEnrollment.delete error:", error);
 
-      if (error.message === "Student not found") {
-        return res.status(404).json({ success: false, message: error.message });
-      }
-
-      return res.status(500).json({
-        success: false,
-        message: `Delete failed: ${error.message}`,
-      });
+      const statusCode = getStatusCode(error);
+      return res.status(statusCode).json(formatErrorResponse(error));
     }
   }
 
@@ -303,13 +249,11 @@ export default class StudentEnrollmentController {
       );
 
       return res.send(csv);
-    } catch (error: any) {
+    } catch (error) {
       logger.error("StudentEnrollment.downloadTemplate error:", error);
 
-      return res.status(500).json({
-        success: false,
-        message: `Failed to generate template: ${error.message}`,
-      });
+      const statusCode = getStatusCode(error);
+      return res.status(statusCode).json(formatErrorResponse(error));
     }
   }
 
@@ -323,7 +267,7 @@ export default class StudentEnrollmentController {
       const user = req.user;
 
       if (!user) {
-        return res.status(401).json({ success: false, message: "Unauthorized" });
+        throw new UnauthorizedError("Authentication required", FEATURE);
       }
 
       const student = await studentEnrollmentService.getByEmail(user.email);
@@ -332,6 +276,7 @@ export default class StudentEnrollmentController {
         return res.status(404).json({
           success: false,
           message: "No student profile found for your account",
+          code: "student-enrollment:not-found",
         });
       }
 
@@ -340,13 +285,11 @@ export default class StudentEnrollmentController {
         message: "Student profile retrieved successfully",
         data: student,
       });
-    } catch (error: any) {
+    } catch (error) {
       logger.error("StudentEnrollment.getMyProfile error:", error);
 
-      return res.status(500).json({
-        success: false,
-        message: `Failed to fetch student profile: ${error.message}`,
-      });
+      const statusCode = getStatusCode(error);
+      return res.status(statusCode).json(formatErrorResponse(error));
     }
   }
 
@@ -358,12 +301,11 @@ export default class StudentEnrollmentController {
     try {
       const students = await studentEnrollmentService.getDeleted();
       return res.status(200).json({ success: true, data: students });
-    } catch (error: any) {
+    } catch (error) {
       logger.error("StudentEnrollment.getDeleted error:", error);
-      return res.status(500).json({
-        success: false,
-        message: `Failed to fetch deleted students: ${error.message}`,
-      });
+
+      const statusCode = getStatusCode(error);
+      return res.status(statusCode).json(formatErrorResponse(error));
     }
   }
 
@@ -373,29 +315,24 @@ export default class StudentEnrollmentController {
    */
   public async restore(req: Request, res: Response) {
     try {
-      const { ids } = req.body;
+      const validatedData = handleJoiValidation(
+        StudentValidations.restore,
+        req.body
+      );
 
-      if (!ids || !Array.isArray(ids) || ids.length === 0) {
-        return res.status(400).json({
-          success: false,
-          message: "ids array is required",
-        });
-      }
-
-      const result = await studentEnrollmentService.restore(ids);
-      logger.info(`Students restored: ${ids.join(", ")}`);
+      const result = await studentEnrollmentService.restore(validatedData.ids);
+      logger.info(`Students restored: ${validatedData.ids.join(", ")}`);
 
       return res.status(200).json({
         success: true,
         message: `${result.restored} students restored`,
         data: result,
       });
-    } catch (error: any) {
+    } catch (error) {
       logger.error("StudentEnrollment.restore error:", error);
-      return res.status(500).json({
-        success: false,
-        message: `Restore failed: ${error.message}`,
-      });
+
+      const statusCode = getStatusCode(error);
+      return res.status(statusCode).json(formatErrorResponse(error));
     }
   }
 
@@ -413,19 +350,19 @@ export default class StudentEnrollmentController {
 
       await studentEnrollmentService.hardDelete(Number(id));
 
-      logger.warn(`DANGER ZONE: Student ${id} permanently deleted by ${req.user?.name}`);
+      logger.warn(
+        `DANGER ZONE: Student ${id} permanently deleted by ${req.user?.name}`
+      );
 
       return res.status(200).json({
         success: true,
         message: "Student permanently deleted",
       });
-    } catch (error: any) {
+    } catch (error) {
       logger.error("StudentEnrollment.hardDelete error:", error);
 
-      return res.status(500).json({
-        success: false,
-        message: `Failed to permanently delete student: ${error.message}`,
-      });
+      const statusCode = getStatusCode(error);
+      return res.status(statusCode).json(formatErrorResponse(error));
     }
   }
 
@@ -435,31 +372,29 @@ export default class StudentEnrollmentController {
    */
   public async hardDeleteMany(req: Request, res: Response) {
     try {
-      const { ids } = req.body;
+      const validatedData = handleJoiValidation(
+        StudentValidations.hardDeleteMany,
+        req.body
+      );
 
-      if (!ids || !Array.isArray(ids) || ids.length === 0) {
-        return res.status(400).json({
-          success: false,
-          message: "ids array is required",
-        });
-      }
+      const result = await studentEnrollmentService.hardDeleteMany(
+        validatedData.ids
+      );
 
-      const result = await studentEnrollmentService.hardDeleteMany(ids);
-
-      logger.warn(`DANGER ZONE: ${result.deleted} students permanently deleted by ${req.user?.name}`);
+      logger.warn(
+        `DANGER ZONE: ${result.deleted} students permanently deleted by ${req.user?.name}`
+      );
 
       return res.status(200).json({
         success: true,
         message: `${result.deleted} students permanently deleted`,
         data: result,
       });
-    } catch (error: any) {
+    } catch (error) {
       logger.error("StudentEnrollment.hardDeleteMany error:", error);
 
-      return res.status(500).json({
-        success: false,
-        message: `Failed to permanently delete students: ${error.message}`,
-      });
+      const statusCode = getStatusCode(error);
+      return res.status(statusCode).json(formatErrorResponse(error));
     }
   }
 
@@ -471,20 +406,20 @@ export default class StudentEnrollmentController {
     try {
       const result = await studentEnrollmentService.purgeDeleted();
 
-      logger.warn(`DANGER ZONE: ${result.deleted} soft-deleted students purged by ${req.user?.name}`);
+      logger.warn(
+        `DANGER ZONE: ${result.deleted} soft-deleted students purged by ${req.user?.name}`
+      );
 
       return res.status(200).json({
         success: true,
         message: `${result.deleted} soft-deleted students permanently removed`,
         data: result,
       });
-    } catch (error: any) {
+    } catch (error) {
       logger.error("StudentEnrollment.purgeDeleted error:", error);
 
-      return res.status(500).json({
-        success: false,
-        message: `Failed to purge deleted students: ${error.message}`,
-      });
+      const statusCode = getStatusCode(error);
+      return res.status(statusCode).json(formatErrorResponse(error));
     }
   }
 }

@@ -1,18 +1,45 @@
 "use client"
 
+import { useState } from "react"
 import { UserPlus } from "lucide-react"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { useGetEnrollmentTrendsQuery } from "@/redux/slices/analytics/analyticsApi"
 import { Skeleton } from "@/components/ui/skeleton"
+import {
+    DurationFilter,
+    DurationFilterSelect,
+    ChartTooltip,
+    getDurationParams,
+    CHART_COLORS,
+    CHART_MARGINS,
+    axisConfig,
+    gridConfig,
+    verticalCursorStyle,
+    DURATION_OPTIONS,
+} from "./chart-config"
+
+interface ChartDataPoint {
+    name: string
+    enrollments: number
+}
 
 export function RevenueChart() {
-    const { data: trends, isLoading, error } = useGetEnrollmentTrendsQuery({ months: 12 })
+    const [duration, setDuration] = useState<DurationFilter>("year")
+    const { months } = getDurationParams(duration)
+
+    const { data: trends, isLoading } = useGetEnrollmentTrendsQuery({ months })
+
     if (isLoading) {
         return (
             <div className="col-span-8 rounded-lg border border-border bg-background">
                 <div className="p-5 border-b border-border">
-                    <Skeleton className="h-4 w-32 mb-1" />
-                    <Skeleton className="h-3 w-24" />
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <Skeleton className="h-4 w-32 mb-1" />
+                            <Skeleton className="h-3 w-24" />
+                        </div>
+                        <Skeleton className="h-7 w-48" />
+                    </div>
                 </div>
                 <div className="p-5">
                     <Skeleton className="h-[280px] w-full rounded" />
@@ -21,7 +48,7 @@ export function RevenueChart() {
         )
     }
 
-    const chartData = trends?.map(t => ({
+    const chartData: ChartDataPoint[] = trends?.map(t => ({
         name: t.label,
         enrollments: t.count
     })) || []
@@ -29,12 +56,19 @@ export function RevenueChart() {
     const totalEnrollments = chartData.reduce((sum, d) => sum + d.enrollments, 0)
     const hasData = totalEnrollments > 0
 
+    const durationLabel = DURATION_OPTIONS.find(o => o.value === duration)?.label || ""
+
     if (!hasData) {
         return (
             <div className="col-span-8 rounded-lg border border-border bg-background">
                 <div className="p-5 border-b border-border">
-                    <h3 className="text-sm font-medium text-foreground">Enrollment Trends</h3>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">Monthly Growth Analysis</p>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h3 className="text-sm font-medium text-foreground">Enrollment Trends</h3>
+                            <p className="text-[11px] text-muted-foreground mt-0.5">Monthly Growth Analysis</p>
+                        </div>
+                        <DurationFilterSelect value={duration} onChange={setDuration} />
+                    </div>
                 </div>
                 <div className="p-5">
                     <div className="h-[280px] w-full flex flex-col items-center justify-center text-center border border-dashed border-border rounded-lg">
@@ -56,56 +90,65 @@ export function RevenueChart() {
                     <h3 className="text-sm font-medium text-foreground">Enrollment Trends</h3>
                     <p className="text-[11px] text-muted-foreground mt-0.5">Monthly Growth Analysis</p>
                 </div>
-                <div className="text-right">
-                    <div className="text-2xl font-semibold tracking-tight text-foreground">{totalEnrollments}</div>
-                    <div className="text-[11px] text-muted-foreground">Total (12 months)</div>
+                <div className="flex items-center gap-4">
+                    <div className="text-right">
+                        <div className="text-xl font-semibold tracking-tight text-foreground tabular-nums">
+                            {totalEnrollments.toLocaleString()}
+                        </div>
+                        <div className="text-[10px] text-muted-foreground">Total ({durationLabel})</div>
+                    </div>
+                    <DurationFilterSelect value={duration} onChange={setDuration} />
                 </div>
             </div>
             <div className="p-5">
                 <div className="h-[280px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={chartData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+                        <AreaChart data={chartData} margin={CHART_MARGINS}>
                             <defs>
                                 <linearGradient id="enrollmentGradient" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stopColor="hsl(var(--foreground))" stopOpacity={0.1} />
-                                    <stop offset="100%" stopColor="hsl(var(--foreground))" stopOpacity={0} />
+                                    <stop offset="0%" stopColor={CHART_COLORS.primary} stopOpacity={0.12} />
+                                    <stop offset="100%" stopColor={CHART_COLORS.primary} stopOpacity={0} />
                                 </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+                            <CartesianGrid {...gridConfig} />
                             <XAxis
                                 dataKey="name"
-                                tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
-                                axisLine={{ stroke: 'hsl(var(--border))' }}
-                                tickLine={false}
+                                {...axisConfig}
                                 interval={0}
                                 angle={-45}
                                 textAnchor="end"
                                 height={50}
                             />
-                            <YAxis
-                                tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
-                                axisLine={false}
-                                tickLine={false}
-                            />
+                            <YAxis {...axisConfig} axisLine={false} />
                             <Tooltip
-                                contentStyle={{
-                                    backgroundColor: 'hsl(var(--background))',
-                                    border: '1px solid hsl(var(--border))',
-                                    borderRadius: '6px',
-                                    fontSize: '12px',
-                                    padding: '8px 12px',
-                                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                                }}
-                                labelStyle={{ fontWeight: 500, marginBottom: '4px' }}
-                                formatter={(value: number) => [`${value} students`, 'Enrollments']}
+                                content={({ active, payload, label }) => (
+                                    <ChartTooltip
+                                        active={active}
+                                        payload={payload?.map(p => ({
+                                            name: "Enrollments",
+                                            value: p.value as number,
+                                            color: CHART_COLORS.primary,
+                                            dataKey: p.dataKey as string,
+                                            payload: p.payload as Record<string, unknown>
+                                        }))}
+                                        label={label}
+                                        valueFormatter={(value) => `${value} students`}
+                                    />
+                                )}
+                                cursor={verticalCursorStyle}
                             />
                             <Area
                                 type="monotone"
                                 dataKey="enrollments"
-                                stroke="hsl(var(--foreground))"
+                                stroke={CHART_COLORS.primary}
                                 strokeWidth={1.5}
                                 fill="url(#enrollmentGradient)"
-                                activeDot={{ r: 4, strokeWidth: 1.5, fill: 'hsl(var(--background))', stroke: 'hsl(var(--foreground))' }}
+                                activeDot={{
+                                    r: 4,
+                                    strokeWidth: 2,
+                                    fill: CHART_COLORS.background,
+                                    stroke: CHART_COLORS.primary
+                                }}
                             />
                         </AreaChart>
                     </ResponsiveContainer>
@@ -114,4 +157,3 @@ export function RevenueChart() {
         </div>
     )
 }
-

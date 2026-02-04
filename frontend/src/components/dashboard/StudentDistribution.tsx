@@ -4,15 +4,22 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts"
 import { useGetBatchDistributionQuery } from "@/redux/slices/analytics/analyticsApi"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Users } from "lucide-react"
+import { ChartTooltip, CHART_COLORS } from "./chart-config"
 
-const COLORS = [
-    'hsl(var(--foreground))',
-    'hsl(var(--foreground) / 0.75)',
-    'hsl(var(--foreground) / 0.55)',
-    'hsl(var(--foreground) / 0.4)',
-    'hsl(var(--foreground) / 0.25)',
-    'hsl(var(--foreground) / 0.15)'
-]
+const PIE_COLORS = [
+    "hsl(var(--foreground))",
+    "hsl(var(--foreground) / 0.75)",
+    "hsl(var(--foreground) / 0.55)",
+    "hsl(var(--foreground) / 0.4)",
+    "hsl(var(--foreground) / 0.25)",
+    "hsl(var(--foreground) / 0.15)"
+] as const
+
+interface DistributionDataPoint {
+    name: string
+    value: number
+    [key: string]: string | number
+}
 
 export function StudentDistribution() {
     const { data: distribution, isLoading } = useGetBatchDistributionQuery()
@@ -31,7 +38,7 @@ export function StudentDistribution() {
         )
     }
 
-    const data = distribution?.map(d => ({
+    const data: DistributionDataPoint[] = distribution?.map(d => ({
         name: d.batchName,
         value: d.studentCount
     })) || []
@@ -67,8 +74,8 @@ export function StudentDistribution() {
                     <p className="text-[11px] text-muted-foreground mt-0.5">Batch Allocation</p>
                 </div>
                 <div className="text-right">
-                    <div className="text-2xl font-semibold tracking-tight">{totalStudents}</div>
-                    <div className="text-[11px] text-muted-foreground">Total</div>
+                    <div className="text-xl font-semibold tracking-tight tabular-nums">{totalStudents}</div>
+                    <div className="text-[10px] text-muted-foreground">Total</div>
                 </div>
             </div>
 
@@ -85,40 +92,49 @@ export function StudentDistribution() {
                                 innerRadius={45}
                                 dataKey="value"
                                 paddingAngle={2}
-                                stroke="hsl(var(--background))"
+                                stroke={CHART_COLORS.background}
                                 strokeWidth={2}
                             >
-                                {data.map((entry: { name: string; value: number }, index: number) => (
+                                {data.map((_, index) => (
                                     <Cell
                                         key={`cell-${index}`}
-                                        fill={COLORS[index % COLORS.length]}
+                                        fill={PIE_COLORS[index % PIE_COLORS.length]}
                                     />
                                 ))}
                             </Pie>
                             <Tooltip
-                                contentStyle={{
-                                    backgroundColor: 'hsl(var(--background))',
-                                    border: '1px solid hsl(var(--border))',
-                                    borderRadius: '6px',
-                                    fontSize: '12px',
-                                    padding: '8px 12px',
-                                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                                content={({ active, payload }) => {
+                                    if (!active || !payload?.length) return null
+                                    const entry = payload[0]
+                                    const dataIndex = data.findIndex(d => d.name === entry.name)
+                                    return (
+                                        <ChartTooltip
+                                            active={active}
+                                            payload={[{
+                                                name: entry.name as string,
+                                                value: entry.value as number,
+                                                color: PIE_COLORS[dataIndex % PIE_COLORS.length],
+                                                dataKey: "value",
+                                                payload: entry.payload as Record<string, unknown>
+                                            }]}
+                                            valueFormatter={(value) => `${value} students`}
+                                        />
+                                    )
                                 }}
-                                formatter={(value: number, name: string) => [`${value} students`, name]}
                             />
                         </PieChart>
                     </ResponsiveContainer>
                 </div>
 
                 <div className="flex flex-wrap gap-2 justify-center pt-4 border-t border-border mt-4">
-                    {data.map((entry: { name: string; value: number }, index: number) => (
+                    {data.map((entry, index) => (
                         <div key={index} className="flex items-center gap-1.5 px-2 py-1 rounded bg-muted/50 text-xs">
                             <span
-                                className="h-2 w-2 rounded-full"
-                                style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                                className="h-2 w-2 rounded-full shrink-0"
+                                style={{ backgroundColor: PIE_COLORS[index % PIE_COLORS.length] }}
                             />
                             <span className="text-muted-foreground">{entry.name}</span>
-                            <span className="font-medium text-foreground">{entry.value}</span>
+                            <span className="font-medium text-foreground tabular-nums">{entry.value}</span>
                         </div>
                     ))}
                 </div>

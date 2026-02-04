@@ -1,29 +1,40 @@
-export type Student = {
-  email: string;
-  firstname: string;
-  middlename: string;
-  lastname: string;
-  fullname: string;
-  dob: string;
-  batchId?: number;
-  attendance?: Record<string, {}>;
-  address?: string;
-  updatedAt?: Date;
-  createdAt?: Date;
+import type { Student as PrismaStudent } from "../../../../prisma/generated/prisma/client";
+
+/**
+ * Student type extending Prisma Student
+ */
+export type Student = PrismaStudent & {
+  batch?: {
+    id: number;
+    name: string;
+  };
 };
 
+/**
+ * Input for enrolling a new student
+ */
 export interface EnrollStudentInput {
   email: string;
   firstname: string;
   middlename: string;
   lastname: string;
-  fullname?: string;
   dob: string;
   batchId: number;
   address: string;
 }
 
-export type StudentCSV = Student[];
+/**
+ * Input for updating a student
+ */
+export interface UpdateStudentInput {
+  email?: string;
+  firstname?: string;
+  middlename?: string;
+  lastname?: string;
+  dob?: string;
+  batchId?: number;
+  address?: string;
+}
 
 /**
  * CSV Row structure for student import
@@ -46,9 +57,12 @@ export interface CSVImportResult {
   successful: number;
   failed: number;
   errors: CSVImportError[];
-  imported: any[];
+  imported: PrismaStudent[];
 }
 
+/**
+ * CSV Import error for a single row
+ */
 export interface CSVImportError {
   row: number;
   email?: string;
@@ -64,4 +78,15 @@ export interface CSVPreviewData {
   invalidRows: number;
   preview: CSVStudentRow[];
   errors: CSVImportError[];
+}
+
+/**
+ * API Response wrapper
+ */
+export interface StudentApiResponse<T> {
+  success: boolean;
+  message: string;
+  data?: T;
+  errors?: Array<{ field: string; message: string }>;
+  code?: string;
 }
