@@ -16,6 +16,7 @@ import {
     Receipt,
     Settings,
     Megaphone,
+    GraduationCap,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
@@ -33,6 +34,7 @@ const navGroups = [
         items: [
             { href: "/batches", label: "Batches", icon: BookOpen },
             { href: "/students", label: "Students", icon: Users },
+            { href: "/teachers", label: "Teachers", icon: GraduationCap },
             { href: "/attendance", label: "Attendance", icon: ClipboardList },
             { href: "/fees", label: "Fees", icon: Receipt },
         ]

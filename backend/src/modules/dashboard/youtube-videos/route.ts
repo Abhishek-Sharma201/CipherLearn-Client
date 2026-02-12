@@ -2,7 +2,7 @@ import { Router } from "express";
 import { validateRequest, validateQuery } from "../../auth/validations.auth";
 import { YoutubeVideoValidations } from "./validation";
 import YoutubeVideoController from "./controller";
-import { isAdmin, isAuthenticated } from "../../auth/middleware";
+import { isAdmin, isAdminOrTeacher, isAuthenticated } from "../../auth/middleware";
 
 const router = Router();
 const controller = new YoutubeVideoController();
@@ -26,29 +26,29 @@ router.get("/batch/:batchId", controller.getByBatch.bind(controller));
 // Get a single video by ID
 router.get("/:id", controller.getById.bind(controller));
 
-// Upload a new video (Admin only)
+// Upload a new video (Admin/Teacher)
 router.post(
   "/upload",
-  isAdmin,
+  isAdminOrTeacher,
   validateRequest(YoutubeVideoValidations.upload),
   controller.upload.bind(controller)
 );
 
-// Update a video (Admin only)
+// Update a video (Admin/Teacher)
 router.put(
   "/:id",
-  isAdmin,
+  isAdminOrTeacher,
   validateRequest(YoutubeVideoValidations.update),
   controller.update.bind(controller)
 );
 
-// Soft delete (draft) a video (Admin only)
-router.put("/:videoId/draft", isAdmin, controller.draft.bind(controller));
+// Soft delete (draft) a video (Admin/Teacher)
+router.put("/:videoId/draft", isAdminOrTeacher, controller.draft.bind(controller));
 
-// Restore a soft-deleted video (Admin only)
-router.put("/:id/restore", isAdmin, controller.restore.bind(controller));
+// Restore a soft-deleted video (Admin/Teacher)
+router.put("/:id/restore", isAdminOrTeacher, controller.restore.bind(controller));
 
-// Permanently delete a video (Admin only)
+// Permanently delete a video (Admin only - destructive action)
 router.delete("/:id", isAdmin, controller.delete.bind(controller));
 
 export default router;

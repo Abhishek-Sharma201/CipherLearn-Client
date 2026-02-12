@@ -1,6 +1,7 @@
 import { Router } from "express";
 import AttendanceController from "./controller";
-import { qrAttendanceController } from "./qr.controller";
+// QR attendance temporarily disabled
+// import { qrAttendanceController } from "./qr.controller";
 import { AttendanceValidations } from "./validation";
 import { validateRequest } from "../../auth/validations.auth";
 import { isAdmin, isAuthenticated, isAdminOrTeacher } from "../../auth/middleware";
@@ -18,7 +19,7 @@ router.use(isAuthenticated);
 // Create attendance sheet
 router.post(
   "/create-attendance-sheet",
-  isAdmin,
+  isAdminOrTeacher,
   validateRequest(AttendanceValidations.attendanceSheet.create),
   attendanceController.createAttendanceSheet.bind(attendanceController)
 );
@@ -30,7 +31,7 @@ router.post(
 // Mark single attendance
 router.post(
   "/mark-attendance",
-  isAdmin,
+  isAdminOrTeacher,
   validateRequest(AttendanceValidations.attendance.mark),
   attendanceController.markManualAttendance.bind(attendanceController)
 );
@@ -38,7 +39,7 @@ router.post(
 // Mark bulk attendance for multiple students
 router.post(
   "/mark-bulk",
-  isAdmin,
+  isAdminOrTeacher,
   validateRequest(AttendanceValidations.attendance.markBulk),
   attendanceController.markBulkAttendance.bind(attendanceController)
 );
@@ -46,7 +47,7 @@ router.post(
 // Update attendance record
 router.put(
   "/update/:id",
-  isAdmin,
+  isAdminOrTeacher,
   validateRequest(AttendanceValidations.attendance.update),
   attendanceController.updateAttendance.bind(attendanceController)
 );
@@ -86,34 +87,41 @@ router.get(
 // Generate attendance report for a batch
 router.get(
   "/report/:batchId",
-  isAdmin,
+  isAdminOrTeacher,
   attendanceController.generateReport.bind(attendanceController)
 );
 
 // =====================
-// QR CODE ATTENDANCE
+// QR CODE ATTENDANCE - TEMPORARILY DISABLED
 // =====================
+// QR attendance feature is currently disabled.
+// Manual attendance marking by teachers/admins is the only supported method.
+//
+// To re-enable QR attendance:
+// 1. Uncomment the import at the top of this file
+// 2. Uncomment the routes below
+// 3. Update frontend components accordingly
 
-// Generate QR code for a batch (Admin/Teacher)
-// Supports ?regenerate=true query param to force regeneration
-router.get(
-  "/qr/generate/:batchId",
-  isAdminOrTeacher,
-  qrAttendanceController.generateQRCode.bind(qrAttendanceController)
-);
+// // Generate QR code for a batch (Admin/Teacher)
+// // Supports ?regenerate=true query param to force regeneration
+// router.get(
+//   "/qr/generate/:batchId",
+//   isAdminOrTeacher,
+//   qrAttendanceController.generateQRCode.bind(qrAttendanceController)
+// );
 
-// Get QR code status for a batch (Admin/Teacher)
-router.get(
-  "/qr/status/:batchId",
-  isAdminOrTeacher,
-  qrAttendanceController.getQRCodeStatus.bind(qrAttendanceController)
-);
+// // Get QR code status for a batch (Admin/Teacher)
+// router.get(
+//   "/qr/status/:batchId",
+//   isAdminOrTeacher,
+//   qrAttendanceController.getQRCodeStatus.bind(qrAttendanceController)
+// );
 
-// Mark attendance via QR code (Student)
-router.post(
-  "/qr/mark",
-  validateRequest(AttendanceValidations.qr.mark),
-  qrAttendanceController.markQRAttendance.bind(qrAttendanceController)
-);
+// // Mark attendance via QR code (Student)
+// router.post(
+//   "/qr/mark",
+//   validateRequest(AttendanceValidations.qr.mark),
+//   qrAttendanceController.markQRAttendance.bind(qrAttendanceController)
+// );
 
 export default router;

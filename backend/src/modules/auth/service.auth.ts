@@ -12,6 +12,14 @@ import {
 export default class AuthService {
   async signup(data: SignupData): Promise<boolean> {
     try {
+      // Only allow admin account creation through this endpoint
+      // Teachers must be created via /dashboard/teachers
+      if (!checkAdminEmail(data.email)) {
+        throw new Error(
+          "Only admin accounts can be created through this endpoint. Use the Teachers management to add teachers."
+        );
+      }
+
       const alreadyExist = await prisma.user.findUnique({
         where: { email: data.email },
         select: { id: true },
@@ -29,9 +37,7 @@ export default class AuthService {
           email: data.email,
           password: hashPassword,
           isPasswordSet: true,
-          role: checkAdminEmail(data.email)
-            ? UserRoles.ADMIN
-            : UserRoles.TEACHER,
+          role: UserRoles.ADMIN,
         },
       });
 

@@ -1,18 +1,16 @@
 import { api, ApiResponse } from '../../api/api';
 import {
     AttendanceRecord,
-    AttendanceStatus,
-    AttendanceMethod,
     MarkAttendanceInput,
     BulkAttendanceInput,
     UpdateAttendanceInput,
     AttendanceReport,
     AttendanceReportParams,
     AttendanceMatrixData,
-    QRCodeData,
-    QRCodeStatusData,
-    MarkQRAttendanceInput,
-    GenerateQRCodeParams
+    // QR attendance temporarily disabled
+    // QRCodeData,
+    // QRCodeStatusData,
+    // MarkQRAttendanceInput,
 } from '@/types';
 
 // Local query param types
@@ -70,7 +68,7 @@ export const attendanceApi = api.injectEndpoints({
             providesTags: ['Attendance'],
         }),
 
-        // Mark single attendance
+        // Mark single attendance (Admin/Teacher)
         markAttendance: builder.mutation<ApiResponse<AttendanceRecord>, MarkAttendanceInput>({
             query: (data) => ({
                 url: '/dashboard/attendance/mark-attendance',
@@ -80,7 +78,7 @@ export const attendanceApi = api.injectEndpoints({
             invalidatesTags: ['Attendance'],
         }),
 
-        // Mark bulk attendance for multiple students
+        // Mark bulk attendance for multiple students (Admin/Teacher)
         markBulkAttendance: builder.mutation<ApiResponse<AttendanceRecord[]>, BulkAttendanceInput>({
             query: (data) => ({
                 url: '/dashboard/attendance/mark-bulk',
@@ -90,7 +88,7 @@ export const attendanceApi = api.injectEndpoints({
             invalidatesTags: ['Attendance', 'Dashboard'],
         }),
 
-        // Update attendance record
+        // Update attendance record (Admin/Teacher)
         updateAttendance: builder.mutation<ApiResponse<AttendanceRecord>, UpdateAttendanceInput>({
             query: ({ id, status }) => ({
                 url: `/dashboard/attendance/update/${id}`,
@@ -100,7 +98,7 @@ export const attendanceApi = api.injectEndpoints({
             invalidatesTags: ['Attendance'],
         }),
 
-        // Generate attendance report
+        // Generate attendance report (Admin/Teacher)
         getAttendanceReport: builder.query<AttendanceReport, AttendanceReportParams>({
             query: ({ batchId, startDate, endDate }) =>
                 `/dashboard/attendance/report/${batchId}?startDate=${startDate}&endDate=${endDate}`,
@@ -108,27 +106,33 @@ export const attendanceApi = api.injectEndpoints({
             providesTags: ['Attendance'],
         }),
 
-        // Generate QR code for batch
-        generateQRCode: builder.query<QRCodeData, number>({
-            query: (batchId) => `/dashboard/attendance/qr/generate/${batchId}`,
-            transformResponse: (response: ApiResponse<QRCodeData>) => response.data!,
-        }),
-
-        // Get QR code status for batch
-        getQRCodeStatus: builder.query<QRCodeStatusData, number>({
-            query: (batchId) => `/dashboard/attendance/qr/status/${batchId}`,
-            transformResponse: (response: ApiResponse<QRCodeStatusData>) => response.data!,
-        }),
-
-        // Mark attendance via QR code
-        markQRAttendance: builder.mutation<ApiResponse<AttendanceRecord>, MarkQRAttendanceInput>({
-            query: (data) => ({
-                url: '/dashboard/attendance/qr/mark',
-                method: 'POST',
-                body: data,
-            }),
-            invalidatesTags: ['Attendance'],
-        }),
+        // =====================
+        // QR CODE ATTENDANCE - TEMPORARILY DISABLED
+        // =====================
+        // QR attendance feature is currently disabled.
+        // Manual attendance marking by teachers/admins is the only supported method.
+        //
+        // // Generate QR code for batch
+        // generateQRCode: builder.query<QRCodeData, number>({
+        //     query: (batchId) => `/dashboard/attendance/qr/generate/${batchId}`,
+        //     transformResponse: (response: ApiResponse<QRCodeData>) => response.data!,
+        // }),
+        //
+        // // Get QR code status for batch
+        // getQRCodeStatus: builder.query<QRCodeStatusData, number>({
+        //     query: (batchId) => `/dashboard/attendance/qr/status/${batchId}`,
+        //     transformResponse: (response: ApiResponse<QRCodeStatusData>) => response.data!,
+        // }),
+        //
+        // // Mark attendance via QR code
+        // markQRAttendance: builder.mutation<ApiResponse<AttendanceRecord>, MarkQRAttendanceInput>({
+        //     query: (data) => ({
+        //         url: '/dashboard/attendance/qr/mark',
+        //         method: 'POST',
+        //         body: data,
+        //     }),
+        //     invalidatesTags: ['Attendance'],
+        // }),
     }),
 });
 
@@ -141,8 +145,9 @@ export const {
     useMarkBulkAttendanceMutation,
     useUpdateAttendanceMutation,
     useGetAttendanceReportQuery,
-    useLazyGenerateQRCodeQuery,
-    useGenerateQRCodeQuery,
-    useGetQRCodeStatusQuery,
-    useMarkQRAttendanceMutation,
+    // QR attendance temporarily disabled
+    // useLazyGenerateQRCodeQuery,
+    // useGenerateQRCodeQuery,
+    // useGetQRCodeStatusQuery,
+    // useMarkQRAttendanceMutation,
 } = attendanceApi;

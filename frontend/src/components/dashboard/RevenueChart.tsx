@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { UserPlus } from "lucide-react"
+import { UserPlus, Loader2 } from "lucide-react"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { useGetEnrollmentTrendsQuery } from "@/redux/slices/analytics/analyticsApi"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -27,7 +27,8 @@ export function RevenueChart() {
     const [duration, setDuration] = useState<DurationFilter>("year")
     const { months } = getDurationParams(duration)
 
-    const { data: trends, isLoading } = useGetEnrollmentTrendsQuery({ months })
+    const { data: trends, isLoading, isFetching } = useGetEnrollmentTrendsQuery({ months })
+    const isRefreshing = isFetching && !isLoading
 
     if (isLoading) {
         return (
@@ -101,7 +102,12 @@ export function RevenueChart() {
                 </div>
             </div>
             <div className="p-5">
-                <div className="h-[280px] w-full">
+                <div className="h-[280px] w-full relative">
+                    {isRefreshing && (
+                        <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/60 backdrop-blur-[1px] rounded transition-opacity">
+                            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                        </div>
+                    )}
                     <ResponsiveContainer width="100%" height="100%">
                         <AreaChart data={chartData} margin={CHART_MARGINS}>
                             <defs>

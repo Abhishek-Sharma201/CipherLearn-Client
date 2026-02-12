@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { BarChart3 } from "lucide-react"
+import { BarChart3, Loader2 } from "lucide-react"
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts"
 import { useGetMonthlyAttendanceTrendsQuery } from "@/redux/slices/analytics/analyticsApi"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -28,7 +28,8 @@ export function AttendanceChart() {
     const [duration, setDuration] = useState<DurationFilter>("6months")
     const { months } = getDurationParams(duration)
 
-    const { data: trends, isLoading } = useGetMonthlyAttendanceTrendsQuery({ months })
+    const { data: trends, isLoading, isFetching } = useGetMonthlyAttendanceTrendsQuery({ months })
+    const isRefreshing = isFetching && !isLoading
 
     if (isLoading) {
         return (
@@ -95,7 +96,12 @@ export function AttendanceChart() {
                 </div>
             </div>
             <div className="p-5">
-                <div className="h-[280px] w-full">
+                <div className="h-[280px] w-full relative">
+                    {isRefreshing && (
+                        <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/60 backdrop-blur-[1px] rounded transition-opacity">
+                            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                        </div>
+                    )}
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={chartData} margin={CHART_MARGINS}>
                             <CartesianGrid {...gridConfig} />

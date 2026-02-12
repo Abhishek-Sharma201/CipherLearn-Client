@@ -50,6 +50,18 @@ export interface SignupRequest {
 }
 
 // ============================================
+// Teacher Types
+// ============================================
+
+export interface Teacher {
+    id: number;
+    name: string;
+    email: string;
+    isPasswordSet: boolean;
+    createdAt: string;
+}
+
+// ============================================
 // Batch Types (Matching Prisma Schema)
 // ============================================
 

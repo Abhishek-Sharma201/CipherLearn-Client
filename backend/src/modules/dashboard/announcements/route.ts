@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { announcementController } from "./controller";
-import { isAdmin, isAuthenticated } from "../../auth/middleware";
+import { isAdmin, isAdminOrTeacher, isAuthenticated } from "../../auth/middleware";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -60,33 +60,34 @@ router.get(
   announcementController.getActive.bind(announcementController)
 );
 
-// Admin routes
+// Admin/Teacher routes
 router.post(
   "/",
-  isAdmin,
+  isAdminOrTeacher,
   upload.single("image"),
   announcementController.create.bind(announcementController)
 );
 
 router.get(
   "/",
-  isAdmin,
+  isAdminOrTeacher,
   announcementController.getAll.bind(announcementController)
 );
 
 router.get(
   "/:id",
-  isAdmin,
+  isAdminOrTeacher,
   announcementController.getById.bind(announcementController)
 );
 
 router.put(
   "/:id",
-  isAdmin,
+  isAdminOrTeacher,
   upload.single("image"),
   announcementController.update.bind(announcementController)
 );
 
+// Permanently delete (Admin only - destructive action)
 router.delete(
   "/:id",
   isAdmin,
