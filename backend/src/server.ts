@@ -31,6 +31,4 @@ app.get("/", (req, res) => {
   return res.send("CipherLearn");
 });
 
-//test
-
 export default app;
