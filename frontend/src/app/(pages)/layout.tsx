@@ -8,6 +8,8 @@ import { isTokenExpired, checkAndClearExpiredToken } from "@/redux/slices/auth/a
 import { useRouter } from "next/navigation"
 import { useEffect, useState, useCallback } from "react"
 
+import { DockPreferencesProvider } from "@/context/DockPreferencesContext"
+
 export default function DashboardLayout({
     children,
 }: {
@@ -42,7 +44,6 @@ export default function DashboardLayout({
 
         if (timeUntilExpiry <= 0) {
             handleExpiredToken()
-            return
         }
 
         const timeoutId = setTimeout(() => {
@@ -69,17 +70,19 @@ export default function DashboardLayout({
     }
 
     return (
-        <div className="flex min-h-screen w-full bg-background">
-            <Sidebar />
-            <div className="flex flex-col flex-1 overflow-hidden min-w-0">
-                <Navbar />
-                <main className="flex-1 overflow-y-auto pb-32">
-                    <div className="p-5 md:p-7 max-w-[1600px] mx-auto animate-fade-in">
-                        {children}
-                    </div>
-                </main>
+        <DockPreferencesProvider>
+            <div className="flex min-h-screen w-full bg-background">
+                <Sidebar />
+                <div className="flex flex-col flex-1 overflow-hidden min-w-0">
+                    <Navbar />
+                    <main className="flex-1 overflow-y-auto pb-32">
+                        <div className="p-5 md:p-7 max-w-[1600px] mx-auto animate-fade-in">
+                            {children}
+                        </div>
+                    </main>
+                </div>
+                <DashboardDock />
             </div>
-            <DashboardDock />
-        </div>
+        </DockPreferencesProvider>
     )
 }

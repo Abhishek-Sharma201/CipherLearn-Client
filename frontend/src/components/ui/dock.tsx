@@ -33,6 +33,7 @@ type DockProps = {
   panelHeight?: number;
   magnification?: number;
   spring?: SpringOptions;
+  baseSize?: number;
 };
 type DockItemProps = {
   className?: string;
@@ -51,8 +52,9 @@ type DockIconProps = {
 type DocContextType = {
   mouseX: MotionValue;
   spring: SpringOptions;
-  magnification: number;
-  distance: number;
+  magnification: MotionValue<number>;
+  distance: MotionValue<number>;
+  baseSize: MotionValue<number>;
 };
 type DockProviderProps = {
   children: React.ReactNode;
@@ -80,9 +82,18 @@ function Dock({
   magnification = DEFAULT_MAGNIFICATION,
   distance = DEFAULT_DISTANCE,
   panelHeight = DEFAULT_PANEL_HEIGHT,
+  baseSize = 52,
 }: DockProps) {
   const mouseX = useMotionValue(Infinity);
   const isHovered = useMotionValue(0);
+
+  const magnificationMV = useMotionValue(magnification);
+  const distanceMV = useMotionValue(distance);
+  const baseSizeMV = useMotionValue(baseSize);
+
+  useEffect(() => { magnificationMV.set(magnification); }, [magnification]);
+  useEffect(() => { distanceMV.set(distance); }, [distance]);
+  useEffect(() => { baseSizeMV.set(baseSize); }, [baseSize]);
 
   const maxHeight = useMemo(() => {
     return Math.max(DOCK_HEIGHT, magnification + magnification / 2 + 4);
@@ -116,7 +127,7 @@ function Dock({
         role='toolbar'
         aria-label='Application dock'
       >
-        <DockProvider value={{ mouseX, spring, distance, magnification }}>
+        <DockProvider value={{ mouseX, spring, distance: distanceMV, magnification: magnificationMV, baseSize: baseSizeMV }}>
           {children}
         </DockProvider>
       </motion.div>
@@ -127,7 +138,7 @@ function Dock({
 function DockItem({ children, className, onClick }: DockItemProps) {
   const ref = useRef<HTMLDivElement>(null);
 
-  const { distance, magnification, mouseX, spring } = useDock();
+  const { distance, magnification, mouseX, spring, baseSize } = useDock();
 
   const isHovered = useMotionValue(0);
 
@@ -137,9 +148,19 @@ function DockItem({ children, className, onClick }: DockItemProps) {
   });
 
   const widthTransform = useTransform(
-    mouseDistance,
-    [-distance, 0, distance],
-    [52, magnification, 52]
+    [mouseDistance, distance, magnification, baseSize],
+    ([val, d, mag, bs]) => {
+     const distanceVal = d as number;
+     const magVal = mag as number;
+     const baseSizeVal = bs as number;
+     
+     if (val < -distanceVal || val > distanceVal) {
+        return baseSizeVal;
+     }
+
+     const distancePercent = (distanceVal - Math.abs(val)) / distanceVal; // 0 at edge, 1 at center
+     return baseSizeVal + (magVal - baseSizeVal) * distancePercent;
+    }
   );
 
   const width = useSpring(widthTransform, spring);
@@ -163,6 +184,9 @@ function DockItem({ children, className, onClick }: DockItemProps) {
     >
       {Children.map(children, (child) => {
         if (!child) return null;
+        // Only pass custom props to React Components, not DOM elements
+        const isDOMElement = typeof (child as any).type === 'string';
+        if (isDOMElement) return child;
         return cloneElement(child as React.ReactElement<Record<string, unknown>>, { width, isHovered });
       })}
     </motion.div>
@@ -209,7 +233,7 @@ function DockIcon({ children, className, ...rest }: DockIconProps) {
   const restProps = rest as Record<string, unknown>;
   const width = restProps['width'] as MotionValue<number>;
 
-  const widthTransform = useTransform(width, (val) => val * 0.65);
+  const widthTransform = useTransform(width || useMotionValue(0), (val) => val * 0.65);
 
   return (
     <motion.div
