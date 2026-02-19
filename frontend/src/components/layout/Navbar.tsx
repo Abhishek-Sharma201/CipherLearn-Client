@@ -52,9 +52,9 @@ export function Navbar() {
                 {/* Left: Greeting section */}
                 <div className="flex-1 min-w-0">
                     <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-3">
-                        <span className="text-[15px] font-semibold text-foreground leading-tight truncate">
+                        {/* <span className="text-[15px] font-semibold text-foreground leading-tight truncate">
                             {greeting}, <span className="text-primary">{displayName.split(" ")[0]}</span>
-                        </span>
+                        </span> */}
                         <span className="hidden sm:block text-xs text-muted-foreground font-medium">
                             {todayDate}
                         </span>

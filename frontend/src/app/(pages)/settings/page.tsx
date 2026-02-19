@@ -29,7 +29,7 @@ function DockPreview() {
                 >
                     <DockLabel>{item.label}</DockLabel>
                     <DockIcon>
-                        <item.icon className="h-full w-full p-2 text-neutral-600 dark:text-neutral-300" strokeWidth={2.5} />
+                        <item.icon className="h-full w-full p-2 text-neutral-600 dark:text-neutral-400" strokeWidth={2.5} />
                     </DockIcon>
                 </DockItem>
             ))}
