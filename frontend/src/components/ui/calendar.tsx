@@ -148,7 +148,7 @@ const Combobox = ({ value, setValue, data, labels, className }: ComboboxProps) =
 type OutOfBoundsDayProps = { day: number };
 
 const OutOfBoundsDay = ({ day }: OutOfBoundsDayProps) => (
-  <div className="relative h-full w-full bg-muted/30 p-1.5 text-muted-foreground/40 text-[13px] select-none">
+  <div className="relative h-full w-full bg-muted/30 p-1 text-muted-foreground/40 text-[12px] select-none">
     {day}
   </div>
 );
@@ -156,88 +156,93 @@ const OutOfBoundsDay = ({ day }: OutOfBoundsDayProps) => (
 export type CalendarBodyProps = {
   features: Feature[];
   children: (props: { feature: Feature }) => ReactNode;
+  onDateClick?: (date: Date) => void;
 };
 
-export const CalendarBody = ({ features, children }: CalendarBodyProps) => {
+export const CalendarBody = ({ features, children, onDateClick }: CalendarBodyProps) => {
   const { month, year } = useCalendar();
   const { startDay } = useContext(CalendarContext);
   const daysInMonth = getDaysInMonth(new Date(year, month, 1));
   const firstDay = (getDay(new Date(year, month, 1)) - startDay + 7) % 7;
-  const days: ReactNode[] = [];
   const today = new Date();
 
+  // Calculate total cells (complete rows of 7)
+  const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
+
+  // Prev month days for leading out-of-bounds cells
   const prevMonth = month === 0 ? 11 : month - 1;
   const prevMonthYear = month === 0 ? year - 1 : year;
   const prevMonthDays = getDaysInMonth(new Date(prevMonthYear, prevMonth, 1));
-  const prevMonthDaysArray = Array.from({ length: prevMonthDays }, (_, i) => i + 1);
-
-  for (let i = 0; i < firstDay; i++) {
-    const day = prevMonthDaysArray[prevMonthDays - firstDay + i];
-    if (day) {
-      days.push(<OutOfBoundsDay key={`prev-${i}`} day={day} />);
-    }
-  }
-
-  for (let day = 1; day <= daysInMonth; day++) {
-    const isToday = isSameDay(new Date(year, month, day), today);
-    const featuresForDay = features.filter((feature) =>
-      isSameDay(new Date(feature.endAt), new Date(year, month, day))
-    );
-
-    days.push(
-      <div
-        key={day}
-        className={cn(
-          'relative flex h-full w-full flex-col gap-1 p-1.5 text-[13.5px]',
-          isToday ? 'text-primary font-bold' : 'text-foreground/70'
-        )}
-      >
-        <span className={cn(
-          'inline-flex items-center justify-center w-6 h-6 rounded-full leading-none',
-          isToday && 'bg-primary text-primary-foreground font-bold'
-        )}>
-          {day}
-        </span>
-        <div className="space-y-0.5">
-          {featuresForDay.slice(0, 3).map((feature) => children({ feature }))}
-        </div>
-        {featuresForDay.length > 3 && (
-          <span className="block text-muted-foreground text-[11.5px] font-medium">
-            +{featuresForDay.length - 3} more
-          </span>
-        )}
-      </div>
-    );
-  }
-
-  const nextMonth = month === 11 ? 0 : month + 1;
-  const nextMonthYear = month === 11 ? year + 1 : year;
-  const nextMonthDays = getDaysInMonth(new Date(nextMonthYear, nextMonth, 1));
-  const nextMonthDaysArray = Array.from({ length: nextMonthDays }, (_, i) => i + 1);
-
-  const remainingDays = 7 - ((firstDay + daysInMonth) % 7);
-  if (remainingDays < 7) {
-    for (let i = 0; i < remainingDays; i++) {
-      const day = nextMonthDaysArray[i];
-      if (day) {
-        days.push(<OutOfBoundsDay key={`next-${i}`} day={day} />);
-      }
-    }
-  }
 
   return (
-    <div className="grid flex-grow grid-cols-7">
-      {days.map((day, index) => (
-        <div
-          key={index}
-          className={cn(
-            'relative aspect-square overflow-hidden border-t border-r border-border',
-            index % 7 === 6 && 'border-r-0'
-          )}
-        >
-          {day}
-        </div>
-      ))}
+    <div
+      className="flex-1 min-h-0 grid grid-cols-7"
+      style={{ gridAutoRows: '1fr' }}
+    >
+      {Array.from({ length: totalCells }, (_, index) => {
+        const isOutPrev = index < firstDay;
+        const isOutNext = index >= firstDay + daysInMonth;
+        const isOut = isOutPrev || isOutNext;
+
+        const day = isOutPrev
+          ? prevMonthDays - (firstDay - index - 1)
+          : isOutNext
+            ? index - (firstDay + daysInMonth) + 1
+            : index - firstDay + 1;
+
+        const isToday = !isOut && isSameDay(new Date(year, month, day), today);
+        const featuresForDay = !isOut
+          ? features.filter((f) => isSameDay(new Date(f.endAt), new Date(year, month, day)))
+          : [];
+
+        return (
+          <div
+            key={index}
+            className={cn(
+              'relative overflow-hidden border-t border-r border-border',
+              index % 7 === 6 && 'border-r-0',
+              !isOut && 'transition-colors',
+              !isOut && onDateClick && 'cursor-pointer hover:bg-primary/5'
+            )}
+            onClick={!isOut && onDateClick ? (e) => {
+              // Only trigger if clicking on the cell background, not on a feature item
+              if (e.target === e.currentTarget || (e.target as HTMLElement).closest('[data-calendar-item]') === null) {
+                onDateClick(new Date(year, month, day));
+              }
+            } : undefined}
+          >
+            {isOut ? (
+              <OutOfBoundsDay day={day} />
+            ) : (
+              <div
+                className={cn(
+                  'relative flex h-full w-full flex-col gap-0.5 p-1 text-[12px]',
+                  isToday ? 'text-primary font-bold' : 'text-foreground/70'
+                )}
+              >
+                <span className={cn(
+                  'inline-flex items-center justify-center w-5 h-5 rounded-full leading-none text-[11.5px] shrink-0',
+                  isToday && 'bg-primary text-primary-foreground font-bold'
+                )}>
+                  {day}
+                </span>
+                <div className="space-y-0.5 overflow-hidden">
+                  {featuresForDay.slice(0, 2).map((feature) => (
+                    <div key={feature.id} data-calendar-item="true">
+                      {children({ feature })}
+                    </div>
+                  ))}
+                </div>
+                {featuresForDay.length > 2 && (
+                  <span className="block text-muted-foreground text-[10px] font-medium mt-0.5">
+                    +{featuresForDay.length - 2} more
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 };
@@ -324,7 +329,7 @@ export const CalendarDatePagination = ({ className }: CalendarDatePaginationProp
 export type CalendarDateProps = { children: ReactNode };
 
 export const CalendarDate = ({ children }: CalendarDateProps) => (
-  <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+  <div className="flex items-center justify-between px-4 py-2.5 border-b border-border shrink-0">
     {children}
   </div>
 );
@@ -335,11 +340,11 @@ export const CalendarHeader = ({ className }: CalendarHeaderProps) => {
   const { locale, startDay } = useContext(CalendarContext);
 
   return (
-    <div className={cn('grid grid-cols-7 border-b border-border', className)}>
+    <div className={cn('grid grid-cols-7 border-b border-border shrink-0', className)}>
       {daysForLocale(locale, startDay).map((day) => (
         <div
           key={day}
-          className="p-2.5 text-center text-[12.5px] font-bold uppercase tracking-wide text-muted-foreground"
+          className="py-2 text-center text-[11.5px] font-bold uppercase tracking-wide text-muted-foreground"
         >
           {day}
         </div>
@@ -351,15 +356,18 @@ export const CalendarHeader = ({ className }: CalendarHeaderProps) => {
 export type CalendarItemProps = {
   feature: Feature;
   className?: string;
+  onClick?: () => void;
 };
 
-export const CalendarItem = ({ feature, className }: CalendarItemProps) => (
+export const CalendarItem = ({ feature, className, onClick }: CalendarItemProps) => (
   <div
     className={cn(
-      'flex items-center gap-1.5 rounded px-1.5 py-0.5 text-[11.5px] font-semibold truncate',
+      'flex items-center gap-1 rounded px-1 py-px text-[11px] font-semibold truncate w-full',
+      onClick && 'cursor-pointer hover:opacity-80 transition-opacity',
       className
     )}
     style={{ backgroundColor: `${feature.status.color}18`, color: feature.status.color }}
+    onClick={onClick}
     key={feature.id}
   >
     <div
@@ -384,6 +392,6 @@ export const CalendarProvider = ({
   className,
 }: CalendarProviderProps) => (
   <CalendarContext.Provider value={{ locale, startDay }}>
-    <div className={cn('relative flex flex-col', className)}>{children}</div>
+    <div className={cn('relative flex flex-col min-h-0', className)}>{children}</div>
   </CalendarContext.Provider>
 );

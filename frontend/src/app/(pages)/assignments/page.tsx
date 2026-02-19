@@ -31,12 +31,10 @@ import {
   Clock,
   Upload,
   Eye,
-  MoreVertical,
   Trash2,
-  Paperclip,
-  X,
   Download,
 } from "lucide-react";
+import { FileUpload } from "@/components/ui/file-upload";
 import { format } from "date-fns";
 import {
   useGetSlotsQuery,
@@ -81,17 +79,6 @@ export default function AssignmentsPage() {
   });
   const [attachments, setAttachments] = useState<File[]>([]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      setAttachments((prev) => [...prev, ...Array.from(files)]);
-    }
-    e.target.value = ""; // Reset input to allow re-selecting same file
-  };
-
-  const removeAttachment = (index: number) => {
-    setAttachments((prev) => prev.filter((_, i) => i !== index));
-  };
 
   const handleCreateSlot = async () => {
     if (!formData.title || !formData.subject || !formData.batchId) return;
@@ -258,43 +245,17 @@ export default function AssignmentsPage() {
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Attachments (Optional)</label>
-                    <div className="flex flex-col gap-2">
-                      <label className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-border rounded-lg cursor-pointer hover:border-foreground/30 hover:bg-secondary/30 transition-colors">
-                        <Upload className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm text-muted-foreground">
-                          Click to upload files (PDF, DOC, Images)
-                        </span>
-                        <input
-                          type="file"
-                          className="hidden"
-                          multiple
-                          accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif,.webp"
-                          onChange={handleFileChange}
-                        />
-                      </label>
-                      {attachments.length > 0 && (
-                        <div className="flex flex-wrap gap-2 pt-2">
-                          {attachments.map((file, index) => (
-                            <div
-                              key={index}
-                              className="flex items-center gap-2 px-2.5 py-1.5 bg-secondary rounded-md text-xs"
-                            >
-                              <Paperclip className="h-3 w-3 text-muted-foreground" />
-                              <span className="truncate max-w-[120px]">{file.name}</span>
-                              <button
-                                type="button"
-                                onClick={() => removeAttachment(index)}
-                                className="p-0.5 hover:bg-destructive/10 rounded"
-                              >
-                                <X className="h-3 w-3 text-muted-foreground hover:text-destructive" />
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[14px] font-semibold">Attachments</label>
+                    <FileUpload
+                      files={attachments}
+                      onChange={setAttachments}
+                      accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif,.webp"
+                      maxFiles={5}
+                      maxSize={10 * 1024 * 1024}
+                      label="Attach resources for your students"
+                      hint="PDF, Word, Excel, images accepted"
+                    />
                   </div>
                 </div>
                 <DialogFooter>

@@ -19,6 +19,7 @@ import {
     GraduationCap,
     Calendar,
     ClipboardCheck,
+    FolderOpen,
 } from "lucide-react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
@@ -51,6 +52,7 @@ const navGroups = [
     {
         label: "Resources",
         items: [
+            { href: "/resources", label: "Resource Hub", icon: FolderOpen },
             { href: "/assignments", label: "Assignments", icon: FileUp },
             { href: "/notes", label: "Notes", icon: FileText },
             { href: "/videos", label: "Videos", icon: Video },
