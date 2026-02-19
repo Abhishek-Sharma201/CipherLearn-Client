@@ -2,6 +2,7 @@ import { Prisma } from "../../../../prisma/generated/prisma/client";
 import { prisma } from "../../../config/db.config";
 import { User } from "../../auth/types.auth";
 import { YoutubeVideo, UpdateYoutubeVideoInput, GetYoutubeVideosQuery } from "./types";
+import { invalidateAfterResourceMutation } from "../../../cache/invalidation";
 
 export default class YoutubeVideoService {
   /**
@@ -33,6 +34,7 @@ export default class YoutubeVideoService {
         data: youtubeVideo,
         select: select,
       });
+      invalidateAfterResourceMutation();
       return newYoutubeVideo;
     } catch (error) {
       throw error;
@@ -195,6 +197,7 @@ export default class YoutubeVideoService {
         },
       });
 
+      invalidateAfterResourceMutation();
       return updatedVideo;
     } catch (error) {
       throw error;
@@ -218,6 +221,7 @@ export default class YoutubeVideoService {
         where: { id },
         data: { isDeleted: true, deletedBy: user.name, updatedAt: new Date() },
       });
+      invalidateAfterResourceMutation();
       return !!draftedYoutubeVideo;
     } catch (error) {
       throw error;
@@ -241,6 +245,7 @@ export default class YoutubeVideoService {
         where: { id },
       });
 
+      invalidateAfterResourceMutation();
       return true;
     } catch (error) {
       throw error;
@@ -273,6 +278,7 @@ export default class YoutubeVideoService {
         },
       });
 
+      invalidateAfterResourceMutation();
       return restoredVideo;
     } catch (error) {
       throw error;

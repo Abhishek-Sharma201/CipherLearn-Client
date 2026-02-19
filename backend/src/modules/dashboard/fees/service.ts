@@ -1,5 +1,6 @@
 import { Prisma, PaymentStatus, FeeStructure, FeeReceipt } from "../../../../prisma/generated/prisma/client";
 import { prisma } from "../../../config/db.config";
+import { invalidateAfterFeesMutation } from "../../../cache/invalidation";
 import {
   CreateFeeStructureInput,
   UpdateFeeStructureInput,
@@ -107,7 +108,7 @@ export default class FeesService {
       throw new Error(`Fee structure "${input.name}" already exists for this batch`);
     }
 
-    return prisma.feeStructure.create({
+    const structure = await prisma.feeStructure.create({
       data: {
         batchId: input.batchId,
         name: input.name,
@@ -119,6 +120,8 @@ export default class FeesService {
         description: input.description || null,
       },
     });
+    invalidateAfterFeesMutation(input.batchId);
+    return structure;
   }
 
   /**
@@ -159,10 +162,12 @@ export default class FeesService {
       }
     }
 
-    return prisma.feeStructure.update({
+    const updated = await prisma.feeStructure.update({
       where: { id },
       data: input,
     });
+    invalidateAfterFeesMutation(existing.batchId);
+    return updated;
   }
 
   /**
@@ -194,6 +199,7 @@ export default class FeesService {
         where: { id },
       });
     }
+    invalidateAfterFeesMutation(existing.batchId);
   }
 
   // ============================================
@@ -247,7 +253,7 @@ export default class FeesService {
       new Date(input.dueDate)
     );
 
-    return prisma.feeReceipt.create({
+    const receipt = await prisma.feeReceipt.create({
       data: {
         receiptNumber,
         studentId: input.studentId,
@@ -272,6 +278,8 @@ export default class FeesService {
         generatedById: input.generatedById || null,
       },
     });
+    invalidateAfterFeesMutation(input.batchId);
+    return receipt;
   }
 
   /**
@@ -370,6 +378,7 @@ export default class FeesService {
       }
     }
 
+    invalidateAfterFeesMutation(input.batchId);
     return result;
   }
 
@@ -480,7 +489,7 @@ export default class FeesService {
     // If status is explicitly provided, use it; otherwise use calculated
     const finalStatus = input.status || status;
 
-    return prisma.feeReceipt.update({
+    const updated = await prisma.feeReceipt.update({
       where: { id },
       data: {
         ...input,
@@ -490,6 +499,8 @@ export default class FeesService {
         paymentDate: input.paymentDate ? new Date(input.paymentDate) : undefined,
       },
     });
+    invalidateAfterFeesMutation(existing.batchId);
+    return updated;
   }
 
   /**
@@ -507,6 +518,7 @@ export default class FeesService {
     await prisma.feeReceipt.delete({
       where: { id },
     });
+    invalidateAfterFeesMutation(existing.batchId);
   }
 
   // ============================================

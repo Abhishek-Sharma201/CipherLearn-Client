@@ -1,0 +1,29 @@
+/**
+ * TTL constants (in seconds) for cache entries, grouped by domain.
+ */
+
+// Dashboard analytics
+export const DASHBOARD_STATS = 120;
+export const ENROLLMENT_TRENDS = 600;
+export const ATTENDANCE_TRENDS = 600;
+export const BATCH_DISTRIBUTION = 600;
+export const RECENT_ACTIVITIES = 120;
+
+// Dashboard CRUD
+export const BATCH_LIST = 300;
+export const BATCH_DETAIL = 300;
+export const STUDENT_LIST = 300;
+
+// App resources (unfiltered only)
+export const APP_VIDEOS = 600;
+export const APP_NOTES = 600;
+export const APP_MATERIALS = 600;
+
+// App misc
+export const APP_ANNOUNCEMENTS = 300;
+export const APP_FEE_STRUCTURES = 3600;
+export const APP_PROFILE = 300;
+
+// App attendance
+export const APP_ATTENDANCE_PERF = 120;
+export const APP_ATTENDANCE_CALENDAR = 120;

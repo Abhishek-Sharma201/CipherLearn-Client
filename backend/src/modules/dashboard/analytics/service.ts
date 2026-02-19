@@ -1,5 +1,8 @@
 import { AttendanceStatus } from "../../../../prisma/generated/prisma/enums";
 import { prisma } from "../../../config/db.config";
+import { cacheService } from "../../../cache";
+import { DashboardKeys } from "../../../cache/keys";
+import * as TTL from "../../../cache/ttl";
 
 interface EnrollmentTrendData {
   month: number;
@@ -127,6 +130,14 @@ export default class AnalyticsService {
    * Get student enrollment trends for the last N months
    */
   async getEnrollmentTrends(months: number = 12): Promise<EnrollmentTrendData[]> {
+    return cacheService.getOrSet(
+      DashboardKeys.enrollmentTrends(months),
+      () => this._fetchEnrollmentTrends(months),
+      TTL.ENROLLMENT_TRENDS
+    );
+  }
+
+  private async _fetchEnrollmentTrends(months: number): Promise<EnrollmentTrendData[]> {
     try {
       const trends: EnrollmentTrendData[] = [];
       const now = new Date();
@@ -166,6 +177,14 @@ export default class AnalyticsService {
    * Get attendance trends for the last N days
    */
   async getAttendanceTrends(days: number = 30, batchId?: number): Promise<AttendanceTrendData[]> {
+    return cacheService.getOrSet(
+      DashboardKeys.attendanceTrends(days, batchId),
+      () => this._fetchAttendanceTrends(days, batchId),
+      TTL.ATTENDANCE_TRENDS
+    );
+  }
+
+  private async _fetchAttendanceTrends(days: number, batchId?: number): Promise<AttendanceTrendData[]> {
     try {
       const trends: AttendanceTrendData[] = [];
       const now = new Date();
@@ -230,6 +249,14 @@ export default class AnalyticsService {
    * Get monthly attendance trends
    */
   async getMonthlyAttendanceTrends(months: number = 6, batchId?: number): Promise<AttendanceTrendData[]> {
+    return cacheService.getOrSet(
+      DashboardKeys.monthlyAttendanceTrends(months, batchId),
+      () => this._fetchMonthlyAttendanceTrends(months, batchId),
+      TTL.ATTENDANCE_TRENDS
+    );
+  }
+
+  private async _fetchMonthlyAttendanceTrends(months: number, batchId?: number): Promise<AttendanceTrendData[]> {
     try {
       const trends: AttendanceTrendData[] = [];
       const now = new Date();
@@ -292,6 +319,14 @@ export default class AnalyticsService {
    * Get comprehensive dashboard statistics
    */
   async getDashboardStats(): Promise<DashboardStats> {
+    return cacheService.getOrSet(
+      DashboardKeys.analyticsStats(),
+      () => this._fetchDashboardStats(),
+      TTL.DASHBOARD_STATS
+    );
+  }
+
+  private async _fetchDashboardStats(): Promise<DashboardStats> {
     try {
       const now = new Date();
       const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -387,6 +422,14 @@ export default class AnalyticsService {
    * Get batch-wise student distribution
    */
   async getBatchDistribution(): Promise<{ batchId: number; batchName: string; studentCount: number }[]> {
+    return cacheService.getOrSet(
+      DashboardKeys.batchDistribution(),
+      () => this._fetchBatchDistribution(),
+      TTL.BATCH_DISTRIBUTION
+    );
+  }
+
+  private async _fetchBatchDistribution(): Promise<{ batchId: number; batchName: string; studentCount: number }[]> {
     try {
       const batches = await prisma.batch.findMany({
         where: { isDeleted: false },
@@ -413,6 +456,14 @@ export default class AnalyticsService {
    * Get recent activities (enrollments, attendance marks, etc.)
    */
   async getRecentActivities(limit: number = 10): Promise<any[]> {
+    return cacheService.getOrSet(
+      DashboardKeys.recentActivities(limit),
+      () => this._fetchRecentActivities(limit),
+      TTL.RECENT_ACTIVITIES
+    );
+  }
+
+  private async _fetchRecentActivities(limit: number): Promise<any[]> {
     try {
       const recentStudents = await prisma.student.findMany({
         where: { isDeleted: false },

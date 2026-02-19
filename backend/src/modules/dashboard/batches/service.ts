@@ -1,5 +1,9 @@
 import { Prisma, Batch } from "../../../../prisma/generated/prisma/client";
 import { prisma } from "../../../config/db.config";
+import { cacheService } from "../../../cache";
+import { DashboardKeys } from "../../../cache/keys";
+import * as TTL from "../../../cache/ttl";
+import { invalidateAfterBatchMutation } from "../../../cache/invalidation";
 
 export default class BatchService {
   async create(batch: Prisma.BatchCreateInput): Promise<Batch> {
@@ -12,6 +16,7 @@ export default class BatchService {
         },
       });
 
+      invalidateAfterBatchMutation();
       return newBatch;
     } catch (error) {
       throw error;
@@ -33,6 +38,7 @@ export default class BatchService {
         },
       });
 
+      invalidateAfterBatchMutation(id);
       return updated;
     } catch (error) {
       throw error;
@@ -40,39 +46,43 @@ export default class BatchService {
   }
 
   async getAll() {
-    try {
-      const batches = await prisma.batch.findMany({
-        where: { isDeleted: false },
-        select: {
-          id: true,
-          name: true,
-          timings: true,
-          totalStudents: true,
-          createdAt: true,
-          _count: {
-            select: {
-              students: true,
+    return cacheService.getOrSet(
+      DashboardKeys.batchList(),
+      async () => {
+        const batches = await prisma.batch.findMany({
+          where: { isDeleted: false },
+          select: {
+            id: true,
+            name: true,
+            timings: true,
+            totalStudents: true,
+            createdAt: true,
+            _count: {
+              select: {
+                students: true,
+              },
             },
           },
-        },
-      });
-      return batches;
-    } catch (error) {
-      throw error;
-    }
+        });
+        return batches;
+      },
+      TTL.BATCH_LIST
+    );
   }
 
   async getById(id: number) {
-    try {
-      const batch = await prisma.batch.findUnique({
-        where: { id: id, isDeleted: false },
-      });
+    return cacheService.getOrSet(
+      DashboardKeys.batchDetail(id),
+      async () => {
+        const batch = await prisma.batch.findUnique({
+          where: { id: id, isDeleted: false },
+        });
 
-      if (!batch) throw new Error("Batch not found");
-      return batch;
-    } catch (error) {
-      throw error;
-    }
+        if (!batch) throw new Error("Batch not found");
+        return batch;
+      },
+      TTL.BATCH_DETAIL
+    );
   }
 
   async draft(ids: number[], user: { name: string }) {
@@ -85,6 +95,7 @@ export default class BatchService {
         },
       });
 
+      invalidateAfterBatchMutation();
       return !!drafts;
     } catch (error) {
       throw error;
@@ -121,6 +132,7 @@ export default class BatchService {
         },
       });
 
+      invalidateAfterBatchMutation();
       return { restored: result.count };
     } catch (error) {
       throw error;
@@ -144,6 +156,7 @@ export default class BatchService {
         },
       });
 
+      invalidateAfterBatchMutation();
       return !!deleted;
     } catch (error) {
       throw error;
@@ -222,6 +235,8 @@ export default class BatchService {
       await prisma.batch.delete({
         where: { id },
       });
+
+      cacheService.flush();
 
       return {
         deleted: true,
@@ -302,6 +317,8 @@ export default class BatchService {
       const result = await prisma.batch.deleteMany({
         where: { id: { in: ids } },
       });
+
+      cacheService.flush();
 
       return { deleted: result.count };
     } catch (error) {

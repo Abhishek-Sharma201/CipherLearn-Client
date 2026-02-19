@@ -15,6 +15,10 @@ import {
   UpdateStudentInput,
 } from "./types";
 import { parseCSV, normalizeDateFormat, generateSampleCSV } from "./csv.utils";
+import { cacheService } from "../../../cache";
+import { DashboardKeys } from "../../../cache/keys";
+import * as TTL from "../../../cache/ttl";
+import { invalidateAfterStudentMutation } from "../../../cache/invalidation";
 
 const FEATURE = "student-enrollment" as const;
 
@@ -97,6 +101,7 @@ export default class StudentEnrollmentService {
       return newStudent;
     });
 
+    invalidateAfterStudentMutation(undefined, student.batchId);
     return result;
   }
 
@@ -323,6 +328,10 @@ export default class StudentEnrollmentService {
       }
     }
 
+    if (imported.length > 0) {
+      invalidateAfterStudentMutation(undefined, batchId);
+    }
+
     return {
       total: rows.length,
       successful: imported.length,
@@ -346,39 +355,45 @@ export default class StudentEnrollmentService {
       }
     }
 
-    const select: Prisma.StudentSelect = {
-      id: true,
-      firstname: true,
-      middlename: true,
-      lastname: true,
-      fullname: true,
-      email: true,
-      dob: true,
-      address: true,
-      phone: true,
-      parentName: true,
-      grade: true,
-      instituteId: true,
-      batchId: true,
-      createdAt: true,
-      updatedAt: true,
-    };
+    return cacheService.getOrSet(
+      DashboardKeys.studentList(batchId),
+      async () => {
+        const select: Prisma.StudentSelect = {
+          id: true,
+          firstname: true,
+          middlename: true,
+          lastname: true,
+          fullname: true,
+          email: true,
+          dob: true,
+          address: true,
+          phone: true,
+          parentName: true,
+          grade: true,
+          instituteId: true,
+          batchId: true,
+          createdAt: true,
+          updatedAt: true,
+        };
 
-    const where: Prisma.StudentWhereInput = {
-      isDeleted: false,
-    };
+        const where: Prisma.StudentWhereInput = {
+          isDeleted: false,
+        };
 
-    if (batchId) {
-      where.batchId = batchId;
-    }
+        if (batchId) {
+          where.batchId = batchId;
+        }
 
-    const students = await prisma.student.findMany({
-      where,
-      select,
-      orderBy: { createdAt: "desc" },
-    });
+        const students = await prisma.student.findMany({
+          where,
+          select,
+          orderBy: { createdAt: "desc" },
+        });
 
-    return students;
+        return students;
+      },
+      TTL.STUDENT_LIST
+    );
   }
 
   /**
@@ -477,6 +492,7 @@ export default class StudentEnrollmentService {
       },
     });
 
+    invalidateAfterStudentMutation(id, batchId ?? student.batchId ?? undefined);
     return updated;
   }
 
@@ -493,6 +509,8 @@ export default class StudentEnrollmentService {
         deletedBy,
       },
     });
+
+    invalidateAfterStudentMutation(id);
   }
 
   /**
@@ -550,6 +568,7 @@ export default class StudentEnrollmentService {
       },
     });
 
+    invalidateAfterStudentMutation();
     return { restored: result.count };
   }
 
@@ -594,6 +613,8 @@ export default class StudentEnrollmentService {
         });
       }
     });
+
+    invalidateAfterStudentMutation(id);
   }
 
   /**
@@ -634,6 +655,7 @@ export default class StudentEnrollmentService {
       }
     });
 
+    invalidateAfterStudentMutation();
     return { deleted: studentIds.length };
   }
 

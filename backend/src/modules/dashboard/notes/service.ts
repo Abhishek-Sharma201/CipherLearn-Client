@@ -2,6 +2,7 @@ import { prisma } from "../../../config/db.config";
 import CloudinaryService from "../../../config/cloudinairy.config";
 import { validateMagicNumber } from "../../../config/multer.config";
 import { CreateNoteInput, UpdateNoteInput, GetNotesQuery } from "./types";
+import { invalidateAfterResourceMutation } from "../../../cache/invalidation";
 
 const cloudinaryService = new CloudinaryService();
 
@@ -77,6 +78,7 @@ export default class NotesService {
         },
       });
 
+      invalidateAfterResourceMutation();
       return note;
     } catch (error: any) {
       console.error("Error creating note:", error);
@@ -212,6 +214,7 @@ export default class NotesService {
         },
       });
 
+      invalidateAfterResourceMutation();
       return updatedNote;
     } catch (error: any) {
       console.error("Error updating note:", error);
@@ -246,6 +249,7 @@ export default class NotesService {
       },
     });
 
+    invalidateAfterResourceMutation();
     console.log(`Note ID ${id} soft deleted by ${deletedBy}`);
   }
 }

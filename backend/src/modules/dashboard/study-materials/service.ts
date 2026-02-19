@@ -1,4 +1,5 @@
 import { prisma } from "../../../config/db.config";
+import { invalidateAfterResourceMutation } from "../../../cache/invalidation";
 
 export interface CreateStudyMaterialInput {
   title: string;
@@ -38,6 +39,7 @@ export class StudyMaterialService {
         batch: { select: { id: true, name: true } },
       },
     });
+    invalidateAfterResourceMutation();
     return material;
   }
 
@@ -103,6 +105,7 @@ export class StudyMaterialService {
         batch: { select: { id: true, name: true } },
       },
     });
+    invalidateAfterResourceMutation();
     return material;
   }
 
@@ -111,6 +114,7 @@ export class StudyMaterialService {
       where: { id },
       data: { isDeleted: true },
     });
+    invalidateAfterResourceMutation();
     return { success: true };
   }
 

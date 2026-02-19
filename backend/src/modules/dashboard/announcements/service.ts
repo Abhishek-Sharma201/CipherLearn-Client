@@ -1,5 +1,6 @@
 import { prisma } from "../../../config/db.config";
 import { AnnouncementPriority } from "../../../../prisma/generated/prisma/enums";
+import { invalidateAfterAnnouncementMutation } from "../../../cache/invalidation";
 
 export interface CreateAnnouncementInput {
   title: string;
@@ -38,6 +39,7 @@ export class AnnouncementService {
         createdBy: data.createdBy,
       },
     });
+    invalidateAfterAnnouncementMutation();
     return announcement;
   }
 
@@ -93,6 +95,7 @@ export class AnnouncementService {
         isActive: data.isActive,
       },
     });
+    invalidateAfterAnnouncementMutation();
     return announcement;
   }
 
@@ -100,6 +103,7 @@ export class AnnouncementService {
     await prisma.announcement.delete({
       where: { id },
     });
+    invalidateAfterAnnouncementMutation();
     return { success: true };
   }
 

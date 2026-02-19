@@ -5,6 +5,7 @@ import {
   Prisma,
 } from "../../../../prisma/generated/prisma/client";
 import { prisma } from "../../../config/db.config";
+import { invalidateAfterAttendanceMutation } from "../../../cache/invalidation";
 import {
   AttendanceMatrixOptions,
   DayAttendanceResponse,
@@ -55,6 +56,7 @@ export default class AttendanceService {
       const newAttendance = await prisma.attendance.create({
         data: { ...attendance, method: AttendanceMethod.MANUAL },
       });
+      invalidateAfterAttendanceMutation();
       return newAttendance;
     } catch (error) {
       throw error;
@@ -137,6 +139,9 @@ export default class AttendanceService {
           }
         })
       );
+
+      const studentIds = attendances.map((a) => a.studentId);
+      invalidateAfterAttendanceMutation(batchId, studentIds);
 
       return {
         sheetId: sheet.id,

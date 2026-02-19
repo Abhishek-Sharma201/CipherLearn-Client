@@ -1,6 +1,10 @@
 import { prisma } from "../../../config/db.config";
 import { AttendanceStatus } from "../../../../prisma/generated/prisma/client";
 import { decodeQRPayload, verifyQRPayload } from "../../dashboard/attendance/qr.utils";
+import { cacheService } from "../../../cache/index";
+import { AppKeys } from "../../../cache/keys";
+import { APP_ATTENDANCE_PERF, APP_ATTENDANCE_CALENDAR } from "../../../cache/ttl";
+import { invalidateAfterAttendanceMutation } from "../../../cache/invalidation";
 import type {
   AttendancePerformance,
   MonthlyAttendance,
@@ -42,6 +46,17 @@ class AttendanceService {
       };
     }
 
+    return cacheService.getOrSet(
+      AppKeys.attendancePerf(studentId, batchId),
+      () => this._fetchAttendancePerformance(studentId, batchId),
+      APP_ATTENDANCE_PERF
+    );
+  }
+
+  private async _fetchAttendancePerformance(
+    studentId: number,
+    batchId: number
+  ): Promise<AttendancePerformance> {
     // Get all attendance records with lecture relation for subject
     const attendances = await prisma.attendance.findMany({
       where: {
@@ -179,28 +194,34 @@ class AttendanceService {
   ): Promise<AttendanceCalendarDay[]> {
     if (!batchId) return [];
 
-    const start = new Date(year, month - 1, 1);
-    const end = new Date(year, month, 0, 23, 59, 59, 999);
+    return cacheService.getOrSet(
+      AppKeys.attendanceCalendar(studentId, batchId, month, year),
+      async () => {
+        const start = new Date(year, month - 1, 1);
+        const end = new Date(year, month, 0, 23, 59, 59, 999);
 
-    const attendances = await prisma.attendance.findMany({
-      where: {
-        studentId,
-        batchId,
-        date: { gte: start, lte: end },
-      },
-      include: {
-        lecture: {
-          select: { subject: true },
-        },
-      },
-      orderBy: { date: "asc" },
-    });
+        const attendances = await prisma.attendance.findMany({
+          where: {
+            studentId,
+            batchId,
+            date: { gte: start, lte: end },
+          },
+          include: {
+            lecture: {
+              select: { subject: true },
+            },
+          },
+          orderBy: { date: "asc" },
+        });
 
-    return attendances.map((a) => ({
-      date: a.date.toISOString().slice(0, 10),
-      status: a.status,
-      subject: a.lecture?.subject || undefined,
-    }));
+        return attendances.map((a) => ({
+          date: a.date.toISOString().slice(0, 10),
+          status: a.status,
+          subject: a.lecture?.subject || undefined,
+        }));
+      },
+      APP_ATTENDANCE_CALENDAR
+    );
   }
 
   /**
@@ -290,6 +311,7 @@ class AttendanceService {
       },
     });
 
+    invalidateAfterAttendanceMutation(batchId, [studentId]);
     return { success: true, message: "Attendance marked successfully" };
   }
 }

@@ -1,5 +1,8 @@
 import { prisma } from "../../../config/db.config";
 import { PaymentStatus } from "../../../../prisma/generated/prisma/client";
+import { cacheService } from "../../../cache/index";
+import { AppKeys } from "../../../cache/keys";
+import { APP_FEE_STRUCTURES } from "../../../cache/ttl";
 import type { AppFeeReceipt, AppFeesSummary, AppFeeStructure } from "./types";
 
 class FeesService {
@@ -76,24 +79,30 @@ class FeesService {
    * Get active fee structures for a batch
    */
   async getFeeStructures(batchId: number): Promise<AppFeeStructure[]> {
-    const structures = await prisma.feeStructure.findMany({
-      where: {
-        batchId,
-        isActive: true,
-      },
-      orderBy: { createdAt: "desc" },
-    });
+    return cacheService.getOrSet(
+      AppKeys.feeStructures(batchId),
+      async () => {
+        const structures = await prisma.feeStructure.findMany({
+          where: {
+            batchId,
+            isActive: true,
+          },
+          orderBy: { createdAt: "desc" },
+        });
 
-    return structures.map((s) => ({
-      id: s.id,
-      name: s.name,
-      amount: s.amount,
-      frequency: s.frequency,
-      dueDay: s.dueDay,
-      lateFee: s.lateFee,
-      gracePeriod: s.gracePeriod,
-      description: s.description,
-    }));
+        return structures.map((s) => ({
+          id: s.id,
+          name: s.name,
+          amount: s.amount,
+          frequency: s.frequency,
+          dueDay: s.dueDay,
+          lateFee: s.lateFee,
+          gracePeriod: s.gracePeriod,
+          description: s.description,
+        }));
+      },
+      APP_FEE_STRUCTURES
+    );
   }
 }
 
