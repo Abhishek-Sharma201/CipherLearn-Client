@@ -32,7 +32,7 @@ export class InstagramController {
      * We get the user ID from the `state` query parameter instead.
      */
     async callback(req: Request, res: Response): Promise<void> {
-        const clientUrl = config.APP.CLIENT_URL || "http://localhost:3000";
+        const clientUrl = config.APP.CLIENT_URL;
         try {
             const { code, state } = req.query;
             if (!code || typeof code !== "string") {
