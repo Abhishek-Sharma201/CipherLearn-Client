@@ -2,19 +2,20 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow
-} from "@/components/ui/table"
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue
+} from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
-import { FileDown, Loader2, BarChart3 } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
+import { FileDown, Loader2, BarChart3, Users, TrendingUp, Calendar } from "lucide-react"
 import { useGetAttendanceReportQuery } from "@/redux/slices/attendance/attendanceApi"
 import { useGetAllBatchesQuery } from "@/redux/slices/batches/batchesApi"
+import { Batch } from "@/types"
 
 export function AttendanceReport() {
     const [selectedBatchId, setSelectedBatchId] = useState<number | null>(null)
@@ -55,187 +56,188 @@ export function AttendanceReport() {
         a.click()
     }
 
+    const loading = isLoading || isFetching
+
     return (
-        <div className="space-y-6">
-            {/* Filters */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center">
-                        <BarChart3 className="mr-2 h-5 w-5" />
-                        Attendance Report
-                    </CardTitle>
-                    <CardDescription>
-                        Generate attendance reports for batches within a date range
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid gap-4 md:grid-cols-4">
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium">Select Batch</label>
-                            <select
-                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                                value={selectedBatchId || ""}
-                                onChange={(e) => setSelectedBatchId(Number(e.target.value) || null)}
-                            >
-                                <option value="">Select a batch...</option>
-                                {batches.map((batch: any) => (
-                                    <option key={batch.id} value={batch.id}>
-                                        {batch.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium">Start Date</label>
-                            <input
-                                type="date"
-                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                                value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
-                            />
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium">End Date</label>
-                            <input
-                                type="date"
-                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                                value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
-                            />
-                        </div>
-
-                        <div className="flex items-end">
-                            <Button
-                                onClick={handleExportCSV}
-                                disabled={!report}
-                                variant="outline"
-                                className="w-full"
-                            >
-                                <FileDown className="mr-2 h-4 w-4" />
-                                Export CSV
-                            </Button>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
-
-            {/* Report Results */}
-            {!selectedBatchId ? (
-                <div className="flex items-center justify-center p-8 text-muted-foreground">
-                    Please select a batch to view the report
+        <div className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-400">
+            {/* ─── Filters ─── */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <div>
+                    <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5 block">
+                        Batch
+                    </label>
+                    <Select
+                        value={String(selectedBatchId || "")}
+                        onValueChange={(v) => setSelectedBatchId(Number(v) || null)}
+                    >
+                        <SelectTrigger className="h-10 text-[13px] font-medium rounded-xl border-border/60">
+                            <SelectValue placeholder="Select a batch…" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {batches.map((batch: Batch) => (
+                                <SelectItem key={batch.id} value={String(batch.id)}>
+                                    <span className="font-semibold">{batch.name}</span>
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </div>
-            ) : (isLoading || isFetching) ? (
-                <div className="flex justify-center p-8">
-                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <div>
+                    <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5 block">
+                        From
+                    </label>
+                    <Input
+                        type="date"
+                        className="h-10 text-[13px] font-medium rounded-xl border-border/60"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                    />
+                </div>
+                <div>
+                    <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5 block">
+                        To
+                    </label>
+                    <Input
+                        type="date"
+                        className="h-10 text-[13px] font-medium rounded-xl border-border/60"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                    />
+                </div>
+                <div className="flex items-end">
+                    <Button
+                        onClick={handleExportCSV}
+                        disabled={!report}
+                        variant="outline"
+                        className="w-full h-10 rounded-xl text-[12px] font-bold gap-1.5"
+                    >
+                        <FileDown className="h-3.5 w-3.5" />
+                        Export CSV
+                    </Button>
+                </div>
+            </div>
+
+            {!selectedBatchId ? (
+                <div className="flex flex-col items-center justify-center py-16 text-center">
+                    <BarChart3 className="h-7 w-7 text-foreground/15 mb-3" />
+                    <h3 className="text-sm font-semibold mb-1">Select a batch</h3>
+                    <p className="text-[12.5px] text-muted-foreground max-w-[280px] leading-relaxed">
+                        Choose a batch and date range to generate an attendance report.
+                    </p>
+                </div>
+            ) : loading ? (
+                <div className="space-y-3">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        {[1, 2, 3, 4].map(i => (
+                            <Skeleton key={i} className="h-20 rounded-xl bg-muted/15" />
+                        ))}
+                    </div>
+                    {[1, 2, 3].map(i => (
+                        <Skeleton key={i} className="h-14 rounded-xl bg-muted/10" />
+                    ))}
                 </div>
             ) : report ? (
-                <div className="space-y-6">
-                    {/* Summary Cards */}
-                    <div className="grid gap-4 md:grid-cols-4">
-                        <Card>
-                            <CardHeader className="pb-2">
-                                <CardTitle className="text-sm font-medium text-muted-foreground">
-                                    Batch
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-2xl font-bold">{report.batchName}</p>
-                            </CardContent>
-                        </Card>
-
-                        <Card>
-                            <CardHeader className="pb-2">
-                                <CardTitle className="text-sm font-medium text-muted-foreground">
-                                    Total Students
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-2xl font-bold">{report.totalStudents}</p>
-                            </CardContent>
-                        </Card>
-
-                        <Card>
-                            <CardHeader className="pb-2">
-                                <CardTitle className="text-sm font-medium text-muted-foreground">
-                                    Date Range
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-sm font-medium">
-                                    {new Date(report.startDate).toLocaleDateString()} - {new Date(report.endDate).toLocaleDateString()}
-                                </p>
-                            </CardContent>
-                        </Card>
-
-                        <Card>
-                            <CardHeader className="pb-2">
-                                <CardTitle className="text-sm font-medium text-muted-foreground">
-                                    Overall Attendance
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="flex items-center gap-2">
-                                    <span className="text-2xl font-bold">{report.overallAttendancePercentage}%</span>
-                                    <Progress value={report.overallAttendancePercentage} className="flex-1" />
-                                </div>
-                            </CardContent>
-                        </Card>
+                <>
+                    {/* ─── Stat Cards ─── */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div className="rounded-xl border border-border/50 bg-muted/5 p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                                <Users className="h-3.5 w-3.5 text-muted-foreground" />
+                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Batch</span>
+                            </div>
+                            <p className="text-lg font-bold tracking-tight">{report.batchName}</p>
+                        </div>
+                        <div className="rounded-xl border border-border/50 bg-muted/5 p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                                <Users className="h-3.5 w-3.5 text-muted-foreground" />
+                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Students</span>
+                            </div>
+                            <p className="text-lg font-bold tracking-tight">{report.totalStudents}</p>
+                        </div>
+                        <div className="rounded-xl border border-border/50 bg-muted/5 p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                                <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Period</span>
+                            </div>
+                            <p className="text-[12px] font-semibold">
+                                {new Date(report.startDate).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                                {" — "}
+                                {new Date(report.endDate).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                            </p>
+                        </div>
+                        <div className="rounded-xl border border-border/50 bg-muted/5 p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                                <TrendingUp className="h-3.5 w-3.5 text-muted-foreground" />
+                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Overall</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className={`text-lg font-bold tracking-tight ${
+                                    report.overallAttendancePercentage >= 75 ? "text-emerald-600 dark:text-emerald-400" :
+                                    report.overallAttendancePercentage >= 50 ? "text-amber-600 dark:text-amber-400" :
+                                    "text-red-500"
+                                }`}>{report.overallAttendancePercentage}%</span>
+                            </div>
+                        </div>
                     </div>
 
-                    {/* Student Statistics Table */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Student Attendance Details</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Student Name</TableHead>
-                                        <TableHead>Email</TableHead>
-                                        <TableHead className="text-center">Present</TableHead>
-                                        <TableHead className="text-center">Absent</TableHead>
-                                        <TableHead className="text-center">Total</TableHead>
-                                        <TableHead>Attendance %</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {report.studentStats.map((student) => (
-                                        <TableRow key={student.studentId}>
-                                            <TableCell className="font-medium">{student.studentName}</TableCell>
-                                            <TableCell className="text-muted-foreground">{student.email}</TableCell>
-                                            <TableCell className="text-center text-green-600">{student.presentDays}</TableCell>
-                                            <TableCell className="text-center text-red-600">{student.absentDays}</TableCell>
-                                            <TableCell className="text-center">{student.totalDays}</TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center gap-2">
-                                                    <Progress
-                                                        value={student.percentage}
-                                                        className={`w-24 ${student.percentage >= 75 ? '' :
-                                                                student.percentage >= 50 ? '[&>div]:bg-yellow-500' :
-                                                                    '[&>div]:bg-red-500'
-                                                            }`}
-                                                    />
-                                                    <span className={`text-sm font-medium ${student.percentage >= 75 ? 'text-green-600' :
-                                                            student.percentage >= 50 ? 'text-yellow-600' :
-                                                                'text-red-600'
-                                                        }`}>
-                                                        {student.percentage}%
-                                                    </span>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </CardContent>
-                    </Card>
-                </div>
+                    {/* ─── Student Rows ─── */}
+                    <div className="space-y-1.5">
+                        <div className="grid grid-cols-12 gap-3 px-4 py-2 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                            <div className="col-span-4">Student</div>
+                            <div className="col-span-2 text-center">Present</div>
+                            <div className="col-span-2 text-center">Absent</div>
+                            <div className="col-span-1 text-center">Total</div>
+                            <div className="col-span-3 text-right">Attendance</div>
+                        </div>
+
+                        {report.studentStats.map((student) => {
+                            const pct = student.percentage
+                            const color = pct >= 75 ? "emerald" : pct >= 50 ? "amber" : "red"
+
+                            return (
+                                <div
+                                    key={student.studentId}
+                                    className="grid grid-cols-12 gap-3 items-center px-4 py-3 rounded-xl border border-border/40 hover:bg-muted/5 transition-colors"
+                                >
+                                    <div className="col-span-4 min-w-0">
+                                        <p className="text-[13px] font-semibold truncate">{student.studentName}</p>
+                                        <p className="text-[11px] text-muted-foreground truncate mt-0.5">{student.email}</p>
+                                    </div>
+                                    <div className="col-span-2 text-center">
+                                        <span className="text-[14px] font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">{student.presentDays}</span>
+                                    </div>
+                                    <div className="col-span-2 text-center">
+                                        <span className="text-[14px] font-bold text-red-500 tabular-nums">{student.absentDays}</span>
+                                    </div>
+                                    <div className="col-span-1 text-center">
+                                        <span className="text-[13px] font-semibold text-muted-foreground tabular-nums">{student.totalDays}</span>
+                                    </div>
+                                    <div className="col-span-3 flex items-center gap-2 justify-end">
+                                        <Progress
+                                            value={pct}
+                                            className={`w-16 h-1.5 ${
+                                                color === "amber" ? "[&>div]:bg-amber-500" :
+                                                color === "red" ? "[&>div]:bg-red-500" : ""
+                                            }`}
+                                        />
+                                        <span className={`text-[12px] font-bold tabular-nums min-w-[2.5rem] text-right ${
+                                            color === "emerald" ? "text-emerald-600 dark:text-emerald-400" :
+                                            color === "amber" ? "text-amber-600 dark:text-amber-400" :
+                                            "text-red-500"
+                                        }`}>{pct}%</span>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                </>
             ) : (
-                <div className="flex items-center justify-center p-8 text-muted-foreground">
-                    No data available for the selected criteria
+                <div className="flex flex-col items-center justify-center py-16 text-center">
+                    <BarChart3 className="h-7 w-7 text-foreground/15 mb-3" />
+                    <h3 className="text-sm font-semibold mb-1">No data found</h3>
+                    <p className="text-[12.5px] text-muted-foreground max-w-[280px] leading-relaxed">
+                        No attendance data is available for this batch in the selected date range.
+                    </p>
                 </div>
             )}
         </div>
