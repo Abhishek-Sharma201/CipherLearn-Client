@@ -1,10 +1,8 @@
-"use client"
-
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
     CheckCircle2, XCircle, AlertTriangle, MessageCircle, 
-    Search, Filter, Clock, RefreshCw, FileText
+    Search, RefreshCw, FileText, Send, User, Bot
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useGetAllLogsQuery, useGetInstagramAccountQuery } from "@/redux/api/instagramApi"
@@ -28,7 +26,7 @@ export function ActivityLog() {
                 </div>
                 <div className="space-y-3">
                     {[1, 2, 3, 4, 5].map(i => (
-                        <div key={i} className="h-20 animate-pulse rounded-xl bg-muted/60" />
+                        <div key={i} className="h-32 animate-pulse rounded-xl bg-muted/60" />
                     ))}
                 </div>
             </div>
@@ -75,7 +73,7 @@ export function ActivityLog() {
                         placeholder="Search users, comments, or intents..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-9 pr-4 py-2 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all"
+                        className="w-full pl-9 pr-4 py-2 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all shadow-sm"
                     />
                 </div>
                 
@@ -109,7 +107,7 @@ export function ActivityLog() {
                         size="icon"
                         onClick={refetch}
                         disabled={isFetching}
-                        className="h-8 w-8 ml-auto shrink-0"
+                        className="h-8 w-8 ml-auto shrink-0 border border-transparent hover:border-border hover:bg-muted"
                         title="Refresh"
                     >
                         <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
@@ -117,15 +115,15 @@ export function ActivityLog() {
                 </div>
             </div>
 
-            {/* Logs List */}
+            {/* Logs List - Chat UI */}
             {filteredLogs.length === 0 ? (
                 <div className="card-vercel flex flex-col items-center justify-center py-16 text-center bg-muted/30">
-                    <FileText className="mb-3 h-10 w-10 text-muted-foreground/50" />
-                    <h3 className="text-[14px] font-bold text-foreground tracking-tight">No activity found</h3>
-                    <p className="mt-1.5 text-sm text-muted-vercel">
+                    <MessageCircle className="mb-3 h-10 w-10 text-muted-foreground/50" />
+                    <h3 className="text-[14px] font-bold text-foreground tracking-tight">No conversations found</h3>
+                    <p className="mt-1.5 text-sm text-muted-vercel max-w-sm">
                         {searchTerm || statusFilter !== "ALL" 
                             ? "Try tweaking your filters or search terms." 
-                            : "When your automations start running, their activity will appear here."}
+                            : "When users comment on your posts, the automated conversations will appear here."}
                     </p>
                     {(searchTerm || statusFilter !== "ALL") && (
                         <Button 
@@ -138,98 +136,85 @@ export function ActivityLog() {
                     )}
                 </div>
             ) : (
-                <div className="space-y-3 relative">
-                    {/* Activity Line (Timeline visual) */}
-                    <div className="absolute left-6 top-4 bottom-4 w-px bg-border/50 z-0 hidden sm:block" />
-                    
+                <div className="space-y-6">
                     <AnimatePresence>
-                        {filteredLogs.map((log, i) => (
-                            <motion.div
-                                key={log.id}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: Math.min(i * 0.05, 0.5) }}
-                                className="relative z-10 sm:pl-16" // Space for timeline
-                            >
-                                {/* Timeline Node (Desktop only) */}
-                                <div className="absolute left-[20px] top-1/2 -translate-y-1/2 hidden sm:flex h-8 w-8 items-center justify-center rounded-full bg-background border border-border">
-                                    {log.dmStatus === "SENT" ? (
-                                        <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                                    ) : log.dmStatus === "RATE_LIMITED" ? (
-                                        <AlertTriangle className="h-4 w-4 text-amber-500" />
-                                    ) : (
-                                        <XCircle className="h-4 w-4 text-destructive" />
-                                    )}
-                                </div>
-
-                                {/* Main Card */}
-                                <div className="card-vercel p-0 overflow-hidden transition-colors hover:border-primary/30 group">
-                                    <div className="p-4 sm:p-5 flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center">
-                                        
-                                        {/* Mobile Status Header */}
-                                        <div className="flex sm:hidden items-center gap-2 w-full pb-3 border-b border-border/50">
-                                            {log.dmStatus === "SENT" ? (
-                                                <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-500">
-                                                    <CheckCircle2 className="h-3.5 w-3.5" /> SENT
-                                                </div>
-                                            ) : log.dmStatus === "RATE_LIMITED" ? (
-                                                <div className="flex items-center gap-1.5 text-xs font-bold text-amber-500">
-                                                    <AlertTriangle className="h-3.5 w-3.5" /> RATE_LIMITED
-                                                </div>
-                                            ) : (
-                                                <div className="flex items-center gap-1.5 text-xs font-bold text-destructive">
-                                                    <XCircle className="h-3.5 w-3.5" /> FAILED
-                                                </div>
-                                            )}
-                                            <div className="ml-auto text-xs text-muted-vercel flex items-center gap-1 tabular-nums">
-                                                <Clock className="h-3 w-3" />
-                                                {new Date(log.createdAt).toLocaleString()}
-                                            </div>
+                        {filteredLogs.map((log, i) => {
+                            const isError = log.dmStatus !== "SENT"
+                            const rule = log.rule as any
+                            const ruleButtons = rule?.dmButtons as Array<{ title: string; url: string }> | null
+                            
+                            return (
+                                <motion.div
+                                    key={log.id}
+                                    initial={{ opacity: 0, y: 15 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: Math.min(i * 0.05, 0.3) }}
+                                    className="card-vercel p-5 flex flex-col gap-5 border border-border shadow-sm"
+                                >
+                                    {/* --- User Message Bubble --- */}
+                                    <div className="flex gap-3 justify-start items-end max-w-[85%]">
+                                        <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center border border-border shrink-0">
+                                            <User className="h-4 w-4 text-muted-foreground" />
                                         </div>
-
-                                        {/* User & Intent */}
-                                        <div className="flex-1 min-w-0 w-full">
-                                            <div className="flex items-baseline gap-2 mb-1.5">
-                                                <span className="font-bold text-[14px] text-foreground tracking-tight truncate">
-                                                    @{log.commenterUsername || "instagram_user"}
-                                                </span>
-                                                <span className="text-xs text-muted-vercel border border-border bg-muted/50 px-1.5 py-0.5 rounded">
-                                                    {log.rule?.triggerKeyword}
+                                        <div className="flex flex-col gap-1 items-start">
+                                            <span className="text-[11px] font-medium text-muted-foreground ml-1">
+                                                @{log.commenterUsername || "user"} • {new Date(log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            </span>
+                                            <div className="bg-muted px-4 py-2.5 rounded-2xl rounded-bl-sm border border-border text-[14px] text-foreground leading-relaxed shadow-sm">
+                                                {log.commentText}
+                                            </div>
+                                            <div className="flex items-center gap-1.5 mt-0.5 opacity-70">
+                                                <span className="text-[10px] font-semibold text-primary/80 uppercase tracking-widest bg-primary/10 px-1.5 py-0.5 rounded border border-primary/20">
+                                                    Matched: {log.rule?.triggerKeyword}
                                                 </span>
                                             </div>
-                                            
-                                            {/* Original Comment */}
-                                            <div className="flex items-start gap-2 text-[13px] text-muted-foreground bg-muted/30 p-2 rounded-lg border border-border/50 w-full">
-                                                <MessageCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 opacity-50" />
-                                                <span className="line-clamp-2 leading-relaxed">"{log.commentText}"</span>
-                                            </div>
-                                        </div>
-
-                                        {/* Desktop Meta & Status */}
-                                        <div className="hidden sm:flex flex-col items-end gap-2 shrink-0 min-w-[140px]">
-                                            <div className="text-[11px] font-medium text-muted-foreground flex items-center gap-1 tabular-nums">
-                                                <Clock className="h-3 w-3" />
-                                                {new Date(log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                                <span className="text-border mx-1">•</span>
-                                                {new Date(log.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}
-                                            </div>
-                                            {(log.rule as any)?.dmType === "TEMPLATE" && (
-                                                <span className="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-1.5 py-0.5 rounded">
-                                                    Rich DM
-                                                </span>
-                                            )}
                                         </div>
                                     </div>
 
-                                    {/* Expanded Error Details if any */}
-                                    {log.dmStatus !== "SENT" && log.errorMessage && (
-                                        <div className="bg-destructive/5 px-5 py-3 border-t border-destructive/10 text-[12px] text-destructive/80 font-medium font-mono">
-                                            Error: {log.errorMessage}
+                                    {/* --- Bot Reply Bubble --- */}
+                                    <div className="flex gap-3 justify-end items-end w-full">
+                                        <div className="flex flex-col gap-1 items-end w-full max-w-[75%]">
+                                            <span className="text-[11px] font-medium text-muted-foreground mr-1 flex items-center gap-1.5">
+                                                {isError ? (
+                                                    <span className="text-destructive font-semibold flex items-center gap-1"><AlertTriangle className="h-3 w-3" /> Failed</span>
+                                                ) : (
+                                                    <span className="text-emerald-500 font-semibold flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> Sent</span>
+                                                )}
+                                                • Automation Bot
+                                            </span>
+                                            
+                                            <div className="w-full flex flex-col gap-1.5">
+                                                <div className={`px-4 py-2.5 rounded-2xl rounded-br-sm text-[14px] leading-relaxed shadow-sm text-left ${isError ? 'bg-destructive text-destructive-foreground' : 'bg-primary text-primary-foreground'}`}>
+                                                    {(log.rule as any)?.dmMessage || "No message content"}
+                                                </div>
+                                                
+                                                {/* Rich DM Buttons Preview */}
+                                                {!isError && ruleButtons && ruleButtons.length > 0 && (
+                                                    <div className="flex flex-col gap-1.5 ml-auto w-full max-w-[280px]">
+                                                        {ruleButtons.map((btn, idx) => (
+                                                            <div key={idx} className="w-full py-2 bg-muted/50 border border-border rounded-lg text-center text-[13px] font-medium text-primary hover:bg-muted transition-colors truncate px-3">
+                                                                {btn.title}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                            
+                                            {/* Error Message Details */}
+                                            {isError && log.errorMessage && (
+                                                <div className="text-[11px] text-destructive/80 font-mono bg-destructive/5 px-2.5 py-1.5 rounded border border-destructive/10 mt-1 self-end text-right">
+                                                    {log.errorMessage}
+                                                </div>
+                                            )}
                                         </div>
-                                    )}
-                                </div>
-                            </motion.div>
-                        ))}
+                                        <div className={`h-8 w-8 rounded-full flex items-center justify-center border shrink-0 ${isError ? 'bg-destructive/10 border-destructive/20' : 'bg-primary/10 border-primary/20'}`}>
+                                            <Bot className={`h-4 w-4 ${isError ? 'text-destructive' : 'text-primary'}`} />
+                                        </div>
+                                    </div>
+
+                                </motion.div>
+                            )
+                        })}
                     </AnimatePresence>
                 </div>
             )}

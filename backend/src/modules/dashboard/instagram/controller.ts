@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { instagramService } from "./service";
+import { automationEngine } from "./automation.engine";
 import { config } from "../../../config/env.config";
 import logger from "../../../utils/logger";
 
@@ -372,7 +373,7 @@ export class InstagramController {
                     if (change.field === "comments") {
                         const value = change.value;
                         // value: { id, media: { id }, text, from: { id, username }, ... }
-                        await instagramService.processCommentWebhook({
+                        await automationEngine.processCommentWebhook({
                             igUserId,
                             mediaId: value.media?.id,
                             commentId: value.id,
@@ -428,7 +429,7 @@ export class InstagramController {
             logger.info(`[TEST] Simulating comment webhook: "${commentText}" by @${commenterUsername || "test_user"}`);
 
             // Simulate the webhook processing
-            await instagramService.processCommentWebhook({
+            await automationEngine.processCommentWebhook({
                 igUserId: account.igUserId || "",
                 mediaId: activeRule.mediaId,
                 commentId: `test_comment_${Date.now()}`,

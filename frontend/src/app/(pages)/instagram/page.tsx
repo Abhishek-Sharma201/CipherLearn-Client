@@ -101,7 +101,7 @@ export default function InstagramPage() {
                 <TabsContent value="automations" className="animate-fade-in outline-none">
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="text-lg font-bold tracking-tight">Select a Post</h2>
-                        <p className="text-sm text-muted-vercel">Choose a post to add trigger rules</p>
+
                     </div>
                     <PostGrid onSelectPost={setSelectedPost} />
                 </TabsContent>
