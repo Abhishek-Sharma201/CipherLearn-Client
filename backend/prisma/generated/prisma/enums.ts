@@ -39,6 +39,43 @@ export const SubmissionStatus = {
 export type SubmissionStatus = (typeof SubmissionStatus)[keyof typeof SubmissionStatus]
 
 
+export const SubmissionType = {
+  FILE_UPLOAD: 'FILE_UPLOAD',
+  TEXT_ENTRY: 'TEXT_ENTRY',
+  BOTH: 'BOTH'
+} as const
+
+export type SubmissionType = (typeof SubmissionType)[keyof typeof SubmissionType]
+
+
+export const AssignmentStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED'
+} as const
+
+export type AssignmentStatus = (typeof AssignmentStatus)[keyof typeof AssignmentStatus]
+
+
+export const StudyMaterialType = {
+  DOCUMENT: 'DOCUMENT',
+  VIDEO: 'VIDEO',
+  NOTES: 'NOTES',
+  SLIDES: 'SLIDES',
+  WORKSHEET: 'WORKSHEET'
+} as const
+
+export type StudyMaterialType = (typeof StudyMaterialType)[keyof typeof StudyMaterialType]
+
+
+export const MaterialStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  SCHEDULED: 'SCHEDULED'
+} as const
+
+export type MaterialStatus = (typeof MaterialStatus)[keyof typeof MaterialStatus]
+
+
 export const UserRoles = {
   ADMIN: 'ADMIN',
   TEACHER: 'TEACHER',

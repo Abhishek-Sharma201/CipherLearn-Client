@@ -1,8 +1,9 @@
 import multer from "multer";
 import path from "path";
 
-// File type configuration
-const ALLOWED_MIME_TYPES = {
+// ─── Magic-number signatures (for post-upload validation) ────────────────────
+
+const MAGIC_NUMBERS: Record<string, number[] | null> = {
   // Images
   "image/jpeg": [0xff, 0xd8, 0xff],
   "image/png": [0x89, 0x50, 0x4e, 0x47],
@@ -11,51 +12,165 @@ const ALLOWED_MIME_TYPES = {
   // Documents
   "application/pdf": [0x25, 0x50, 0x44, 0x46],
   "application/msword": [0xd0, 0xcf, 0x11, 0xe0],
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
-    0x50, 0x4b, 0x03, 0x04,
-  ],
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [0x50, 0x4b, 0x03, 0x04],
+  "application/vnd.ms-excel": [0xd0, 0xcf, 0x11, 0xe0],
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [0x50, 0x4b, 0x03, 0x04],
   "application/vnd.ms-powerpoint": [0xd0, 0xcf, 0x11, 0xe0],
-  "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-    [0x50, 0x4b, 0x03, 0x04],
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation": [0x50, 0x4b, 0x03, 0x04],
+  // Text / archives — no magic number check
   "text/plain": null,
   "text/markdown": null,
+  "application/zip": null,
+  "application/x-zip-compressed": null,
+  // Video — no magic number check (too many container variants)
+  "video/mp4": null,
+  "video/quicktime": null,
+  "video/x-msvideo": null,
 };
 
-const ALLOWED_EXTENSIONS = [
-  ".jpg",
-  ".jpeg",
-  ".png",
-  ".gif",
-  ".webp",
-  ".pdf",
-  ".doc",
-  ".docx",
-  ".ppt",
-  ".pptx",
-  ".txt",
-  ".md",
-];
+// ─── Shared MIME-type sets ────────────────────────────────────────────────────
 
-// File size limits
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB per file
-const MAX_FILES = 5;
+/** Core office + image types (no Excel, no video) — used for notes (dashboard) */
+export const NOTES_MIME_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-powerpoint",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "text/plain",
+  "text/markdown",
+]);
 
-// Sanitize file name (prevent path traversal)
-const sanitizeFilename = (filename: string): string => {
-  return filename
-    .replace(/[^a-zA-Z0-9._-]/g, "_")
-    .replace(/\.{2,}/g, ".")
-    .substring(0, 200);
-};
+/** All document types students can submit — 25 MB/file, 5 files */
+export const SUBMISSION_MIME_TYPES = new Set([
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "application/vnd.ms-powerpoint",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+  "text/plain",
+  "application/zip",
+  "application/x-zip-compressed",
+]);
 
-// Validate magic numbers (file signature)
-const validateMagicNumber = (
-  buffer: Buffer,
-  mimeType: string
-): boolean => {
-  const magicNumbers = ALLOWED_MIME_TYPES[mimeType as keyof typeof ALLOWED_MIME_TYPES];
+/** Teacher assignment brief attachments — 50 MB/file, 5 files */
+export const ASSIGNMENT_MIME_TYPES = new Set([
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "application/vnd.ms-powerpoint",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "text/plain",
+  "application/zip",
+]);
 
-  if (!magicNumbers) return true; // Skip validation for text files
+/** Study material uploads (includes video) — 100 MB/file, 5 files */
+export const MATERIAL_MIME_TYPES = new Set([
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "application/vnd.ms-powerpoint",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "video/mp4",
+  "video/quicktime",
+  "video/x-msvideo",
+  "text/plain",
+  "application/zip",
+]);
+
+// ─── Factory ──────────────────────────────────────────────────────────────────
+
+interface UploaderOptions {
+  mimeTypes: Set<string>;
+  maxFileSize: number;
+  maxFiles: number;
+}
+
+/**
+ * Create a memory-storage Multer uploader with MIME-type guard.
+ * All files are kept in memory and uploaded to Cloudinary by the controller.
+ */
+export const createUploader = ({ mimeTypes, maxFileSize, maxFiles }: UploaderOptions) =>
+  multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: maxFileSize, files: maxFiles },
+    fileFilter: (_req, file, cb) => {
+      if (!mimeTypes.has(file.mimetype)) {
+        return cb(new Error(`File type "${file.mimetype}" is not allowed`));
+      }
+      cb(null, true);
+    },
+  });
+
+// ─── Pre-built uploaders ──────────────────────────────────────────────────────
+
+/** Dashboard notes upload: images + office docs, 10 MB/file, 5 files */
+export const notesUpload = createUploader({
+  mimeTypes: NOTES_MIME_TYPES,
+  maxFileSize: 10 * 1024 * 1024,
+  maxFiles: 5,
+});
+
+/** Student assignment submission: docs + images, 25 MB/file, 5 files */
+export const submissionUpload = createUploader({
+  mimeTypes: SUBMISSION_MIME_TYPES,
+  maxFileSize: 25 * 1024 * 1024,
+  maxFiles: 5,
+});
+
+/** Teacher assignment attachment: docs + images, 50 MB/file, 5 files */
+export const assignmentUpload = createUploader({
+  mimeTypes: ASSIGNMENT_MIME_TYPES,
+  maxFileSize: 50 * 1024 * 1024,
+  maxFiles: 5,
+});
+
+/** Teacher study material upload: docs + images + video, 100 MB/file, 5 files */
+export const materialUpload = createUploader({
+  mimeTypes: MATERIAL_MIME_TYPES,
+  maxFileSize: 100 * 1024 * 1024,
+  maxFiles: 5,
+});
+
+// ─── Security helpers ─────────────────────────────────────────────────────────
+
+/**
+ * Validate file magic numbers (file signature) against the claimed MIME type.
+ * Called in controllers after multer has put the file in memory.
+ * Returns true if the file is valid (or if no signature check exists for the type).
+ */
+export const validateMagicNumber = (buffer: Buffer, mimeType: string): boolean => {
+  const magicNumbers = MAGIC_NUMBERS[mimeType];
+
+  if (magicNumbers === undefined) {
+    // Unknown MIME type — reject
+    return false;
+  }
+
+  if (magicNumbers === null) {
+    // No signature check for this type (text, zip, video)
+    return true;
+  }
 
   if (!buffer || buffer.length < magicNumbers.length) return false;
 
@@ -66,52 +181,14 @@ const validateMagicNumber = (
   return true;
 };
 
-// File filter for multer
-const fileFilter = (
-  req: Express.Request,
-  file: Express.Multer.File,
-  cb: multer.FileFilterCallback
-) => {
-  const ext = path.extname(file.originalname).toLowerCase();
-  const mimeType = file.mimetype.toLowerCase();
+/**
+ * Sanitize a filename to prevent path traversal and injection.
+ */
+export const sanitizeFilename = (filename: string): string =>
+  filename
+    .replace(/[^a-zA-Z0-9._-]/g, "_")
+    .replace(/\.{2,}/g, ".")
+    .substring(0, 200);
 
-  // Check file extension
-  if (!ALLOWED_EXTENSIONS.includes(ext)) {
-    return cb(
-      new Error(
-        `Invalid file type. Allowed: ${ALLOWED_EXTENSIONS.join(", ")}`
-      )
-    );
-  }
-
-  // Check MIME type
-  if (!(mimeType in ALLOWED_MIME_TYPES)) {
-    return cb(new Error(`Invalid MIME type: ${mimeType}`));
-  }
-
-  // Sanitize filename
-  file.originalname = sanitizeFilename(file.originalname);
-
-  cb(null, true);
-};
-
-// Storage configuration
-const storage = multer.memoryStorage();
-
-// Multer configuration for notes upload
-export const notesUpload = multer({
-  storage,
-  fileFilter,
-  limits: {
-    fileSize: MAX_FILE_SIZE,
-    files: MAX_FILES,
-  },
-});
-
-// Legacy export for backward compatibility
-export const upload = multer({ storage });
-
-export default upload;
-
-// Export validation function for use in services
-export { validateMagicNumber, sanitizeFilename };
+// Legacy default export for backward compatibility
+export default multer({ storage: multer.memoryStorage() });

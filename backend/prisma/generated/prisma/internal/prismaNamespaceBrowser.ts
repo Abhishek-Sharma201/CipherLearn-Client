@@ -234,11 +234,18 @@ export const AssignmentSlotScalarFieldEnum = {
   description: 'description',
   attachments: 'attachments',
   batchId: 'batchId',
+  teacherId: 'teacherId',
+  groupId: 'groupId',
+  submissionType: 'submissionType',
+  assignmentStatus: 'assignmentStatus',
+  allowLateSubmissions: 'allowLateSubmissions',
+  plagiarismCheck: 'plagiarismCheck',
   dueDate: 'dueDate',
   createdBy: 'createdBy',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  isDeleted: 'isDeleted'
+  isDeleted: 'isDeleted',
+  deletedBy: 'deletedBy'
 } as const
 
 export type AssignmentSlotScalarFieldEnum = (typeof AssignmentSlotScalarFieldEnum)[keyof typeof AssignmentSlotScalarFieldEnum]
@@ -288,9 +295,17 @@ export const StudyMaterialScalarFieldEnum = {
   description: 'description',
   files: 'files',
   batchId: 'batchId',
+  teacherId: 'teacherId',
   category: 'category',
+  subject: 'subject',
+  chapter: 'chapter',
+  materialType: 'materialType',
+  materialStatus: 'materialStatus',
+  scheduledAt: 'scheduledAt',
+  visibleBatchIds: 'visibleBatchIds',
   createdBy: 'createdBy',
   isDeleted: 'isDeleted',
+  deletedBy: 'deletedBy',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -446,6 +461,9 @@ export const TestScalarFieldEnum = {
   syllabus: 'syllabus',
   instructions: 'instructions',
   status: 'status',
+  publishedAt: 'publishedAt',
+  scoresLocked: 'scoresLocked',
+  teacherId: 'teacherId',
   createdBy: 'createdBy',
   isDeleted: 'isDeleted',
   createdAt: 'createdAt',

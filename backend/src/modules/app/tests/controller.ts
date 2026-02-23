@@ -1,7 +1,8 @@
 import type { Request, Response } from "express";
 import AppTestService from "./service";
 import logger from "../../../utils/logger";
-import { UserRoles } from "../../../../prisma/generated/prisma/enums";
+import { TestStatus, UserRoles } from "../../../../prisma/generated/prisma/enums";
+import type { BulkSaveScoreInput } from "./types";
 
 const testService = new AppTestService();
 
@@ -119,6 +120,152 @@ export default class AppTestController {
         success: false,
         message: `Failed to fetch test scores: ${error.message}`,
       });
+    }
+  }
+
+  // ==================== TEACHER (NEW) ENDPOINTS ====================
+
+  /**
+   * GET /app/tests/teacher
+   * Teacher: list their tests with grading status
+   *   ?batchId=&subject=&status=&page=&limit=
+   */
+  public async getTeacherTests(req: Request, res: Response) {
+    try {
+      const user = req.user!;
+      const batchId = req.query.batchId ? Number(req.query.batchId) : undefined;
+      const subject = req.query.subject as string | undefined;
+      const status = req.query.status as TestStatus | undefined;
+      const page = req.query.page ? Number(req.query.page) : 1;
+      const limit = Math.min(req.query.limit ? Number(req.query.limit) : 20, 50);
+
+      const result = await testService.getTeacherTests(user.id, {
+        batchId,
+        subject,
+        status,
+        page,
+        limit,
+      });
+
+      return res.status(200).json({
+        success: true,
+        data: result.tests,
+        pagination: result.pagination,
+      });
+    } catch (error: any) {
+      logger.error("AppTestController.getTeacherTests error:", error);
+      return res.status(500).json({
+        success: false,
+        message: `Failed to fetch tests: ${error.message}`,
+      });
+    }
+  }
+
+  /**
+   * GET /app/tests/teacher/:id/score-sheet
+   * Teacher: get test with all student score slots (null = ungraded)
+   */
+  public async getScoreSheet(req: Request, res: Response) {
+    try {
+      const user = req.user!;
+      const testId = Number(req.params.id);
+
+      if (isNaN(testId)) {
+        return res.status(400).json({ success: false, message: "Invalid test ID" });
+      }
+
+      const result = await testService.getScoreSheet(testId, user.id);
+      return res.status(200).json({ success: true, data: result });
+    } catch (error: any) {
+      logger.error("AppTestController.getScoreSheet error:", error);
+      const status = error.message.includes("not found") ? 404 : 400;
+      return res.status(status).json({ success: false, message: error.message });
+    }
+  }
+
+  /**
+   * PUT /app/tests/teacher/:id/scores
+   * Teacher: bulk save scores
+   * Body: { scores: [{ studentId, marksObtained, remarks? }] }
+   */
+  public async bulkSaveScores(req: Request, res: Response) {
+    try {
+      const user = req.user!;
+      const testId = Number(req.params.id);
+
+      if (isNaN(testId)) {
+        return res.status(400).json({ success: false, message: "Invalid test ID" });
+      }
+
+      const { scores } = req.body as { scores: BulkSaveScoreInput[] };
+
+      if (!Array.isArray(scores) || scores.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: "scores must be a non-empty array",
+        });
+      }
+
+      const result = await testService.bulkSaveScores(testId, user.id, scores);
+
+      return res.status(200).json({
+        success: true,
+        message: `Scores saved for ${result.saved} students`,
+        data: result,
+      });
+    } catch (error: any) {
+      logger.error("AppTestController.bulkSaveScores error:", error);
+      const status = error.message.includes("not found") ? 404 : 400;
+      return res.status(status).json({ success: false, message: error.message });
+    }
+  }
+
+  /**
+   * PUT /app/tests/teacher/:id/publish
+   * Teacher: publish results (locks scores, notifies students)
+   */
+  public async publishResults(req: Request, res: Response) {
+    try {
+      const user = req.user!;
+      const testId = Number(req.params.id);
+
+      if (isNaN(testId)) {
+        return res.status(400).json({ success: false, message: "Invalid test ID" });
+      }
+
+      const summary = await testService.publishTestResults(testId, user.id);
+
+      return res.status(200).json({
+        success: true,
+        message: "Results published successfully",
+        data: summary,
+      });
+    } catch (error: any) {
+      logger.error("AppTestController.publishResults error:", error);
+      const status = error.message.includes("not found") ? 404 : 400;
+      return res.status(status).json({ success: false, message: error.message });
+    }
+  }
+
+  /**
+   * GET /app/tests/teacher/:id/summary
+   * Teacher: class average, highest/lowest, distribution
+   */
+  public async getTestSummary(req: Request, res: Response) {
+    try {
+      const user = req.user!;
+      const testId = Number(req.params.id);
+
+      if (isNaN(testId)) {
+        return res.status(400).json({ success: false, message: "Invalid test ID" });
+      }
+
+      const summary = await testService.getTestSummary(testId, user.id);
+      return res.status(200).json({ success: true, data: summary });
+    } catch (error: any) {
+      logger.error("AppTestController.getTestSummary error:", error);
+      const status = error.message.includes("not found") ? 404 : 500;
+      return res.status(status).json({ success: false, message: error.message });
     }
   }
 }

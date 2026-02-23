@@ -102,6 +102,80 @@ export const sendPasswordResetEmail = async (
 };
 
 /**
+ * Send account registration email to newly created students/teachers
+ * Called right after enrollment/teacher creation — notifies them to set up their password
+ */
+export const sendAccountRegistrationEmail = async (
+  email: string,
+  name: string,
+  role: "STUDENT" | "TEACHER"
+): Promise<boolean> => {
+  const roleLabel = role === "TEACHER" ? "Teacher" : "Student";
+  const roleColor = role === "TEACHER" ? "#0F766E" : "#6366f1";
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Your CipherLearn Account is Ready</title>
+    </head>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="background: linear-gradient(135deg, ${roleColor} 0%, #8b5cf6 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 28px;">CipherLearn</h1>
+        <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0;">${roleLabel} Account Created</p>
+      </div>
+
+      <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; border: 1px solid #e5e7eb; border-top: none;">
+        <p style="font-size: 16px;">Hello <strong>${name}</strong>,</p>
+
+        <p style="font-size: 16px;">
+          Your <strong>${roleLabel}</strong> account has been created on CipherLearn.
+          You're almost ready to get started — you just need to set up your password.
+        </p>
+
+        <div style="background: #ecfdf5; border-left: 4px solid #10b981; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;">
+          <p style="margin: 0; color: #065f46; font-size: 14px;">
+            <strong>Next Steps:</strong>
+          </p>
+          <ol style="margin: 10px 0 0 0; padding-left: 20px; color: #065f46; font-size: 14px;">
+            <li>Open the CipherLearn app</li>
+            <li>Enter your registered email: <strong>${email}</strong></li>
+            <li>Set up your password when prompted</li>
+            <li>Log in and access your ${roleLabel.toLowerCase()} dashboard</li>
+          </ol>
+        </div>
+
+        <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;">
+          <p style="margin: 0; color: #92400e; font-size: 14px;">
+            <strong>Important:</strong> Keep this email safe — your registered email address is
+            <strong>${email}</strong>. You will need it to log in.
+          </p>
+        </div>
+
+        <p style="font-size: 14px; color: #6b7280;">
+          If you have any questions, please contact your class administrator.
+        </p>
+
+        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 25px 0;">
+
+        <p style="font-size: 12px; color: #9ca3af; text-align: center; margin: 0;">
+          This is an automated message from CipherLearn. Please do not reply to this email.
+        </p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  return sendEmail({
+    to: email,
+    subject: `Your CipherLearn ${roleLabel} Account is Ready`,
+    html,
+  });
+};
+
+/**
  * Send welcome email after password setup
  */
 export const sendWelcomeEmail = async (

@@ -12,6 +12,9 @@ import type {
   QRAttendanceResult,
   AttendanceCalendarDay,
   AttendanceHistoryQuery,
+  TeacherBatchStudent,
+  MarkAttendanceInput,
+  AttendanceReportEntry,
 } from "./types";
 
 class AttendanceService {
@@ -313,6 +316,199 @@ class AttendanceService {
 
     invalidateAfterAttendanceMutation(batchId, [studentId]);
     return { success: true, message: "Attendance marked successfully" };
+  }
+
+  // ==================== TEACHER METHODS ====================
+
+  /**
+   * Get all students in a batch (for the attendance marking screen)
+   */
+  async getBatchStudents(batchId: number): Promise<TeacherBatchStudent[]> {
+    const students = await prisma.student.findMany({
+      where: { batchId, isDeleted: false },
+      select: { id: true, fullname: true, email: true },
+      orderBy: { fullname: "asc" },
+    });
+    return students;
+  }
+
+  /**
+   * Bulk mark/update attendance for a specific date.
+   * Creates AttendanceSheet if it doesn't exist.
+   * Upserts individual Attendance records.
+   */
+  async markTeacherAttendance(
+    teacherId: number,
+    teacherName: string,
+    input: MarkAttendanceInput
+  ): Promise<{ marked: number }> {
+    const { batchId, date, records } = input;
+
+    if (!records || records.length === 0) {
+      throw new Error("No attendance records provided");
+    }
+
+    const parsedDate = new Date(date);
+    if (isNaN(parsedDate.getTime())) {
+      throw new Error("Invalid date format. Use YYYY-MM-DD");
+    }
+
+    // Normalize to start of day (UTC)
+    parsedDate.setUTCHours(0, 0, 0, 0);
+
+    const month = (parsedDate.getUTCMonth() + 1).toString().padStart(2, "0");
+    const year = parsedDate.getUTCFullYear().toString();
+
+    // Get or create attendance sheet for this month
+    let sheet = await prisma.attendanceSheet.findUnique({
+      where: { batchId_year_month: { batchId, year, month } },
+    });
+
+    if (!sheet) {
+      sheet = await prisma.attendanceSheet.create({
+        data: { batchId, year, month },
+      });
+    }
+
+    const markedAt = new Date();
+
+    // Upsert each attendance record
+    await prisma.$transaction(
+      records.map((record) =>
+        prisma.attendance.upsert({
+          where: {
+            studentId_date_batchId: {
+              studentId: record.studentId,
+              date: parsedDate,
+              batchId,
+            },
+          },
+          create: {
+            studentId: record.studentId,
+            batchId,
+            date: parsedDate,
+            time: markedAt.toTimeString().slice(0, 5),
+            status: record.status as AttendanceStatus,
+            method: "MANUAL",
+            markedBy: teacherName,
+            markedById: teacherId,
+            reason: record.reason ?? null,
+            attendanceSheetId: sheet.id,
+          },
+          update: {
+            status: record.status as AttendanceStatus,
+            markedBy: teacherName,
+            markedById: teacherId,
+            reason: record.reason ?? null,
+            time: markedAt.toTimeString().slice(0, 5),
+          },
+        })
+      )
+    );
+
+    // Invalidate cache for all affected students
+    const studentIds = records.map((r) => r.studentId);
+    invalidateAfterAttendanceMutation(batchId, studentIds);
+
+    return { marked: records.length };
+  }
+
+  /**
+   * Get past attendance reports for a batch, grouped by date.
+   * Returns "submitted by" from the markedBy field of each session.
+   */
+  async getTeacherReports(
+    batchId: number,
+    page: number,
+    limit: number
+  ): Promise<{ reports: AttendanceReportEntry[]; pagination: object }> {
+    const skip = (page - 1) * limit;
+
+    // Get distinct dates with stats, ordered by date desc
+    const rawDates = await prisma.attendance.groupBy({
+      by: ["date"],
+      where: { batchId },
+      _count: { id: true },
+      orderBy: { date: "desc" },
+      skip,
+      take: limit,
+    });
+
+    const totalDates = await prisma.attendance.groupBy({
+      by: ["date"],
+      where: { batchId },
+      _count: { id: true },
+    });
+
+    const reports: AttendanceReportEntry[] = await Promise.all(
+      rawDates.map(async (d) => {
+        const [allRecords, presentCount, absentCount, lateCount] =
+          await Promise.all([
+            prisma.attendance.findFirst({
+              where: { batchId, date: d.date },
+              select: { markedBy: true, createdAt: true },
+              orderBy: { createdAt: "asc" },
+            }),
+            prisma.attendance.count({
+              where: { batchId, date: d.date, status: AttendanceStatus.PRESENT },
+            }),
+            prisma.attendance.count({
+              where: { batchId, date: d.date, status: AttendanceStatus.ABSENT },
+            }),
+            prisma.attendance.count({
+              where: { batchId, date: d.date, status: AttendanceStatus.LATE },
+            }),
+          ]);
+
+        return {
+          date: d.date.toISOString().slice(0, 10),
+          submittedBy: allRecords?.markedBy ?? "Unknown",
+          submittedAt: allRecords?.createdAt?.toISOString() ?? d.date.toISOString(),
+          stats: {
+            total: d._count.id,
+            present: presentCount,
+            absent: absentCount,
+            late: lateCount,
+          },
+        };
+      })
+    );
+
+    return {
+      reports,
+      pagination: {
+        page,
+        limit,
+        total: totalDates.length,
+        totalPages: Math.ceil(totalDates.length / limit),
+      },
+    };
+  }
+
+  /**
+   * Get detailed attendance for a specific date (for expanding a report card)
+   */
+  async getDateAttendanceDetail(batchId: number, date: string) {
+    const parsedDate = new Date(date);
+    parsedDate.setUTCHours(0, 0, 0, 0);
+
+    const records = await prisma.attendance.findMany({
+      where: { batchId, date: parsedDate },
+      include: {
+        student: { select: { id: true, fullname: true, email: true } },
+      },
+      orderBy: { student: { fullname: "asc" } },
+    });
+
+    return records.map((r) => ({
+      studentId: r.studentId,
+      fullname: r.student.fullname,
+      email: r.student.email,
+      status: r.status,
+      time: r.time,
+      markedBy: r.markedBy,
+      reason: r.reason,
+    }));
   }
 }
 

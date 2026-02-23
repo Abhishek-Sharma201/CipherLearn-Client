@@ -1,47 +1,79 @@
 import { Router } from "express";
-import multer from "multer";
 import { assignmentsController } from "./controller";
-import { isStudent, isAppUser } from "../../auth/middleware";
+import { isStudent, isAppUser, isTeacher } from "../../auth/middleware";
 import { fileUploadRateLimiter, appReadRateLimiter } from "../../../middleware/rateLimiter";
+import { submissionUpload, assignmentUpload } from "../../../config/multer.config";
 
 const router = Router();
 
-// ─── Multer: memory storage → Cloudinary ────────────────────────────────────
-// UI allows 25 MB per file; max 5 files per submission
-const SUBMISSION_MAX_SIZE = 25 * 1024 * 1024; // 25 MB
-
-const ALLOWED_MIME_TYPES = new Set([
-  "application/pdf",
-  "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "application/vnd.ms-excel",
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  "application/vnd.ms-powerpoint",
-  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-  "image/jpeg",
-  "image/png",
-  "image/gif",
-  "image/webp",
-  "text/plain",
-  "application/zip",
-  "application/x-zip-compressed",
-]);
-
-const submissionUpload = multer({
-  storage: multer.memoryStorage(),
-  limits: {
-    fileSize: SUBMISSION_MAX_SIZE,
-    files: 5,
-  },
-  fileFilter: (_req, file, cb) => {
-    if (!ALLOWED_MIME_TYPES.has(file.mimetype)) {
-      return cb(new Error(`File type "${file.mimetype}" is not allowed`));
-    }
-    cb(null, true);
-  },
-});
-
 // ─── Routes ─────────────────────────────────────────────────────────────────
+
+// ==================== TEACHER ROUTES (before /:id to avoid conflicts) ====================
+
+/**
+ * GET /app/assignments/teacher
+ * Teacher: list their assignments with tab filter
+ *   ?tab=active|drafts|graded&batchId=&page=&limit=
+ */
+router.get(
+  "/teacher",
+  isTeacher,
+  appReadRateLimiter,
+  assignmentsController.getTeacherAssignments.bind(assignmentsController)
+);
+
+/**
+ * POST /app/assignments/teacher
+ * Teacher: create assignment for one or more batches
+ * Body (multipart/form-data): title, subject, description?, batchIds (JSON),
+ *   dueDate?, submissionType?, assignmentStatus?, allowLateSubmissions?,
+ *   plagiarismCheck?, files[] (optional brief attachments, 50MB max)
+ *
+ * Rate limit: 10 uploads per 5 min
+ */
+router.post(
+  "/teacher",
+  isTeacher,
+  fileUploadRateLimiter,
+  assignmentUpload.array("files", 5),
+  assignmentsController.createAssignment.bind(assignmentsController)
+);
+
+/**
+ * GET /app/assignments/teacher/:id/review
+ * Teacher: per-student review page (SUBMITTED/LATE/MISSING)
+ *   ?status=submitted|not_submitted|late
+ */
+router.get(
+  "/teacher/:id/review",
+  isTeacher,
+  appReadRateLimiter,
+  assignmentsController.getAssignmentReviewPage.bind(assignmentsController)
+);
+
+/**
+ * PUT /app/assignments/teacher/:id
+ * Teacher: update assignment details (must own it)
+ * Body (JSON): { title?, subject?, description?, dueDate?, submissionType?,
+ *               assignmentStatus?, allowLateSubmissions?, plagiarismCheck? }
+ */
+router.put(
+  "/teacher/:id",
+  isTeacher,
+  assignmentsController.updateAssignment.bind(assignmentsController)
+);
+
+/**
+ * DELETE /app/assignments/teacher/:id
+ * Teacher: soft-delete assignment (must own it)
+ */
+router.delete(
+  "/teacher/:id",
+  isTeacher,
+  assignmentsController.deleteAssignment.bind(assignmentsController)
+);
+
+// ==================== STUDENT ROUTES ====================
 
 /**
  * GET /app/assignments/stats

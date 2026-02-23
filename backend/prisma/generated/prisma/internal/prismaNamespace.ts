@@ -2383,11 +2383,18 @@ export const AssignmentSlotScalarFieldEnum = {
   description: 'description',
   attachments: 'attachments',
   batchId: 'batchId',
+  teacherId: 'teacherId',
+  groupId: 'groupId',
+  submissionType: 'submissionType',
+  assignmentStatus: 'assignmentStatus',
+  allowLateSubmissions: 'allowLateSubmissions',
+  plagiarismCheck: 'plagiarismCheck',
   dueDate: 'dueDate',
   createdBy: 'createdBy',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  isDeleted: 'isDeleted'
+  isDeleted: 'isDeleted',
+  deletedBy: 'deletedBy'
 } as const
 
 export type AssignmentSlotScalarFieldEnum = (typeof AssignmentSlotScalarFieldEnum)[keyof typeof AssignmentSlotScalarFieldEnum]
@@ -2437,9 +2444,17 @@ export const StudyMaterialScalarFieldEnum = {
   description: 'description',
   files: 'files',
   batchId: 'batchId',
+  teacherId: 'teacherId',
   category: 'category',
+  subject: 'subject',
+  chapter: 'chapter',
+  materialType: 'materialType',
+  materialStatus: 'materialStatus',
+  scheduledAt: 'scheduledAt',
+  visibleBatchIds: 'visibleBatchIds',
   createdBy: 'createdBy',
   isDeleted: 'isDeleted',
+  deletedBy: 'deletedBy',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -2595,6 +2610,9 @@ export const TestScalarFieldEnum = {
   syllabus: 'syllabus',
   instructions: 'instructions',
   status: 'status',
+  publishedAt: 'publishedAt',
+  scoresLocked: 'scoresLocked',
+  teacherId: 'teacherId',
   createdBy: 'createdBy',
   isDeleted: 'isDeleted',
   createdAt: 'createdAt',
@@ -2849,6 +2867,34 @@ export type ListEnumYoutubeVideoVisibilityFieldRefInput<$PrismaModel> = FieldRef
 
 
 /**
+ * Reference to a field of type 'SubmissionType'
+ */
+export type EnumSubmissionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubmissionType'>
+    
+
+
+/**
+ * Reference to a field of type 'SubmissionType[]'
+ */
+export type ListEnumSubmissionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubmissionType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AssignmentStatus'
+ */
+export type EnumAssignmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssignmentStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'AssignmentStatus[]'
+ */
+export type ListEnumAssignmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssignmentStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'SubmissionStatus'
  */
 export type EnumSubmissionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubmissionStatus'>
@@ -2887,6 +2933,34 @@ export type EnumAnnouncementPriorityFieldRefInput<$PrismaModel> = FieldRefInputT
  * Reference to a field of type 'AnnouncementPriority[]'
  */
 export type ListEnumAnnouncementPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnnouncementPriority[]'>
+    
+
+
+/**
+ * Reference to a field of type 'StudyMaterialType'
+ */
+export type EnumStudyMaterialTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StudyMaterialType'>
+    
+
+
+/**
+ * Reference to a field of type 'StudyMaterialType[]'
+ */
+export type ListEnumStudyMaterialTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StudyMaterialType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'MaterialStatus'
+ */
+export type EnumMaterialStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaterialStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'MaterialStatus[]'
+ */
+export type ListEnumMaterialStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaterialStatus[]'>
     
 
 

@@ -29,8 +29,8 @@ router.use("/fees", isStudent, feesRoutes);
 // Dashboard - different views for students vs teachers
 router.use("/dashboard", isAppUser, dashboardRoutes);
 
-// Attendance - students can view their attendance
-router.use("/attendance", isAppUser, attendanceRoutes);
+// Attendance - role-specific auth handled within the route module
+router.use("/attendance", attendanceRoutes);
 
 // Assignments - students submit, teachers review
 // Note: assignments route has its own middleware per endpoint
@@ -42,8 +42,8 @@ router.use("/announcements", isAppUser, announcementsRoutes);
 // Notifications preferences - student only
 router.use("/notifications", isStudent, notificationsRoutes);
 
-// Resources - all app users can view study materials
-router.use("/resources", isAppUser, resourcesRoutes);
+// Resources - role-specific auth handled within the route module
+router.use("/resources", resourcesRoutes);
 
 // Lectures - schedule for students and teachers
 router.use("/lectures", isAppUser, appLecturesRoutes);

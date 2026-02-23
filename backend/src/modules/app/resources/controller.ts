@@ -1,7 +1,11 @@
 import type { Request, Response } from "express";
 import { resourcesService } from "./service";
 import logger from "../../../utils/logger";
-import type { AppResourceQuery } from "./types";
+import CloudinaryService from "../../../config/cloudinairy.config";
+import { validateMagicNumber } from "../../../config/multer.config";
+import type { AppResourceQuery, AppResourceFile, CreateMaterialInput, UpdateMaterialInput } from "./types";
+
+const cloudinaryService = new CloudinaryService();
 
 class ResourcesController {
   /**
@@ -104,6 +108,264 @@ class ResourcesController {
         success: false,
         message: `Failed to get study materials: ${error}`,
       });
+    }
+  }
+
+  // ==================== TEACHER ENDPOINTS ====================
+
+  /**
+   * GET /app/resources/teacher
+   * Teacher: list their study materials with tab filter
+   *   ?tab=published|drafts|scheduled&subject=&batchId=&page=&limit=
+   */
+  async getTeacherMaterials(req: Request, res: Response) {
+    try {
+      const user = req.user;
+      if (!user) {
+        return res.status(401).json({ success: false, message: "Not authenticated" });
+      }
+
+      const tab = req.query.tab as "published" | "drafts" | "scheduled" | undefined;
+      const subject = req.query.subject ? String(req.query.subject) : undefined;
+      const batchId = req.query.batchId ? Number(req.query.batchId) : undefined;
+      const page = req.query.page ? Number(req.query.page) : 1;
+      const limit = Math.min(req.query.limit ? Number(req.query.limit) : 20, 50);
+
+      const result = await resourcesService.getTeacherMaterials(user.id, {
+        tab,
+        subject,
+        batchId,
+        page,
+        limit,
+      });
+
+      return res.status(200).json({
+        success: true,
+        data: result.materials,
+        pagination: result.pagination,
+      });
+    } catch (error) {
+      logger.error("ResourcesController.getTeacherMaterials error:", error);
+      return res.status(500).json({ success: false, message: "Failed to get materials" });
+    }
+  }
+
+  /**
+   * POST /app/resources/teacher
+   * Teacher: upload study material
+   * Body (multipart/form-data):
+   *   title, description?, subject?, chapter?, materialType?, materialStatus?,
+   *   scheduledAt?, batchId, visibleBatchIds (JSON), files[] (100MB each, max 5)
+   *
+   * Rate limit: 10 uploads per 5 min
+   */
+  async createTeacherMaterial(req: Request, res: Response) {
+    try {
+      const user = req.user;
+      if (!user) {
+        return res.status(401).json({ success: false, message: "Not authenticated" });
+      }
+
+      const {
+        title,
+        description,
+        subject,
+        chapter,
+        materialType,
+        materialStatus,
+        scheduledAt,
+        batchId: rawBatchId,
+        visibleBatchIds: rawVisible,
+      } = req.body;
+
+      if (!title?.trim()) {
+        return res.status(400).json({ success: false, message: "Title is required" });
+      }
+
+      const batchId = Number(rawBatchId);
+      if (isNaN(batchId) || batchId <= 0) {
+        return res.status(400).json({ success: false, message: "Valid batchId is required" });
+      }
+
+      let visibleBatchIds: number[] = [];
+      if (rawVisible) {
+        try {
+          const parsed =
+            typeof rawVisible === "string" ? JSON.parse(rawVisible) : rawVisible;
+          visibleBatchIds = Array.isArray(parsed)
+            ? parsed.map(Number).filter((n) => !isNaN(n))
+            : [];
+        } catch {
+          return res.status(400).json({
+            success: false,
+            message: "visibleBatchIds must be a JSON array of numbers",
+          });
+        }
+      }
+
+      // Upload files to Cloudinary
+      const files = req.files as Express.Multer.File[] | undefined;
+      if (!files || files.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: "At least one file is required",
+        });
+      }
+
+      for (const file of files) {
+        const isValid = validateMagicNumber(file.buffer, file.mimetype);
+        if (!isValid) {
+          return res.status(400).json({
+            success: false,
+            message: `File "${file.originalname}" failed security validation`,
+          });
+        }
+      }
+
+      let uploadedFiles: AppResourceFile[];
+      try {
+        const results = await cloudinaryService.uploadDocuments(files, "study-materials");
+        uploadedFiles = results.map((r) => ({
+          url: r.url,
+          publicId: r.public_id,
+          filename: r.original_filename,
+          size: r.bytes,
+        }));
+      } catch (uploadError) {
+        logger.error("ResourcesController.createTeacherMaterial Cloudinary error:", uploadError);
+        return res.status(502).json({
+          success: false,
+          message: "File upload failed. Please try again.",
+        });
+      }
+
+      const input: CreateMaterialInput = {
+        title,
+        description,
+        subject,
+        chapter,
+        materialType,
+        materialStatus: materialStatus === "DRAFT" ? "DRAFT" : materialStatus === "SCHEDULED" ? "SCHEDULED" : "PUBLISHED",
+        scheduledAt,
+        batchId,
+        visibleBatchIds,
+      };
+
+      const material = await resourcesService.createTeacherMaterial(
+        user.id,
+        user.name,
+        input,
+        uploadedFiles
+      );
+
+      return res.status(201).json({
+        success: true,
+        message: "Study material uploaded",
+        data: material,
+      });
+    } catch (error) {
+      logger.error("ResourcesController.createTeacherMaterial error:", error);
+      const message =
+        error instanceof Error ? error.message : "Failed to upload material";
+      return res.status(400).json({ success: false, message });
+    }
+  }
+
+  /**
+   * PUT /app/resources/teacher/:id
+   * Teacher: update material details (must own it)
+   */
+  async updateTeacherMaterial(req: Request, res: Response) {
+    try {
+      const user = req.user;
+      const materialId = Number(req.params.id);
+
+      if (!user) {
+        return res.status(401).json({ success: false, message: "Not authenticated" });
+      }
+      if (isNaN(materialId)) {
+        return res.status(400).json({ success: false, message: "Invalid material ID" });
+      }
+
+      const input: UpdateMaterialInput = req.body;
+
+      const material = await resourcesService.updateTeacherMaterial(
+        materialId,
+        user.id,
+        input
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: "Material updated",
+        data: material,
+      });
+    } catch (error) {
+      logger.error("ResourcesController.updateTeacherMaterial error:", error);
+      const message =
+        error instanceof Error ? error.message : "Failed to update material";
+      return res.status(400).json({ success: false, message });
+    }
+  }
+
+  /**
+   * DELETE /app/resources/teacher/:id
+   * Teacher: soft-delete material (must own it)
+   */
+  async deleteTeacherMaterial(req: Request, res: Response) {
+    try {
+      const user = req.user;
+      const materialId = Number(req.params.id);
+
+      if (!user) {
+        return res.status(401).json({ success: false, message: "Not authenticated" });
+      }
+      if (isNaN(materialId)) {
+        return res.status(400).json({ success: false, message: "Invalid material ID" });
+      }
+
+      await resourcesService.deleteTeacherMaterial(materialId, user.id, user.name);
+
+      return res.status(200).json({ success: true, message: "Material deleted" });
+    } catch (error) {
+      logger.error("ResourcesController.deleteTeacherMaterial error:", error);
+      const message =
+        error instanceof Error ? error.message : "Failed to delete material";
+      return res.status(400).json({ success: false, message });
+    }
+  }
+
+  /**
+   * PUT /app/resources/teacher/:id/publish
+   * Teacher: publish a draft or scheduled material
+   */
+  async publishTeacherMaterial(req: Request, res: Response) {
+    try {
+      const user = req.user;
+      const materialId = Number(req.params.id);
+
+      if (!user) {
+        return res.status(401).json({ success: false, message: "Not authenticated" });
+      }
+      if (isNaN(materialId)) {
+        return res.status(400).json({ success: false, message: "Invalid material ID" });
+      }
+
+      const material = await resourcesService.publishTeacherMaterial(
+        materialId,
+        user.id
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: "Material published",
+        data: material,
+      });
+    } catch (error) {
+      logger.error("ResourcesController.publishTeacherMaterial error:", error);
+      const message =
+        error instanceof Error ? error.message : "Failed to publish material";
+      return res.status(400).json({ success: false, message });
     }
   }
 }

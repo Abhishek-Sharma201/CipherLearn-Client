@@ -15,6 +15,8 @@ import {
   UpdateStudentInput,
 } from "./types";
 import { parseCSV, normalizeDateFormat, generateSampleCSV } from "./csv.utils";
+import { sendAccountRegistrationEmail } from "../../../utils/email";
+import logger from "../../../utils/logger";
 import { cacheService } from "../../../cache";
 import { DashboardKeys } from "../../../cache/keys";
 import * as TTL from "../../../cache/ttl";
@@ -102,6 +104,12 @@ export default class StudentEnrollmentService {
     });
 
     invalidateAfterStudentMutation(undefined, student.batchId);
+
+    // Send registration email (non-blocking)
+    sendAccountRegistrationEmail(normalizedEmail, fullname, "STUDENT").catch((err) =>
+      logger.error("Failed to send student registration email:", err)
+    );
+
     return result;
   }
 
@@ -317,6 +325,11 @@ export default class StudentEnrollmentService {
 
         importedEmails.add(email);
         imported.push(student);
+
+        // Send registration email (non-blocking — don't let email failure break the import)
+        sendAccountRegistrationEmail(email, fullname, "STUDENT").catch((err) =>
+          logger.error(`Failed to send registration email to ${email}:`, err)
+        );
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : "Failed to create student";

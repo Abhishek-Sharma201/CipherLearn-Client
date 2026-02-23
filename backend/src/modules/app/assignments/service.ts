@@ -1,5 +1,10 @@
+import crypto from "crypto";
 import { prisma } from "../../../config/db.config";
-import { SubmissionStatus } from "../../../../prisma/generated/prisma/enums";
+import {
+  SubmissionStatus,
+  AssignmentStatus,
+} from "../../../../prisma/generated/prisma/enums";
+import type { Prisma } from "../../../../prisma/generated/prisma/client";
 import type {
   UpcomingAssignment,
   AssignmentDetails,
@@ -11,6 +16,13 @@ import type {
   SubmissionWithStudent,
   GetAssignmentsQuery,
   GetSubmissionsQuery,
+  CreateAssignmentInput,
+  UpdateAssignmentInput,
+  TeacherAssignmentListItem,
+  AssignmentReviewPage,
+  ReviewPageStudent,
+  ReviewStatus,
+  GetTeacherAssignmentsQuery,
 } from "./types";
 
 class AssignmentsService {
@@ -460,6 +472,318 @@ class AssignmentsService {
     ]);
 
     return { total, pending, accepted, rejected };
+  }
+
+  // ==================== TEACHER CREATE/UPDATE/DELETE ====================
+
+  /**
+   * Create an assignment for one or multiple batches.
+   * Multi-batch: one AssignmentSlot per batchId, all linked by groupId.
+   */
+  async createTeacherAssignment(
+    teacherId: number,
+    teacherName: string,
+    input: CreateAssignmentInput,
+    attachments: SubmissionFile[]
+  ) {
+    if (!input.batchIds || input.batchIds.length === 0) {
+      throw new Error("At least one batch must be selected");
+    }
+
+    const groupId =
+      input.batchIds.length > 1 ? crypto.randomUUID() : null;
+
+    const slots = await prisma.$transaction(
+      input.batchIds.map((batchId) =>
+        prisma.assignmentSlot.create({
+          data: {
+            title: input.title.trim(),
+            subject: input.subject.trim(),
+            description: input.description?.trim() ?? null,
+            attachments:
+              attachments.length > 0
+                ? (attachments as unknown as Prisma.InputJsonValue)
+                : undefined,
+            batchId,
+            teacherId,
+            groupId,
+            submissionType: input.submissionType ?? "FILE_UPLOAD",
+            assignmentStatus: input.assignmentStatus ?? "PUBLISHED",
+            allowLateSubmissions: input.allowLateSubmissions ?? false,
+            plagiarismCheck: input.plagiarismCheck ?? false,
+            dueDate: input.dueDate ? new Date(input.dueDate) : null,
+            createdBy: teacherName,
+          },
+          include: { batch: { select: { id: true, name: true } } },
+        })
+      )
+    );
+
+    return slots;
+  }
+
+  /**
+   * Update an assignment slot (teacher must own it).
+   */
+  async updateTeacherAssignment(
+    slotId: number,
+    teacherId: number,
+    input: UpdateAssignmentInput
+  ) {
+    const slot = await prisma.assignmentSlot.findFirst({
+      where: { id: slotId, teacherId, isDeleted: false },
+    });
+
+    if (!slot) {
+      throw new Error("Assignment not found or access denied");
+    }
+
+    const updated = await prisma.assignmentSlot.update({
+      where: { id: slotId },
+      data: {
+        ...(input.title !== undefined && { title: input.title.trim() }),
+        ...(input.subject !== undefined && { subject: input.subject.trim() }),
+        ...(input.description !== undefined && {
+          description: input.description?.trim() ?? null,
+        }),
+        ...(input.dueDate !== undefined && {
+          dueDate: input.dueDate ? new Date(input.dueDate) : null,
+        }),
+        ...(input.submissionType !== undefined && {
+          submissionType: input.submissionType,
+        }),
+        ...(input.assignmentStatus !== undefined && {
+          assignmentStatus: input.assignmentStatus,
+        }),
+        ...(input.allowLateSubmissions !== undefined && {
+          allowLateSubmissions: input.allowLateSubmissions,
+        }),
+        ...(input.plagiarismCheck !== undefined && {
+          plagiarismCheck: input.plagiarismCheck,
+        }),
+      },
+      include: { batch: { select: { id: true, name: true } } },
+    });
+
+    return updated;
+  }
+
+  /**
+   * Soft-delete an assignment (teacher must own it).
+   */
+  async deleteTeacherAssignment(
+    slotId: number,
+    teacherId: number,
+    teacherName: string
+  ): Promise<void> {
+    const slot = await prisma.assignmentSlot.findFirst({
+      where: { id: slotId, teacherId, isDeleted: false },
+    });
+
+    if (!slot) {
+      throw new Error("Assignment not found or access denied");
+    }
+
+    await prisma.assignmentSlot.update({
+      where: { id: slotId },
+      data: { isDeleted: true, deletedBy: teacherName },
+    });
+  }
+
+  // ==================== TEACHER LIST & REVIEW ====================
+
+  /**
+   * Get teacher's assignments with tab filters.
+   * Tabs: active | drafts | graded
+   */
+  async getTeacherAssignments(
+    teacherId: number,
+    query: GetTeacherAssignmentsQuery
+  ): Promise<{
+    assignments: TeacherAssignmentListItem[];
+    pagination: object;
+  }> {
+    const { tab = "active", batchId, page = 1, limit = 20 } = query;
+    const skip = (page - 1) * limit;
+    const now = new Date();
+
+    const where: Prisma.AssignmentSlotWhereInput = {
+      teacherId,
+      isDeleted: false,
+    };
+
+    if (batchId) where.batchId = batchId;
+
+    if (tab === "active") {
+      where.assignmentStatus = AssignmentStatus.PUBLISHED;
+      where.OR = [{ dueDate: null }, { dueDate: { gte: now } }];
+    } else if (tab === "drafts") {
+      where.assignmentStatus = AssignmentStatus.DRAFT;
+    } else if (tab === "graded") {
+      where.assignmentStatus = AssignmentStatus.PUBLISHED;
+      where.dueDate = { lt: now };
+    }
+
+    const [slots, total] = await Promise.all([
+      prisma.assignmentSlot.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: "desc" },
+        include: {
+          batch: { select: { id: true, name: true } },
+          submissions: {
+            select: { id: true, submittedAt: true, status: true },
+          },
+        },
+      }),
+      prisma.assignmentSlot.count({ where }),
+    ]);
+
+    // Batch-student counts
+    const uniqueBatchIds = [...new Set(slots.map((s) => s.batchId))];
+    const studentCounts = await prisma.student.groupBy({
+      by: ["batchId"],
+      where: {
+        batchId: { in: uniqueBatchIds as number[] },
+        isDeleted: false,
+      },
+      _count: { id: true },
+    });
+    const countMap = new Map(
+      studentCounts.map((sc) => [sc.batchId, sc._count.id])
+    );
+
+    const assignments: TeacherAssignmentListItem[] = slots.map((slot) => {
+      const totalStudents = countMap.get(slot.batchId) ?? 0;
+      const dueDate = slot.dueDate ? new Date(slot.dueDate) : null;
+      const submitted = slot.submissions.length;
+      const late = dueDate
+        ? slot.submissions.filter((s) => s.submittedAt > dueDate).length
+        : 0;
+      const missing = Math.max(0, totalStudents - submitted);
+
+      return {
+        id: slot.id,
+        title: slot.title,
+        subject: slot.subject,
+        description: slot.description,
+        dueDate: slot.dueDate?.toISOString() || null,
+        submissionType: slot.submissionType,
+        assignmentStatus: slot.assignmentStatus,
+        allowLateSubmissions: slot.allowLateSubmissions,
+        plagiarismCheck: slot.plagiarismCheck,
+        groupId: slot.groupId,
+        batch: slot.batch,
+        stats: { total: totalStudents, submitted, late, missing },
+        createdAt: slot.createdAt.toISOString(),
+      };
+    });
+
+    return {
+      assignments,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  /**
+   * Get per-student review page for a slot.
+   * Returns SUBMITTED | LATE | MISSING status per student.
+   * statusFilter: "submitted" | "not_submitted" | "late" | undefined (all)
+   */
+  async getAssignmentReviewPage(
+    slotId: number,
+    teacherId: number,
+    statusFilter?: string
+  ): Promise<AssignmentReviewPage | null> {
+    const slot = await prisma.assignmentSlot.findFirst({
+      where: { id: slotId, teacherId, isDeleted: false },
+      include: { batch: { select: { id: true, name: true } } },
+    });
+
+    if (!slot) return null;
+
+    const [students, submissions] = await Promise.all([
+      prisma.student.findMany({
+        where: { batchId: slot.batchId, isDeleted: false },
+        select: { id: true, fullname: true },
+        orderBy: { fullname: "asc" },
+      }),
+      prisma.studentSubmission.findMany({
+        where: { slotId },
+        select: {
+          id: true,
+          studentId: true,
+          submittedAt: true,
+          status: true,
+        },
+      }),
+    ]);
+
+    const submissionMap = new Map(
+      submissions.map((s) => [s.studentId, s])
+    );
+    const dueDate = slot.dueDate ? new Date(slot.dueDate) : null;
+
+    let reviewStudents: ReviewPageStudent[] = students.map((student) => {
+      const sub = submissionMap.get(student.id);
+      if (!sub) {
+        return {
+          studentId: student.id,
+          fullname: student.fullname,
+          status: "MISSING" as ReviewStatus,
+          submittedAt: null,
+          submissionId: null,
+          submissionStatus: null,
+        };
+      }
+      const isLate = dueDate ? sub.submittedAt > dueDate : false;
+      return {
+        studentId: student.id,
+        fullname: student.fullname,
+        status: (isLate ? "LATE" : "SUBMITTED") as ReviewStatus,
+        submittedAt: sub.submittedAt.toISOString(),
+        submissionId: sub.id,
+        submissionStatus: sub.status,
+      };
+    });
+
+    // Apply filter
+    if (statusFilter === "submitted") {
+      reviewStudents = reviewStudents.filter((s) => s.status === "SUBMITTED");
+    } else if (statusFilter === "not_submitted") {
+      reviewStudents = reviewStudents.filter((s) => s.status === "MISSING");
+    } else if (statusFilter === "late") {
+      reviewStudents = reviewStudents.filter((s) => s.status === "LATE");
+    }
+
+    const submitted = submissions.length;
+    const late = dueDate
+      ? submissions.filter((s) => s.submittedAt > dueDate).length
+      : 0;
+    const missing = Math.max(0, students.length - submitted);
+
+    return {
+      slot: {
+        id: slot.id,
+        title: slot.title,
+        subject: slot.subject,
+        dueDate: slot.dueDate?.toISOString() || null,
+        allowLateSubmissions: slot.allowLateSubmissions,
+      },
+      stats: {
+        total: students.length,
+        submitted,
+        late,
+        missing,
+      },
+      students: reviewStudents,
+    };
   }
 }
 

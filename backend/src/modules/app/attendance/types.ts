@@ -47,3 +47,35 @@ export interface AttendanceHistoryQuery {
   year?: number;
   status?: AttendanceStatus;
 }
+
+// ─── Teacher-side Types ───────────────────────────────────────────────────────
+
+export interface TeacherBatchStudent {
+  id: number;
+  fullname: string;
+  email: string;
+}
+
+export interface MarkAttendanceRecord {
+  studentId: number;
+  status: "PRESENT" | "ABSENT" | "LATE";
+  reason?: string;
+}
+
+export interface MarkAttendanceInput {
+  batchId: number;
+  date: string;        // YYYY-MM-DD
+  records: MarkAttendanceRecord[];
+}
+
+export interface AttendanceReportEntry {
+  date: string;        // YYYY-MM-DD
+  submittedBy: string;
+  submittedAt: string; // ISO timestamp of earliest record
+  stats: {
+    total: number;
+    present: number;
+    absent: number;
+    late: number;
+  };
+}

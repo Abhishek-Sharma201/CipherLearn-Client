@@ -28,7 +28,8 @@
       "Bash(do sed -i 's|text-sm font-medium text-foreground|text-\\\\[15px\\\\] font-bold text-foreground|g' \"$f\")",
       "Bash(done)",
       "Bash(npx eslint:*)",
-      "Bash(cd \"C:/CipherLabs/CipherLearn/client/backend\" && npm run prisma:g 2>&1)"
+      "Bash(cd \"C:/CipherLabs/CipherLearn/client/backend\" && npm run prisma:g 2>&1)",
+      "Bash(cd /c/CipherLabs/CipherLearn/client/backend && npm run prisma:g 2>&1)"
     ]
   }
 }

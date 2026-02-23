@@ -1,6 +1,20 @@
 import { prisma } from "../../../config/db.config";
-import { TestStatus, ScoreStatus } from "../../../../prisma/generated/prisma/enums";
-import { AppTestResponse, AppTestDetailResponse, StudentPerformanceResponse } from "./types";
+import {
+  TestStatus,
+  ScoreStatus,
+} from "../../../../prisma/generated/prisma/enums";
+import type { Prisma } from "../../../../prisma/generated/prisma/client";
+import type {
+  AppTestResponse,
+  AppTestDetailResponse,
+  StudentPerformanceResponse,
+  TeacherTestListItem,
+  TestGradingStatus,
+  ScoreSheetEntry,
+  BulkSaveScoreInput,
+  TestSummary,
+  GetTeacherTestsQuery,
+} from "./types";
 
 function getDaysUntil(testDate: Date): number | null {
   const now = new Date();
@@ -212,5 +226,352 @@ export default class AppTestService {
     });
 
     return { test, scores };
+  }
+
+  // ==================== TEACHER (NEW) METHODS ====================
+
+  /**
+   * Get teacher's tests with filters and grading status
+   */
+  public async getTeacherTests(
+    teacherId: number,
+    query: GetTeacherTestsQuery
+  ): Promise<{ tests: TeacherTestListItem[]; pagination: object }> {
+    const { batchId, subject, status, page = 1, limit = 20 } = query;
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.TestWhereInput = {
+      teacherId,
+      isDeleted: false,
+    };
+    if (batchId) where.batchId = batchId;
+    if (subject) where.subject = { contains: subject, mode: "insensitive" };
+    if (status) where.status = status;
+
+    const [tests, total] = await Promise.all([
+      prisma.test.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { date: "desc" },
+        include: {
+          batch: { select: { id: true, name: true } },
+          _count: { select: { scores: true } },
+        },
+      }),
+      prisma.test.count({ where }),
+    ]);
+
+    // Get student count per batch
+    const batchIds = [...new Set(tests.map((t) => t.batchId))];
+    const studentCounts = await prisma.student.groupBy({
+      by: ["batchId"],
+      where: {
+        batchId: { in: batchIds as number[] },
+        isDeleted: false,
+      },
+      _count: { id: true },
+    });
+    const countMap = new Map(studentCounts.map((sc) => [sc.batchId, sc._count.id]));
+
+    const items: TeacherTestListItem[] = tests.map((t) => {
+      const totalStudents = countMap.get(t.batchId) ?? 0;
+      const gradedCount = t._count.scores;
+      let gradingStatus: TestGradingStatus = "DRAFT";
+      if (t.status === TestStatus.PUBLISHED) {
+        gradingStatus = "GRADED";
+      } else if (
+        t.status === TestStatus.COMPLETED ||
+        t.status === TestStatus.ONGOING
+      ) {
+        gradingStatus = gradedCount > 0 && gradedCount >= totalStudents
+          ? "GRADED"
+          : "GRADING_PENDING";
+      }
+
+      return {
+        id: t.id,
+        title: t.title,
+        subject: t.subject,
+        description: t.description,
+        testType: t.testType,
+        totalMarks: t.totalMarks,
+        passingMarks: t.passingMarks,
+        date: t.date,
+        time: t.time,
+        duration: t.duration,
+        status: t.status,
+        scoresLocked: t.scoresLocked,
+        publishedAt: t.publishedAt?.toISOString() || null,
+        batch: t.batch,
+        gradingStatus,
+        gradedCount,
+        totalStudents,
+        daysUntil: getDaysUntil(t.date),
+      };
+    });
+
+    return {
+      tests: items,
+      pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
+    };
+  }
+
+  /**
+   * Get score sheet for a test (all students with UNGRADED for missing)
+   * Teacher must own the test.
+   */
+  public async getScoreSheet(
+    testId: number,
+    teacherId: number
+  ): Promise<{
+    test: { id: number; title: string; subject: string; totalMarks: number; scoresLocked: boolean };
+    entries: ScoreSheetEntry[];
+  }> {
+    const test = await prisma.test.findFirst({
+      where: { id: testId, teacherId, isDeleted: false },
+      select: {
+        id: true,
+        title: true,
+        subject: true,
+        totalMarks: true,
+        batchId: true,
+        scoresLocked: true,
+      },
+    });
+
+    if (!test) throw new Error("Test not found or access denied");
+
+    const [students, scores] = await Promise.all([
+      prisma.student.findMany({
+        where: { batchId: test.batchId, isDeleted: false },
+        select: { id: true, fullname: true },
+        orderBy: { fullname: "asc" },
+      }),
+      prisma.testScore.findMany({
+        where: { testId },
+        select: {
+          id: true,
+          studentId: true,
+          marksObtained: true,
+          percentage: true,
+          grade: true,
+          status: true,
+          remarks: true,
+        },
+      }),
+    ]);
+
+    const scoreMap = new Map(scores.map((s) => [s.studentId, s]));
+
+    const entries: ScoreSheetEntry[] = students.map((student) => {
+      const score = scoreMap.get(student.id);
+      return {
+        studentId: student.id,
+        fullname: student.fullname,
+        marksObtained: score?.marksObtained ?? null,
+        percentage: score?.percentage ?? null,
+        grade: score?.grade ?? null,
+        status: score?.status ?? null,
+        remarks: score?.remarks ?? null,
+        scoreId: score?.id ?? null,
+      };
+    });
+
+    return { test, entries };
+  }
+
+  /**
+   * Bulk save/update scores for a test.
+   * Computes percentage, grade, pass/fail automatically.
+   * Returns count of saved scores.
+   */
+  public async bulkSaveScores(
+    testId: number,
+    teacherId: number,
+    scores: BulkSaveScoreInput[]
+  ): Promise<{ saved: number }> {
+    const test = await prisma.test.findFirst({
+      where: { id: testId, teacherId, isDeleted: false },
+      select: { totalMarks: true, passingMarks: true, scoresLocked: true },
+    });
+
+    if (!test) throw new Error("Test not found or access denied");
+    if (test.scoresLocked) throw new Error("Scores are locked after publishing results");
+
+    const passingThreshold = test.passingMarks ?? test.totalMarks * 0.35;
+
+    const computeGrade = (percentage: number): string => {
+      if (percentage >= 90) return "A+";
+      if (percentage >= 80) return "A";
+      if (percentage >= 70) return "B+";
+      if (percentage >= 60) return "B";
+      if (percentage >= 50) return "C";
+      if (percentage >= 40) return "D";
+      return "F";
+    };
+
+    await prisma.$transaction(
+      scores.map((s) => {
+        if (s.marksObtained > test.totalMarks) {
+          throw new Error(
+            `Marks ${s.marksObtained} exceed total marks ${test.totalMarks} for student ${s.studentId}`
+          );
+        }
+        const percentage =
+          Math.round((s.marksObtained / test.totalMarks) * 10000) / 100;
+        const grade = computeGrade(percentage);
+        const status: ScoreStatus =
+          s.marksObtained >= passingThreshold ? ScoreStatus.PASS : ScoreStatus.FAIL;
+
+        return prisma.testScore.upsert({
+          where: { testId_studentId: { testId, studentId: s.studentId } },
+          create: {
+            testId,
+            studentId: s.studentId,
+            marksObtained: s.marksObtained,
+            percentage,
+            grade,
+            status,
+            remarks: s.remarks ?? null,
+            uploadedBy: teacherId,
+          },
+          update: {
+            marksObtained: s.marksObtained,
+            percentage,
+            grade,
+            status,
+            remarks: s.remarks ?? null,
+          },
+        });
+      })
+    );
+
+    return { saved: scores.length };
+  }
+
+  /**
+   * Publish test results: set status=PUBLISHED, scoresLocked=true, publishedAt=now.
+   * Teacher must own the test and it cannot already be published.
+   */
+  public async publishTestResults(
+    testId: number,
+    teacherId: number
+  ): Promise<TestSummary> {
+    const test = await prisma.test.findFirst({
+      where: { id: testId, teacherId, isDeleted: false },
+      select: {
+        id: true,
+        title: true,
+        subject: true,
+        totalMarks: true,
+        batchId: true,
+        status: true,
+        scoresLocked: true,
+      },
+    });
+
+    if (!test) throw new Error("Test not found or access denied");
+    if (test.status === TestStatus.PUBLISHED) {
+      throw new Error("Results have already been published");
+    }
+
+    await prisma.test.update({
+      where: { id: testId },
+      data: {
+        status: TestStatus.PUBLISHED,
+        scoresLocked: true,
+        publishedAt: new Date(),
+      },
+    });
+
+    return this.getTestSummary(testId, teacherId);
+  }
+
+  /**
+   * Get test result summary (averages, highest/lowest, distribution)
+   */
+  public async getTestSummary(
+    testId: number,
+    teacherId: number
+  ): Promise<TestSummary> {
+    const test = await prisma.test.findFirst({
+      where: { id: testId, teacherId, isDeleted: false },
+      select: {
+        id: true,
+        title: true,
+        subject: true,
+        totalMarks: true,
+        batchId: true,
+      },
+    });
+
+    if (!test) throw new Error("Test not found or access denied");
+
+    const [totalStudents, scores] = await Promise.all([
+      prisma.student.count({ where: { batchId: test.batchId, isDeleted: false } }),
+      prisma.testScore.findMany({
+        where: { testId },
+        include: { student: { select: { fullname: true } } },
+      }),
+    ]);
+
+    const gradedCount = scores.length;
+    const ungradedCount = Math.max(0, totalStudents - gradedCount);
+
+    const sortedByMarks = [...scores].sort(
+      (a, b) => b.marksObtained - a.marksObtained
+    );
+
+    const classAverage =
+      gradedCount > 0
+        ? Math.round(
+            (scores.reduce((sum, s) => sum + s.percentage, 0) / gradedCount) * 100
+          ) / 100
+        : 0;
+
+    const highest = sortedByMarks[0]
+      ? {
+          studentName: sortedByMarks[0].student.fullname,
+          marks: sortedByMarks[0].marksObtained,
+          percentage: sortedByMarks[0].percentage,
+        }
+      : null;
+
+    const lowest = sortedByMarks[sortedByMarks.length - 1]
+      ? {
+          studentName: sortedByMarks[sortedByMarks.length - 1].student.fullname,
+          marks: sortedByMarks[sortedByMarks.length - 1].marksObtained,
+          percentage: sortedByMarks[sortedByMarks.length - 1].percentage,
+        }
+      : null;
+
+    // Grade distribution
+    const ranges = [
+      { label: "90-100%", min: 90, max: 100 },
+      { label: "75-89%", min: 75, max: 89 },
+      { label: "60-74%", min: 60, max: 74 },
+      { label: "40-59%", min: 40, max: 59 },
+      { label: "0-39%", min: 0, max: 39 },
+    ];
+    const distribution = ranges.map((r) => ({
+      range: r.label,
+      count: scores.filter((s) => s.percentage >= r.min && s.percentage <= r.max)
+        .length,
+    }));
+
+    return {
+      testId,
+      title: test.title,
+      subject: test.subject,
+      totalMarks: test.totalMarks,
+      totalStudents,
+      gradedCount,
+      ungradedCount,
+      classAverage,
+      highestScore: highest,
+      lowestScore: lowest,
+      distribution,
+    };
   }
 }

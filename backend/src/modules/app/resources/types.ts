@@ -35,3 +35,52 @@ export interface AppResourceQuery {
   search?: string;
   category?: string;
 }
+
+// ─── Teacher-side Types ───────────────────────────────────────────────────────
+
+export interface TeacherMaterialListItem {
+  id: number;
+  title: string;
+  description: string | null;
+  subject: string | null;
+  chapter: string | null;
+  materialType: string;
+  materialStatus: string;
+  scheduledAt: string | null;
+  files: AppResourceFile[];
+  batchId: number;
+  batchName: string;
+  visibleBatchIds: number[];
+  createdAt: string;
+}
+
+export interface CreateMaterialInput {
+  title: string;
+  description?: string;
+  subject?: string;
+  chapter?: string;
+  materialType?: string;
+  materialStatus?: string;
+  scheduledAt?: string;
+  batchId: number;
+  visibleBatchIds?: number[];
+}
+
+export interface UpdateMaterialInput {
+  title?: string;
+  description?: string;
+  subject?: string;
+  chapter?: string;
+  materialType?: string;
+  materialStatus?: string;
+  scheduledAt?: string | null;
+  visibleBatchIds?: number[];
+}
+
+export interface GetTeacherMaterialsQuery {
+  tab?: "published" | "drafts" | "scheduled";
+  subject?: string;
+  batchId?: number;
+  page?: number;
+  limit?: number;
+}

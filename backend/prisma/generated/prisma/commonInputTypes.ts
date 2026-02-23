@@ -334,6 +334,40 @@ export type EnumYoutubeVideoVisibilityNullableWithAggregatesFilter<$PrismaModel 
   _max?: Prisma.NestedEnumYoutubeVideoVisibilityNullableFilter<$PrismaModel>
 }
 
+export type EnumSubmissionTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.SubmissionType | Prisma.EnumSubmissionTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.SubmissionType[] | Prisma.ListEnumSubmissionTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SubmissionType[] | Prisma.ListEnumSubmissionTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSubmissionTypeFilter<$PrismaModel> | $Enums.SubmissionType
+}
+
+export type EnumAssignmentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.AssignmentStatus | Prisma.EnumAssignmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AssignmentStatus[] | Prisma.ListEnumAssignmentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AssignmentStatus[] | Prisma.ListEnumAssignmentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAssignmentStatusFilter<$PrismaModel> | $Enums.AssignmentStatus
+}
+
+export type EnumSubmissionTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SubmissionType | Prisma.EnumSubmissionTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.SubmissionType[] | Prisma.ListEnumSubmissionTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SubmissionType[] | Prisma.ListEnumSubmissionTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSubmissionTypeWithAggregatesFilter<$PrismaModel> | $Enums.SubmissionType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSubmissionTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSubmissionTypeFilter<$PrismaModel>
+}
+
+export type EnumAssignmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AssignmentStatus | Prisma.EnumAssignmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AssignmentStatus[] | Prisma.ListEnumAssignmentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AssignmentStatus[] | Prisma.ListEnumAssignmentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAssignmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.AssignmentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAssignmentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAssignmentStatusFilter<$PrismaModel>
+}
+
 export type JsonFilter<$PrismaModel = never> =
 | Prisma.PatchUndefined<
     Prisma.Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
@@ -434,6 +468,40 @@ export type EnumAnnouncementPriorityWithAggregatesFilter<$PrismaModel = never> =
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumAnnouncementPriorityFilter<$PrismaModel>
   _max?: Prisma.NestedEnumAnnouncementPriorityFilter<$PrismaModel>
+}
+
+export type EnumStudyMaterialTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.StudyMaterialType | Prisma.EnumStudyMaterialTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.StudyMaterialType[] | Prisma.ListEnumStudyMaterialTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.StudyMaterialType[] | Prisma.ListEnumStudyMaterialTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumStudyMaterialTypeFilter<$PrismaModel> | $Enums.StudyMaterialType
+}
+
+export type EnumMaterialStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.MaterialStatus | Prisma.EnumMaterialStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.MaterialStatus[] | Prisma.ListEnumMaterialStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MaterialStatus[] | Prisma.ListEnumMaterialStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMaterialStatusFilter<$PrismaModel> | $Enums.MaterialStatus
+}
+
+export type EnumStudyMaterialTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.StudyMaterialType | Prisma.EnumStudyMaterialTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.StudyMaterialType[] | Prisma.ListEnumStudyMaterialTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.StudyMaterialType[] | Prisma.ListEnumStudyMaterialTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumStudyMaterialTypeWithAggregatesFilter<$PrismaModel> | $Enums.StudyMaterialType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumStudyMaterialTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumStudyMaterialTypeFilter<$PrismaModel>
+}
+
+export type EnumMaterialStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MaterialStatus | Prisma.EnumMaterialStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.MaterialStatus[] | Prisma.ListEnumMaterialStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MaterialStatus[] | Prisma.ListEnumMaterialStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMaterialStatusWithAggregatesFilter<$PrismaModel> | $Enums.MaterialStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMaterialStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMaterialStatusFilter<$PrismaModel>
 }
 
 export type FloatFilter<$PrismaModel = never> = {
@@ -966,6 +1034,40 @@ export type NestedEnumYoutubeVideoVisibilityNullableWithAggregatesFilter<$Prisma
   _max?: Prisma.NestedEnumYoutubeVideoVisibilityNullableFilter<$PrismaModel>
 }
 
+export type NestedEnumSubmissionTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.SubmissionType | Prisma.EnumSubmissionTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.SubmissionType[] | Prisma.ListEnumSubmissionTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SubmissionType[] | Prisma.ListEnumSubmissionTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSubmissionTypeFilter<$PrismaModel> | $Enums.SubmissionType
+}
+
+export type NestedEnumAssignmentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.AssignmentStatus | Prisma.EnumAssignmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AssignmentStatus[] | Prisma.ListEnumAssignmentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AssignmentStatus[] | Prisma.ListEnumAssignmentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAssignmentStatusFilter<$PrismaModel> | $Enums.AssignmentStatus
+}
+
+export type NestedEnumSubmissionTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SubmissionType | Prisma.EnumSubmissionTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.SubmissionType[] | Prisma.ListEnumSubmissionTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SubmissionType[] | Prisma.ListEnumSubmissionTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSubmissionTypeWithAggregatesFilter<$PrismaModel> | $Enums.SubmissionType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSubmissionTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSubmissionTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumAssignmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AssignmentStatus | Prisma.EnumAssignmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AssignmentStatus[] | Prisma.ListEnumAssignmentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AssignmentStatus[] | Prisma.ListEnumAssignmentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAssignmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.AssignmentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAssignmentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAssignmentStatusFilter<$PrismaModel>
+}
+
 export type NestedEnumSubmissionStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.SubmissionStatus | Prisma.EnumSubmissionStatusFieldRefInput<$PrismaModel>
   in?: $Enums.SubmissionStatus[] | Prisma.ListEnumSubmissionStatusFieldRefInput<$PrismaModel>
@@ -1039,6 +1141,40 @@ export type NestedEnumAnnouncementPriorityWithAggregatesFilter<$PrismaModel = ne
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumAnnouncementPriorityFilter<$PrismaModel>
   _max?: Prisma.NestedEnumAnnouncementPriorityFilter<$PrismaModel>
+}
+
+export type NestedEnumStudyMaterialTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.StudyMaterialType | Prisma.EnumStudyMaterialTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.StudyMaterialType[] | Prisma.ListEnumStudyMaterialTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.StudyMaterialType[] | Prisma.ListEnumStudyMaterialTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumStudyMaterialTypeFilter<$PrismaModel> | $Enums.StudyMaterialType
+}
+
+export type NestedEnumMaterialStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.MaterialStatus | Prisma.EnumMaterialStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.MaterialStatus[] | Prisma.ListEnumMaterialStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MaterialStatus[] | Prisma.ListEnumMaterialStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMaterialStatusFilter<$PrismaModel> | $Enums.MaterialStatus
+}
+
+export type NestedEnumStudyMaterialTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.StudyMaterialType | Prisma.EnumStudyMaterialTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.StudyMaterialType[] | Prisma.ListEnumStudyMaterialTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.StudyMaterialType[] | Prisma.ListEnumStudyMaterialTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumStudyMaterialTypeWithAggregatesFilter<$PrismaModel> | $Enums.StudyMaterialType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumStudyMaterialTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumStudyMaterialTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumMaterialStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MaterialStatus | Prisma.EnumMaterialStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.MaterialStatus[] | Prisma.ListEnumMaterialStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MaterialStatus[] | Prisma.ListEnumMaterialStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMaterialStatusWithAggregatesFilter<$PrismaModel> | $Enums.MaterialStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMaterialStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMaterialStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumFeeFrequencyFilter<$PrismaModel = never> = {

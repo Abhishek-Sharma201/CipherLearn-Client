@@ -4,7 +4,13 @@ import logger from "../../../utils/logger";
 import { UserRoles } from "../../../../prisma/generated/prisma/enums";
 import CloudinaryService from "../../../config/cloudinairy.config";
 import { validateMagicNumber } from "../../../config/multer.config";
-import type { CreateSubmissionInput, ReviewSubmissionInput, SubmissionFile } from "./types";
+import type {
+  CreateSubmissionInput,
+  ReviewSubmissionInput,
+  SubmissionFile,
+  CreateAssignmentInput,
+  UpdateAssignmentInput,
+} from "./types";
 
 const cloudinaryService = new CloudinaryService();
 
@@ -464,6 +470,282 @@ class AssignmentsController {
         success: false,
         message: `Failed to review submission: ${error}`,
       });
+    }
+  }
+
+  // ==================== TEACHER CRUD ENDPOINTS ====================
+
+  /**
+   * Create assignment for one or multiple batches
+   * POST /app/assignments/teacher
+   * Body (multipart/form-data):
+   *   title, subject, description?, batchIds (JSON array), dueDate?,
+   *   submissionType?, assignmentStatus?, allowLateSubmissions?, plagiarismCheck?
+   *   files[] — optional assignment brief attachments (50MB each, max 5)
+   */
+  async createAssignment(req: Request, res: Response) {
+    try {
+      const user = req.user;
+      if (!user || user.role !== UserRoles.TEACHER) {
+        return res.status(403).json({ success: false, message: "Access denied" });
+      }
+
+      const {
+        title,
+        subject,
+        description,
+        batchIds: rawBatchIds,
+        dueDate,
+        submissionType,
+        assignmentStatus,
+        allowLateSubmissions,
+        plagiarismCheck,
+      } = req.body;
+
+      if (!title?.trim() || !subject?.trim()) {
+        return res.status(400).json({
+          success: false,
+          message: "Title and subject are required",
+        });
+      }
+
+      let batchIds: number[];
+      try {
+        const parsed =
+          typeof rawBatchIds === "string" ? JSON.parse(rawBatchIds) : rawBatchIds;
+        batchIds = Array.isArray(parsed)
+          ? parsed.map(Number).filter((n) => !isNaN(n))
+          : [];
+      } catch {
+        return res.status(400).json({
+          success: false,
+          message: "batchIds must be a JSON array of numbers",
+        });
+      }
+
+      if (batchIds.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: "At least one batch must be selected",
+        });
+      }
+
+      // Upload attachment files to Cloudinary (optional)
+      const files = req.files as Express.Multer.File[] | undefined;
+      let attachments: SubmissionFile[] = [];
+
+      if (files && files.length > 0) {
+        for (const file of files) {
+          const isValid = validateMagicNumber(file.buffer, file.mimetype);
+          if (!isValid) {
+            return res.status(400).json({
+              success: false,
+              message: `File "${file.originalname}" failed security validation`,
+            });
+          }
+        }
+        try {
+          const results = await cloudinaryService.uploadDocuments(files, "assignments");
+          attachments = results.map((r) => ({
+            url: r.url,
+            publicId: r.public_id,
+            originalFilename: r.original_filename,
+            size: r.bytes,
+            mimeType:
+              files.find((f) => f.originalname === r.original_filename)
+                ?.mimetype ?? r.format,
+          }));
+        } catch (uploadError) {
+          logger.error("createAssignment Cloudinary error:", uploadError);
+          return res.status(502).json({
+            success: false,
+            message: "File upload failed. Please try again.",
+          });
+        }
+      }
+
+      const input: CreateAssignmentInput = {
+        title,
+        subject,
+        description,
+        batchIds,
+        dueDate,
+        submissionType,
+        assignmentStatus:
+          assignmentStatus === "DRAFT" ? "DRAFT" : "PUBLISHED",
+        allowLateSubmissions: allowLateSubmissions === "true" || allowLateSubmissions === true,
+        plagiarismCheck: plagiarismCheck === "true" || plagiarismCheck === true,
+      };
+
+      const slots = await assignmentsService.createTeacherAssignment(
+        user.id,
+        user.name,
+        input,
+        attachments
+      );
+
+      return res.status(201).json({
+        success: true,
+        message:
+          slots.length === 1
+            ? "Assignment created"
+            : `Assignment created for ${slots.length} classes`,
+        data: slots,
+      });
+    } catch (error) {
+      logger.error("AssignmentsController.createAssignment error:", error);
+      const message =
+        error instanceof Error ? error.message : "Failed to create assignment";
+      return res.status(400).json({ success: false, message });
+    }
+  }
+
+  /**
+   * Get teacher's assignments (tab-based)
+   * GET /app/assignments/teacher?tab=active|drafts|graded&batchId=&page=&limit=
+   */
+  async getTeacherAssignments(req: Request, res: Response) {
+    try {
+      const user = req.user;
+      if (!user || user.role !== UserRoles.TEACHER) {
+        return res.status(403).json({ success: false, message: "Access denied" });
+      }
+
+      const tab = req.query.tab as "active" | "drafts" | "graded" | undefined;
+      const batchId = req.query.batchId ? Number(req.query.batchId) : undefined;
+      const page = req.query.page ? Number(req.query.page) : 1;
+      const limit = Math.min(req.query.limit ? Number(req.query.limit) : 20, 50);
+
+      const result = await assignmentsService.getTeacherAssignments(user.id, {
+        tab,
+        batchId,
+        page,
+        limit,
+      });
+
+      return res.status(200).json({
+        success: true,
+        data: result.assignments,
+        pagination: result.pagination,
+      });
+    } catch (error) {
+      logger.error("AssignmentsController.getTeacherAssignments error:", error);
+      return res.status(500).json({ success: false, message: "Failed to get assignments" });
+    }
+  }
+
+  /**
+   * Update assignment
+   * PUT /app/assignments/teacher/:id
+   */
+  async updateAssignment(req: Request, res: Response) {
+    try {
+      const user = req.user;
+      const slotId = Number(req.params.id);
+
+      if (!user || user.role !== UserRoles.TEACHER) {
+        return res.status(403).json({ success: false, message: "Access denied" });
+      }
+      if (isNaN(slotId)) {
+        return res.status(400).json({ success: false, message: "Invalid assignment ID" });
+      }
+
+      const input: UpdateAssignmentInput = req.body;
+
+      const updated = await assignmentsService.updateTeacherAssignment(
+        slotId,
+        user.id,
+        input
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: "Assignment updated",
+        data: updated,
+      });
+    } catch (error) {
+      logger.error("AssignmentsController.updateAssignment error:", error);
+      const message =
+        error instanceof Error ? error.message : "Failed to update assignment";
+      return res.status(400).json({ success: false, message });
+    }
+  }
+
+  /**
+   * Soft-delete assignment
+   * DELETE /app/assignments/teacher/:id
+   */
+  async deleteAssignment(req: Request, res: Response) {
+    try {
+      const user = req.user;
+      const slotId = Number(req.params.id);
+
+      if (!user || user.role !== UserRoles.TEACHER) {
+        return res.status(403).json({ success: false, message: "Access denied" });
+      }
+      if (isNaN(slotId)) {
+        return res.status(400).json({ success: false, message: "Invalid assignment ID" });
+      }
+
+      await assignmentsService.deleteTeacherAssignment(slotId, user.id, user.name);
+
+      return res.status(200).json({
+        success: true,
+        message: "Assignment deleted",
+      });
+    } catch (error) {
+      logger.error("AssignmentsController.deleteAssignment error:", error);
+      const message =
+        error instanceof Error ? error.message : "Failed to delete assignment";
+      return res.status(400).json({ success: false, message });
+    }
+  }
+
+  /**
+   * Get assignment review page (per-student SUBMITTED/LATE/MISSING)
+   * GET /app/assignments/teacher/:id/review?status=submitted|not_submitted|late
+   */
+  async getAssignmentReviewPage(req: Request, res: Response) {
+    try {
+      const user = req.user;
+      const slotId = Number(req.params.id);
+
+      if (!user || user.role !== UserRoles.TEACHER) {
+        return res.status(403).json({ success: false, message: "Access denied" });
+      }
+      if (isNaN(slotId)) {
+        return res.status(400).json({ success: false, message: "Invalid assignment ID" });
+      }
+
+      const statusFilter = req.query.status as string | undefined;
+      const validFilters = ["submitted", "not_submitted", "late"];
+      if (statusFilter && !validFilters.includes(statusFilter)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid status filter. Use: submitted, not_submitted, late",
+        });
+      }
+
+      const reviewPage = await assignmentsService.getAssignmentReviewPage(
+        slotId,
+        user.id,
+        statusFilter
+      );
+
+      if (!reviewPage) {
+        return res.status(404).json({
+          success: false,
+          message: "Assignment not found or access denied",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        data: reviewPage,
+      });
+    } catch (error) {
+      logger.error("AssignmentsController.getAssignmentReviewPage error:", error);
+      return res.status(500).json({ success: false, message: "Failed to get review page" });
     }
   }
 }

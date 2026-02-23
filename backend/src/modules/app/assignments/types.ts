@@ -1,4 +1,8 @@
-import { SubmissionStatus } from "../../../../prisma/generated/prisma/client";
+import {
+  SubmissionStatus,
+  SubmissionType,
+  AssignmentStatus,
+} from "../../../../prisma/generated/prisma/client";
 
 export interface UpcomingAssignment {
   id: number;
@@ -108,6 +112,87 @@ export interface GetAssignmentsQuery {
 export interface GetSubmissionsQuery {
   slotId?: number;
   status?: SubmissionStatus;
+  page?: number;
+  limit?: number;
+}
+
+// ─── Teacher-side Types ───────────────────────────────────────────────────────
+
+export interface CreateAssignmentInput {
+  title: string;
+  subject: string;
+  description?: string;
+  batchIds: number[];               // One slot is created per batchId in a transaction
+  dueDate?: string;                 // ISO date string
+  submissionType?: SubmissionType;
+  assignmentStatus?: AssignmentStatus;
+  allowLateSubmissions?: boolean;
+  plagiarismCheck?: boolean;
+}
+
+export interface UpdateAssignmentInput {
+  title?: string;
+  subject?: string;
+  description?: string;
+  dueDate?: string | null;
+  submissionType?: SubmissionType;
+  assignmentStatus?: AssignmentStatus;
+  allowLateSubmissions?: boolean;
+  plagiarismCheck?: boolean;
+}
+
+export interface TeacherAssignmentListItem {
+  id: number;
+  title: string;
+  subject: string;
+  description: string | null;
+  dueDate: string | null;
+  submissionType: SubmissionType;
+  assignmentStatus: AssignmentStatus;
+  allowLateSubmissions: boolean;
+  plagiarismCheck: boolean;
+  groupId: string | null;
+  batch: { id: number; name: string };
+  stats: {
+    total: number;    // students in batch
+    submitted: number;
+    late: number;
+    missing: number;
+  };
+  createdAt: string;
+}
+
+export type ReviewStatus = "SUBMITTED" | "LATE" | "MISSING";
+
+export interface ReviewPageStudent {
+  studentId: number;
+  fullname: string;
+  status: ReviewStatus;
+  submittedAt: string | null;
+  submissionId: number | null;
+  submissionStatus: SubmissionStatus | null;
+}
+
+export interface AssignmentReviewPage {
+  slot: {
+    id: number;
+    title: string;
+    subject: string;
+    dueDate: string | null;
+    allowLateSubmissions: boolean;
+  };
+  stats: {
+    total: number;
+    submitted: number;
+    late: number;
+    missing: number;
+  };
+  students: ReviewPageStudent[];
+}
+
+export interface GetTeacherAssignmentsQuery {
+  tab?: "active" | "drafts" | "graded";
+  batchId?: number;
   page?: number;
   limit?: number;
 }

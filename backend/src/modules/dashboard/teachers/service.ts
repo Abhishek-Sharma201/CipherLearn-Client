@@ -1,6 +1,8 @@
 import { UserRoles } from "../../../../prisma/generated/prisma/client";
 import { prisma } from "../../../config/db.config";
 import { CreateTeacherInput, UpdateTeacherInput, TeacherResponse } from "./types";
+import { sendAccountRegistrationEmail } from "../../../utils/email";
+import logger from "../../../utils/logger";
 
 export default class TeacherService {
   /**
@@ -27,6 +29,11 @@ export default class TeacherService {
         isPasswordSet: false,
       },
     });
+
+    // Send registration email (non-blocking)
+    sendAccountRegistrationEmail(normalizedEmail, data.name, "TEACHER").catch((err) =>
+      logger.error("Failed to send teacher registration email:", err)
+    );
 
     return {
       id: user.id,
