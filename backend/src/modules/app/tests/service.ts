@@ -574,4 +574,50 @@ export default class AppTestService {
       distribution,
     };
   }
+
+  /**
+   * Build a CSV string of all student scores for a test (teacher export).
+   */
+  async exportScoresCsv(testId: number, teacherId: number): Promise<{ csv: string; filename: string }> {
+    const test = await prisma.test.findFirst({
+      where: { id: testId, teacherId },
+      select: { id: true, title: true, subject: true, totalMarks: true, passingMarks: true },
+    });
+
+    if (!test) throw new Error("Test not found");
+
+    const scores = await prisma.testScore.findMany({
+      where: { testId },
+      include: {
+        student: { select: { fullname: true } },
+      },
+      orderBy: { student: { fullname: "asc" } },
+    });
+
+    const header = ["Student Name", "Marks Obtained", "Total Marks", "Percentage", "Grade", "Status"].join(",");
+
+    const rows = scores.map((s, idx) => {
+      const marks = s.marksObtained !== null ? s.marksObtained : "";
+      const pct = s.marksObtained !== null ? ((s.marksObtained / test.totalMarks) * 100).toFixed(2) : "";
+      const grade = s.grade ?? "";
+      const status =
+        s.marksObtained === null
+          ? "PENDING"
+          : test.passingMarks !== null && s.marksObtained >= test.passingMarks
+          ? "PASS"
+          : "FAIL";
+      return [
+        `"${s.student.fullname.replace(/"/g, '""')}"`,
+        marks,
+        test.totalMarks,
+        pct,
+        grade,
+        status,
+      ].join(",");
+    });
+
+    const csv = [header, ...rows].join("\n");
+    const filename = `test-${testId}-scores.csv`;
+    return { csv, filename };
+  }
 }

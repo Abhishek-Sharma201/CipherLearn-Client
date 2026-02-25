@@ -65,7 +65,14 @@ export interface MarkAttendanceRecord {
 export interface MarkAttendanceInput {
   batchId: number;
   date: string;        // YYYY-MM-DD
+  subject?: string;    // subject taught in this session
   records: MarkAttendanceRecord[];
+}
+
+export interface TeacherBatchItem {
+  id: number;
+  name: string;
+  studentCount: number;
 }
 
 export interface AttendanceReportEntry {

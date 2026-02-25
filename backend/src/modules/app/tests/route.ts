@@ -63,6 +63,16 @@ router.get(
   controller.getTestSummary.bind(controller)
 );
 
+/**
+ * GET /app/tests/teacher/:id/export-csv
+ * Teacher: download all student scores as CSV
+ */
+router.get(
+  "/teacher/:id/export-csv",
+  isTeacher,
+  controller.exportCsv.bind(controller)
+);
+
 // ==================== STUDENT ROUTES ====================
 
 // Student: get my tests (with optional filter: upcoming, complete, results)

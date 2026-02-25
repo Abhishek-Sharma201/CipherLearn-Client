@@ -1,8 +1,8 @@
 {
 	"info": {
-		"_postman_id": "cipherlearn-app-api-v1.0.3",
-		"name": "CipherLearn App API v1.0.3",
-		"version": "1.0.3",
+		"_postman_id": "cipherlearn-app-api-v1.0.4",
+		"name": "CipherLearn App API v1.0.4",
+		"version": "1.0.4",
 		"description": "Complete API collection for CipherLearn Mobile App (Student + Teacher single app).\n\n**Auth Flow:**\n1. Admin creates student/teacher accounts from dashboard → registration email sent\n2. User opens app → enters registered email\n3. First time: set password (POST /app/auth/setup-password)\n4. Login (POST /app/auth/login) → JWT returned with role\n5. Role-based dashboard: STUDENT or TEACHER\n\n**Endpoints by role:**\n\nStudent-only:\n- Profile, Fees, Notifications (preferences)\n- Attendance: self-view (summary, history, calendar, QR mark)\n- Assignments: browse, submit, view submission\n- Tests: upcoming, results, performance analytics\n- Resources: videos, notes, study materials\n\nTeacher (requires TEACHER role JWT):\n- Attendance: get batch students, bulk mark, reports, date detail\n- Assignments: create/update/delete, review per-student status\n- Tests: manage grading (score sheet, bulk save scores, publish results, summary)\n- Resources: upload/manage study materials (PDF, video, etc.)\n\nShared (both roles):\n- Auth, Dashboard, Lectures/Timetable, Announcements\n\n**Security Headers on all requests:**\n- Authorization: Bearer {{appToken}}\n- Content-Type: application/json (or multipart/form-data for uploads)\n\n**Rate Limits:**\n- Auth: 5 req/15min (login), 3 req/hr (password reset)\n- File uploads: 10 uploads/5min per IP\n- General reads: 120 req/min per IP\n- Token refresh: 10 req/min per IP\n\n**File Upload Limits:**\n- Assignment submission: 25 MB/file, 5 files (PDF, Word, Excel, PPT, images, ZIP)\n- Assignment attachments (teacher): 50 MB/file, 5 files\n- Study materials (teacher): 100 MB/file, 5 files (includes video: MP4, MOV, AVI)\n- All uploads: memory storage → Cloudinary, magic number validated\n\n**Caching:**\n- Announcement list: 3 min | detail: 5 min\n- Notification preferences: 10 min per student\n- Fee structures: 60 min per batch\n- Attendance: 2 min\n\n**Setup:**\n1. Import into Postman\n2. Create environment: baseUrl = http://localhost:5000/api\n3. Run 'App Login' → appToken auto-saved\n4. Use STUDENT email for student routes, TEACHER email for teacher routes\n\n**Base URL:** http://localhost:5000/api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -49,13 +49,15 @@
 								"exec": [
 									"var jsonData = pm.response.json();",
 									"if (jsonData.success && jsonData.data) {",
-									"    if (jsonData.data.token) {",
-									"        pm.environment.set('appToken', jsonData.data.token);",
-									"        console.log('App token set successfully');",
+									"    var token = jsonData.data.accessToken || jsonData.data.token;",
+									"    if (token) {",
+									"        pm.environment.set('appToken', token);",
+									"        console.log('App token set: ' + token.substring(0, 20) + '...');",
 									"    }",
 									"    if (jsonData.data.user) {",
 									"        pm.environment.set('appUserId', jsonData.data.user.id);",
 									"        pm.environment.set('appUserRole', jsonData.data.user.role);",
+									"        console.log('Logged in as: ' + jsonData.data.user.role);",
 									"    }",
 									"}",
 									"pm.test('Login successful', function () {",
@@ -402,12 +404,22 @@
 						"description": "Teacher: class performance summary for a test.\n\nResponse: { testId, title, totalStudents, scored, averageScore, highestScore, lowestScore, passRate, distribution: { A, B, C, D, F } }\n\nUsed for the analytics card in the Teacher Test Detail screen.\n\nAuth: TEACHER role + must own the test."
 					},
 					"response": []
+				},
+				{
+					"name": "Teacher: Export Scores CSV",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{appToken}}"}],
+						"url": {"raw": "{{baseUrl}}/app/tests/teacher/1/export-csv", "host": ["{{baseUrl}}"], "path": ["app", "tests", "teacher", "1", "export-csv"]},
+						"description": "Teacher: download all student scores for a test as a CSV file.\n\nResponse: text/csv file download.\nColumns: Student Name, Marks Obtained, Total Marks, Percentage, Grade, Status (PASS/FAIL/PENDING)\n\nFilename: test-{id}-scores.csv\n\nTriggers a file download in Postman (Save Response → Save to a file).\n\nAuth: TEACHER role + must own the test."
+					},
+					"response": []
 				}
 			]
 		},
 		{
 			"name": "Attendance",
-			"description": "Attendance records for students (self-view) and teachers (batch management).\n\n**Student:** performance summary, history, calendar, QR mark\n**Teacher:** batch students list, bulk mark, date reports, date detail",
+			"description": "Attendance records for students (self-view) and teachers (batch management).\n\n**Student:** performance summary, history, calendar, QR mark\n**Teacher:** list batches, get batch students, bulk mark (with subject), date reports, date detail",
 			"item": [
 				{
 					"name": "Get My Attendance",
@@ -468,6 +480,16 @@
 					"response": []
 				},
 				{
+					"name": "Teacher: Get All Batches",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{appToken}}"}],
+						"url": {"raw": "{{baseUrl}}/app/attendance/teacher/batches", "host": ["{{baseUrl}}"], "path": ["app", "attendance", "teacher", "batches"]},
+						"description": "Teacher: list all active batches (for Select Class/Batch dropdowns in the Mark Attendance screen).\n\nResponse: [{ id, name, studentCount }]\n\nExample response:\n[\n  { \"id\": 1, \"name\": \"Grade 10 - Batch A\", \"studentCount\": 35 },\n  { \"id\": 2, \"name\": \"Grade 11 - Batch B\", \"studentCount\": 28 }\n]\n\nAuth: TEACHER role required."
+					},
+					"response": []
+				},
+				{
 					"name": "Teacher: Get Batch Students",
 					"request": {
 						"method": "GET",
@@ -478,7 +500,7 @@
 							"path": ["app", "attendance", "teacher", "students"],
 							"query": [{"key": "batchId", "value": "1", "description": "Required. Batch to load students for."}]
 						},
-						"description": "Teacher: load all active students in a batch for the attendance marking screen.\n\nResponse: [{ studentId, name, rollNo, photo }]\n\nAuth: Bearer token with TEACHER role required."
+						"description": "Teacher: load all active students in a batch for the attendance marking screen.\n\nResponse: [{ id, fullname, email }]\n\nAuth: Bearer token with TEACHER role required."
 					},
 					"response": []
 				},
@@ -489,10 +511,10 @@
 						"header": [{"key": "Authorization", "value": "Bearer {{appToken}}"}, {"key": "Content-Type", "value": "application/json"}],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"batchId\": 1,\n    \"date\": \"2026-02-23\",\n    \"records\": [\n        { \"studentId\": 1, \"status\": \"PRESENT\" },\n        { \"studentId\": 2, \"status\": \"ABSENT\", \"reason\": \"Medical leave\" },\n        { \"studentId\": 3, \"status\": \"LATE\" }\n    ]\n}"
+							"raw": "{\n    \"batchId\": 1,\n    \"date\": \"2026-02-23\",\n    \"subject\": \"Mathematics\",\n    \"records\": [\n        { \"studentId\": 1, \"status\": \"PRESENT\" },\n        { \"studentId\": 2, \"status\": \"ABSENT\", \"reason\": \"Medical leave\" },\n        { \"studentId\": 3, \"status\": \"LATE\" }\n    ]\n}"
 						},
 						"url": {"raw": "{{baseUrl}}/app/attendance/teacher/mark", "host": ["{{baseUrl}}"], "path": ["app", "attendance", "teacher", "mark"]},
-						"description": "Teacher: bulk mark attendance for a date.\n\nBody fields:\n- batchId: number (required)\n- date: YYYY-MM-DD (required)\n- records[]: array of { studentId, status: PRESENT|ABSENT|LATE, reason? }\n\nUses upsert — safe to re-submit to correct a record.\nReturns: { marked: number, date, batchId }\n\nAuth: TEACHER role required."
+						"description": "Teacher: bulk mark attendance for a date.\n\nBody fields:\n- batchId: number (required)\n- date: YYYY-MM-DD (required)\n- subject: string (optional) — subject taught in this session, shown in student's attendance history\n- records[]: array of { studentId, status: PRESENT|ABSENT|LATE, reason? }\n\nUses upsert — safe to re-submit to correct a record.\nReturns: { marked: number }\n\nAuth: TEACHER role required."
 					},
 					"response": []
 				},
@@ -683,6 +705,16 @@
 						"body": {"mode": "raw", "raw": "{\n    \"status\": \"ACCEPTED\",\n    \"feedback\": \"Excellent work! Well structured and clear steps shown.\"\n}"},
 						"url": {"raw": "{{baseUrl}}/app/assignments/submissions/1/review", "host": ["{{baseUrl}}"], "path": ["app", "assignments", "submissions", "1", "review"]},
 						"description": "Teacher reviews and grades a student submission.\n\nstatus: ACCEPTED | REJECTED\nfeedback: optional (required if REJECTED is good practice)"
+					},
+					"response": []
+				},
+				{
+					"name": "Teacher: Assignment Stats",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{appToken}}"}],
+						"url": {"raw": "{{baseUrl}}/app/assignments/teacher/stats", "host": ["{{baseUrl}}"], "path": ["app", "assignments", "teacher", "stats"]},
+						"description": "Teacher: quick-stat counters for the Assignments home screen header.\n\nResponse: { dueToday: number, toReview: number }\n\n- dueToday: count of PUBLISHED assignments whose dueDate falls today\n- toReview: count of PENDING (unreviewed) student submissions across the teacher's assignments\n\nUsed for the '3 Due Today' and '12 To Review' cards at the top of the Assignments screen.\n\nAuth: TEACHER role required."
 					},
 					"response": []
 				},

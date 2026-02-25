@@ -8,6 +8,17 @@ const router = Router();
 // ==================== TEACHER ROUTES ====================
 
 /**
+ * GET /app/attendance/teacher/batches
+ * Teacher: list all active batches for Select Class/Batch dropdowns
+ */
+router.get(
+  "/teacher/batches",
+  isTeacher,
+  appReadRateLimiter,
+  attendanceController.getBatches.bind(attendanceController)
+);
+
+/**
  * GET /app/attendance/teacher/students?batchId=
  * Teacher: get students in a batch for attendance marking
  */

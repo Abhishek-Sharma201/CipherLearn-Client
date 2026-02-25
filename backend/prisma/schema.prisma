@@ -142,6 +142,7 @@ model Attendance {
   status     AttendanceStatus @default(ABSENT)
 
   reason    String?
+  subject   String?
   lectureId Int?
   lecture   Lecture?  @relation(fields: [lectureId], references: [id])
 

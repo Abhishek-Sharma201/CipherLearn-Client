@@ -11,6 +11,17 @@ const router = Router();
 // ==================== TEACHER ROUTES (before /:id to avoid conflicts) ====================
 
 /**
+ * GET /app/assignments/teacher/stats
+ * Teacher: quick stats — due today count + pending submissions to review
+ */
+router.get(
+  "/teacher/stats",
+  isTeacher,
+  appReadRateLimiter,
+  assignmentsController.getTeacherStats.bind(assignmentsController)
+);
+
+/**
  * GET /app/assignments/teacher
  * Teacher: list their assignments with tab filter
  *   ?tab=active|drafts|graded&batchId=&page=&limit=

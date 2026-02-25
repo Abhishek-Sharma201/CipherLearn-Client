@@ -268,4 +268,29 @@ export default class AppTestController {
       return res.status(status).json({ success: false, message: error.message });
     }
   }
+
+  /**
+   * GET /app/tests/teacher/:id/export-csv
+   * Teacher: download student scores as CSV
+   */
+  public async exportCsv(req: Request, res: Response) {
+    try {
+      const user = req.user!;
+      const testId = Number(req.params.id);
+
+      if (isNaN(testId)) {
+        return res.status(400).json({ success: false, message: "Invalid test ID" });
+      }
+
+      const { csv, filename } = await testService.exportScoresCsv(testId, user.id);
+
+      res.setHeader("Content-Type", "text/csv");
+      res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+      return res.send(csv);
+    } catch (error: any) {
+      logger.error("AppTestController.exportCsv error:", error);
+      const status = error.message.includes("not found") ? 404 : 500;
+      return res.status(status).json({ success: false, message: error.message });
+    }
+  }
 }

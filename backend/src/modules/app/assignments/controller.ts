@@ -748,6 +748,24 @@ class AssignmentsController {
       return res.status(500).json({ success: false, message: "Failed to get review page" });
     }
   }
+
+  /**
+   * Teacher assignment quick stats
+   * GET /app/assignments/teacher/stats
+   */
+  async getTeacherStats(req: Request, res: Response) {
+    try {
+      const user = req.user;
+      if (!user) {
+        return res.status(401).json({ success: false, message: "Not authenticated" });
+      }
+      const stats = await assignmentsService.getTeacherStats(user.id);
+      return res.status(200).json({ success: true, data: stats });
+    } catch (error) {
+      logger.error("AssignmentsController.getTeacherStats error:", error);
+      return res.status(500).json({ success: false, message: "Failed to get stats" });
+    }
+  }
 }
 
 export const assignmentsController = new AssignmentsController();

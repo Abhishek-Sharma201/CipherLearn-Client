@@ -186,6 +186,7 @@ export const AttendanceScalarFieldEnum = {
   method: 'method',
   status: 'status',
   reason: 'reason',
+  subject: 'subject',
   lectureId: 'lectureId',
   attendanceSheetId: 'attendanceSheetId',
   updatedAt: 'updatedAt',

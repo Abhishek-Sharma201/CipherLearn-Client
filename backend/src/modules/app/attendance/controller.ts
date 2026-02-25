@@ -160,6 +160,20 @@ class AttendanceController {
   // ==================== TEACHER ENDPOINTS ====================
 
   /**
+   * Get all batches (for attendance Select Class/Batch dropdowns)
+   * GET /app/attendance/teacher/batches
+   */
+  async getBatches(req: Request, res: Response) {
+    try {
+      const batches = await attendanceService.getBatches();
+      return res.status(200).json({ success: true, data: batches });
+    } catch (error) {
+      logger.error("AttendanceController.getBatches error:", error);
+      return res.status(500).json({ success: false, message: "Failed to get batches" });
+    }
+  }
+
+  /**
    * Get students in a batch (for attendance marking screen)
    * GET /app/attendance/teacher/students?batchId=
    */

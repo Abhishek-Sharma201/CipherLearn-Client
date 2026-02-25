@@ -785,6 +785,40 @@ class AssignmentsService {
       students: reviewStudents,
     };
   }
+
+  /**
+   * Teacher assignment quick stats: due today + pending submissions to review
+   */
+  async getTeacherStats(teacherId: number): Promise<{ dueToday: number; toReview: number }> {
+    const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+    const [dueToday, toReview] = await Promise.all([
+      // Assignments with due date falling today
+      prisma.assignmentSlot.count({
+        where: {
+          teacherId,
+          isDeleted: false,
+          assignmentStatus: AssignmentStatus.PUBLISHED,
+          dueDate: { gte: startOfDay, lte: endOfDay },
+        },
+      }),
+      // Pending (unreviewed) submissions across teacher's published assignments
+      prisma.studentSubmission.count({
+        where: {
+          status: "PENDING",
+          slot: {
+            teacherId,
+            isDeleted: false,
+            assignmentStatus: AssignmentStatus.PUBLISHED,
+          },
+        },
+      }),
+    ]);
+
+    return { dueToday, toReview };
+  }
 }
 
 export const assignmentsService = new AssignmentsService();

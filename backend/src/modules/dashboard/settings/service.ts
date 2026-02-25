@@ -1,3 +1,4 @@
+import { Prisma } from "../../../../prisma/generated/prisma/client";
 import { prisma } from "../../../config/db.config";
 
 export interface TeacherPermissions {
@@ -54,7 +55,7 @@ export class SettingsService {
         ...(data.classAddress !== undefined && { classAddress: data.classAddress }),
         ...(data.classWebsite !== undefined && { classWebsite: data.classWebsite }),
         ...(data.teacherPermissions !== undefined && {
-          teacherPermissions: data.teacherPermissions,
+          teacherPermissions: data.teacherPermissions as unknown as Prisma.InputJsonValue,
         }),
       },
       create: {
@@ -64,7 +65,7 @@ export class SettingsService {
         classPhone: data.classPhone ?? "",
         classAddress: data.classAddress ?? "",
         classWebsite: data.classWebsite ?? "",
-        teacherPermissions: data.teacherPermissions ?? DEFAULT_TEACHER_PERMISSIONS,
+        teacherPermissions: (data.teacherPermissions ?? DEFAULT_TEACHER_PERMISSIONS) as unknown as Prisma.InputJsonValue,
       },
     });
   }
@@ -73,8 +74,8 @@ export class SettingsService {
   async resetTeacherPermissions() {
     return prisma.appSettings.upsert({
       where: { id: 1 },
-      update: { teacherPermissions: DEFAULT_TEACHER_PERMISSIONS },
-      create: { id: 1, teacherPermissions: DEFAULT_TEACHER_PERMISSIONS },
+      update: { teacherPermissions: DEFAULT_TEACHER_PERMISSIONS as unknown as Prisma.InputJsonValue },
+      create: { id: 1, teacherPermissions: DEFAULT_TEACHER_PERMISSIONS as unknown as Prisma.InputJsonValue },
     });
   }
 }

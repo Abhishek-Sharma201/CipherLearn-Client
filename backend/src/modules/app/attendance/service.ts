@@ -13,6 +13,7 @@ import type {
   AttendanceCalendarDay,
   AttendanceHistoryQuery,
   TeacherBatchStudent,
+  TeacherBatchItem,
   MarkAttendanceInput,
   AttendanceReportEntry,
 } from "./types";
@@ -337,12 +338,32 @@ class AttendanceService {
    * Creates AttendanceSheet if it doesn't exist.
    * Upserts individual Attendance records.
    */
+  /**
+   * Get all active batches (for teacher's Select Class/Batch dropdowns)
+   */
+  async getBatches(): Promise<TeacherBatchItem[]> {
+    const batches = await prisma.batch.findMany({
+      where: { isDeleted: false },
+      select: {
+        id: true,
+        name: true,
+        _count: { select: { students: { where: { isDeleted: false } } } },
+      },
+      orderBy: { name: "asc" },
+    });
+    return batches.map((b) => ({
+      id: b.id,
+      name: b.name,
+      studentCount: b._count.students,
+    }));
+  }
+
   async markTeacherAttendance(
     teacherId: number,
     teacherName: string,
     input: MarkAttendanceInput
   ): Promise<{ marked: number }> {
-    const { batchId, date, records } = input;
+    const { batchId, date, subject, records } = input;
 
     if (!records || records.length === 0) {
       throw new Error("No attendance records provided");
@@ -393,6 +414,7 @@ class AttendanceService {
             markedBy: teacherName,
             markedById: teacherId,
             reason: record.reason ?? null,
+            subject: subject ?? null,
             attendanceSheetId: sheet.id,
           },
           update: {
@@ -400,6 +422,7 @@ class AttendanceService {
             markedBy: teacherName,
             markedById: teacherId,
             reason: record.reason ?? null,
+            subject: subject ?? null,
             time: markedAt.toTimeString().slice(0, 5),
           },
         })
