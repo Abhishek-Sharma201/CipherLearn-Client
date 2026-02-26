@@ -333,7 +333,7 @@ portal/
 │   │   └── slices/
 │   │       ├── auth/authSlice.ts
 │   │       ├── deployments/deploymentsApi.ts
-│   │       ├── payments/paymentsApi.ts     ← NEW
+│   │       ├── payments/paymentsApi.ts
 │   │       ├── analytics/analyticsApi.ts
 │   │       └── audit/auditApi.ts
 │   └── middleware.ts
@@ -516,9 +516,126 @@ NEXT_PUBLIC_PORTAL_API_URL=https://api.portal.cipherlearn.com
 NEXT_PUBLIC_PORTAL_VERSION=1.0.0
 ```
 
+### Env Vars the Portal Sets on Each Coaching Class Deployment
+
+When provisioning or updating a coaching class deployment, the portal sets these env vars on that deployment:
+
+#### Backend (client/ repo — `backend/.env`)
+```bash
+CLASS_NAME="Shree Academy"       # class branding name (replaces old SCHOOL_NAME)
+CLASS_LOGO_URL=""                # logo URL for email templates
+PRIMARY_COLOR="#0F766E"
+ACCENT_COLOR="#F59E0B"
+FEATURE_QR_ATTENDANCE=true
+FEATURE_FEES=true
+FEATURE_ASSIGNMENTS=true
+FEATURE_STUDY_MATERIALS=true
+FEATURE_ANNOUNCEMENTS=true
+FEATURE_VIDEOS=false
+```
+
+> **Note:** `CLASS_NAME` replaces the old `SCHOOL_NAME` env var. The client app reads `CLASS_NAME` first, then falls back to `SCHOOL_NAME` for backward compatibility with older deployments. New provisions must use `CLASS_NAME`.
+
+#### Frontend (client/ repo — `frontend/.env.local`)
+```bash
+NEXT_PUBLIC_APP_NAME="Shree Academy"
+NEXT_PUBLIC_PRIMARY_COLOR="#0F766E"
+NEXT_PUBLIC_ACCENT_COLOR="#F59E0B"
+NEXT_PUBLIC_LOGO_URL=""
+NEXT_PUBLIC_LOGO_INITIALS="SA"
+NEXT_PUBLIC_FEATURE_QR_ATTENDANCE=true
+NEXT_PUBLIC_FEATURE_FEES=true
+NEXT_PUBLIC_FEATURE_ASSIGNMENTS=true
+NEXT_PUBLIC_FEATURE_STUDY_MATERIALS=true
+NEXT_PUBLIC_FEATURE_ANNOUNCEMENTS=true
+NEXT_PUBLIC_FEATURE_VIDEOS=false
+```
+
 ---
 
-## 9. Implementation Order
+## 9. Client App — Current Feature Set
+
+> This section documents what has been **built and shipped** in the `client/` repo so the portal knows exactly what features it is managing. Keep this updated as client/ evolves.
+
+### App API Surfaces (as of Feb 2026)
+
+**Two API namespaces in `client/backend`:**
+
+| Namespace | Path | Auth | Users |
+|-----------|------|------|-------|
+| Dashboard API | `/api/dashboard/*` | JWT (ADMIN/TEACHER role) | Web frontend |
+| App API | `/api/app/*` | JWT (STUDENT/TEACHER role) | Mobile app |
+
+### App API — Teacher Endpoints (Feb 2026)
+
+All teacher routes require `Authorization: Bearer <token>` where token was obtained via `POST /api/app/auth/login` with a TEACHER-role account.
+
+#### Attendance
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/app/attendance/teacher/batches` | List all active batches — populates Select Class/Batch dropdowns. Returns `[{ id, name, studentCount }]` |
+| `GET` | `/app/attendance/teacher/students?batchId=` | Students in a batch for attendance marking |
+| `POST` | `/app/attendance/teacher/mark` | Bulk mark attendance. Body: `{ batchId, date, subject?, records: [{ studentId, status, reason? }] }`. Subject field added Feb 2026. |
+| `GET` | `/app/attendance/teacher/reports?batchId=` | Paginated past attendance sessions |
+| `GET` | `/app/attendance/teacher/detail?batchId=&date=` | Per-student detail for a specific date |
+
+#### Assignments
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/app/assignments/teacher/stats` | Quick stats: `{ dueToday, toReview }` — shown as counters on Assignments home screen |
+| `GET` | `/app/assignments/teacher?tab=active\|drafts\|graded` | Teacher's assignment list with tab filters |
+| `POST` | `/app/assignments/teacher` | Create assignment (multipart/form-data, supports multi-batch via `batchIds[]`) |
+| `GET` | `/app/assignments/teacher/:id/review` | Per-student submission review page |
+| `PUT` | `/app/assignments/teacher/:id` | Update assignment |
+| `DELETE` | `/app/assignments/teacher/:id` | Soft-delete assignment |
+
+#### Tests & Exams
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/app/tests/teacher?tab=&batchId=` | Teacher's test list with grading status filters |
+| `GET` | `/app/tests/teacher/:id/score-sheet` | All students with their marks (for grading screen) |
+| `PUT` | `/app/tests/teacher/:id/scores` | Bulk save student scores |
+| `PUT` | `/app/tests/teacher/:id/publish` | Publish results — locks scores, notifies students |
+| `GET` | `/app/tests/teacher/:id/summary` | Class stats: average, highest, lowest, distribution |
+| `GET` | `/app/tests/teacher/:id/export-csv` | Download scores as CSV — triggers file download |
+
+#### Study Materials (Resources)
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/app/resources/teacher?tab=published\|drafts\|scheduled` | Teacher's uploaded materials |
+| `POST` | `/app/resources/teacher` | Upload material (100 MB/file, includes video). Fields: type, subject, chapter, title, description, files[], visibleBatchIds, scheduledAt |
+| `PUT` | `/app/resources/teacher/:id/publish` | Publish a draft/scheduled material |
+| `PUT` | `/app/resources/teacher/:id` | Update material metadata |
+| `DELETE` | `/app/resources/teacher/:id` | Soft-delete material |
+
+### Runtime Config — AppSettings Table
+
+Each coaching class deployment has a single-row `AppSettings` table in its own DB (id = 1 always). This is editable by the class admin via the Settings page — no redeployment needed.
+
+**Fields:** `className`, `classEmail`, `classPhone`, `classAddress`, `classWebsite`, `teacherPermissions` (JSON)
+
+**App API endpoint (public, no auth):**
+```
+GET /api/app/settings
+→ {
+    class: { name, email, phone, address, website },   ← from AppSettings DB
+    branding: { primaryColor, accentColor, logoUrl },  ← from CLASS_* env vars
+    features: { qrAttendance, fees, assignments, ... },← from FEATURE_* env vars
+    teacherPermissions: { ... }                        ← from AppSettings DB
+  }
+```
+
+Mobile app calls this on startup (before login) to get branding and feature flags.
+
+### Postman Collection
+
+App API fully documented in `client/postman/app.1.0.1.json` (currently **v1.0.4**).
+
+> **Auth note:** The App Login response returns `data.accessToken` (not `data.token`). Postman's "App Login" test script is already configured to read `data.accessToken` and save it to the `{{appToken}}` environment variable.
+
+---
+
+## 10. Implementation Order
 
 ### Phase 1 — Foundation
 1. Init Next.js (portal frontend) + Express (portal backend)
@@ -561,7 +678,7 @@ NEXT_PUBLIC_PORTAL_VERSION=1.0.0
 
 ---
 
-## 10. Key Implementation Rules
+## 11. Key Implementation Rules
 
 1. **Token key**: `localStorage.getItem("portalToken")` — NOT `"token"` (that's the class user token)
 2. **No class DB access**: Portal never queries student/batch/fee tables directly
@@ -573,20 +690,23 @@ NEXT_PUBLIC_PORTAL_VERSION=1.0.0
 8. **Audit log**: Every mutation logs to AuditLog automatically on the backend
 9. **Separate JWT secret**: Portal JWT signed with `PORTAL_JWT_SECRET`, NOT the class `JWT_SECRET`
 10. **Terminology**: Use "class" / "coaching class" not "school" or "tenant" in all UI copy
+11. **Env var naming**: Use `CLASS_NAME` / `CLASS_LOGO_URL` when provisioning new deployments — not the deprecated `SCHOOL_NAME` / `SCHOOL_LOGO_URL`
+12. **App auth token field**: Client app login returns `data.accessToken` — do NOT look for `data.token`
 
 ---
 
-## 11. What NOT to Do
+## 12. What NOT to Do
 
 - Do NOT add portal API routes to the `client/` backend — they are separate products
 - Do NOT share a database between the portal and any coaching class deployment
 - Do NOT use the class `JWT_SECRET` for portal auth
 - Do NOT query class student/fee data from the portal — only usage counts via API
 - Do NOT implement payment gateway (Razorpay, Stripe etc.) — payments are recorded manually
-- Do NOT call them "tenants" or "schools" in the UI — they are "classes" or "coaching classes"
+- Do NOT call them "tenants", "schools", or "institutes" in the UI — they are "classes" or "coaching classes"
 - Do NOT hardcode deployment IDs or slugs anywhere in the portal code
+- Do NOT use `SCHOOL_NAME` when provisioning new deployments — use `CLASS_NAME`
 
 ---
 
-*Last updated: 2026-02-25*
+*Last updated: 2026-02-26*
 *Architecture: Per-deployment isolation — portal is a completely separate product*
