@@ -9,7 +9,7 @@ export interface UpcomingAssignment {
   title: string;
   subject: string | null;
   description: string | null;
-  attachments: string[];
+  attachments: SubmissionFile[];
   dueDate: string | null;
   isOverdue: boolean;
   daysRemaining: number | null;
@@ -63,7 +63,7 @@ export interface AssignmentSlotWithStats {
   title: string;
   subject: string | null;
   description: string | null;
-  attachments: string[];
+  attachments: SubmissionFile[];
   dueDate: string | null;
   createdAt: string;
   createdBy: string;
@@ -178,6 +178,7 @@ export interface AssignmentReviewPage {
     id: number;
     title: string;
     subject: string;
+    batchName: string;
     dueDate: string | null;
     allowLateSubmissions: boolean;
   };
