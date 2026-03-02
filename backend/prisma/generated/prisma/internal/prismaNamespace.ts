@@ -411,6 +411,7 @@ export const ModelName = {
   TeacherProfile: 'TeacherProfile',
   Doubt: 'Doubt',
   DoubtReply: 'DoubtReply',
+  ResourceStar: 'ResourceStar',
   DeviceToken: 'DeviceToken',
   AppSettings: 'AppSettings'
 } as const
@@ -428,7 +429,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "student" | "batch" | "qRAttendanceToken" | "attendanceSheet" | "attendance" | "youtubeVideo" | "note" | "assignmentSlot" | "studentSubmission" | "announcement" | "studyMaterial" | "feeStructure" | "feeReceipt" | "passwordResetToken" | "tokenBlacklist" | "notificationPreference" | "loginAttempt" | "lecture" | "test" | "testScore" | "instagramAccount" | "automationRule" | "automationLog" | "teacherProfile" | "doubt" | "doubtReply" | "deviceToken" | "appSettings"
+    modelProps: "user" | "student" | "batch" | "qRAttendanceToken" | "attendanceSheet" | "attendance" | "youtubeVideo" | "note" | "assignmentSlot" | "studentSubmission" | "announcement" | "studyMaterial" | "feeStructure" | "feeReceipt" | "passwordResetToken" | "tokenBlacklist" | "notificationPreference" | "loginAttempt" | "lecture" | "test" | "testScore" | "instagramAccount" | "automationRule" | "automationLog" | "teacherProfile" | "doubt" | "doubtReply" | "resourceStar" | "deviceToken" | "appSettings"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2430,6 +2431,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ResourceStar: {
+      payload: Prisma.$ResourceStarPayload<ExtArgs>
+      fields: Prisma.ResourceStarFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ResourceStarFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResourceStarPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ResourceStarFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResourceStarPayload>
+        }
+        findFirst: {
+          args: Prisma.ResourceStarFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResourceStarPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ResourceStarFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResourceStarPayload>
+        }
+        findMany: {
+          args: Prisma.ResourceStarFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResourceStarPayload>[]
+        }
+        create: {
+          args: Prisma.ResourceStarCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResourceStarPayload>
+        }
+        createMany: {
+          args: Prisma.ResourceStarCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ResourceStarCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResourceStarPayload>[]
+        }
+        delete: {
+          args: Prisma.ResourceStarDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResourceStarPayload>
+        }
+        update: {
+          args: Prisma.ResourceStarUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResourceStarPayload>
+        }
+        deleteMany: {
+          args: Prisma.ResourceStarDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ResourceStarUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ResourceStarUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResourceStarPayload>[]
+        }
+        upsert: {
+          args: Prisma.ResourceStarUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResourceStarPayload>
+        }
+        aggregate: {
+          args: Prisma.ResourceStarAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateResourceStar>
+        }
+        groupBy: {
+          args: Prisma.ResourceStarGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ResourceStarGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ResourceStarCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ResourceStarCountAggregateOutputType> | number
+        }
+      }
+    }
     DeviceToken: {
       payload: Prisma.$DeviceTokenPayload<ExtArgs>
       fields: Prisma.DeviceTokenFieldRefs
@@ -3123,6 +3198,17 @@ export const DoubtReplyScalarFieldEnum = {
 export type DoubtReplyScalarFieldEnum = (typeof DoubtReplyScalarFieldEnum)[keyof typeof DoubtReplyScalarFieldEnum]
 
 
+export const ResourceStarScalarFieldEnum = {
+  id: 'id',
+  studentId: 'studentId',
+  resourceType: 'resourceType',
+  resourceId: 'resourceId',
+  createdAt: 'createdAt'
+} as const
+
+export type ResourceStarScalarFieldEnum = (typeof ResourceStarScalarFieldEnum)[keyof typeof ResourceStarScalarFieldEnum]
+
+
 export const DeviceTokenScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -3723,6 +3809,7 @@ export type GlobalOmitConfig = {
   teacherProfile?: Prisma.TeacherProfileOmit
   doubt?: Prisma.DoubtOmit
   doubtReply?: Prisma.DoubtReplyOmit
+  resourceStar?: Prisma.ResourceStarOmit
   deviceToken?: Prisma.DeviceTokenOmit
   appSettings?: Prisma.AppSettingsOmit
 }

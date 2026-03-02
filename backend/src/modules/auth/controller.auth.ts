@@ -116,12 +116,10 @@ export default class AuthController {
           .status(404)
           .json({ success: false, message: "User not found" });
 
-      // In prod, don't return token. We return it here for dev/test convenience.
-      logger.info(`Password reset requested for: ${email}`);
+      logger.info(`Password reset email sent to: ${email}`);
       return res.status(200).json({
         success: true,
-        message: "Reset token generated",
-        token: result.resetToken,
+        message: "Password reset instructions have been sent to your email.",
       });
     } catch (error) {
       logger.error("forgotPassword controller error:", error);

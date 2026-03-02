@@ -153,6 +153,11 @@ export type Doubt = Prisma.DoubtModel
  */
 export type DoubtReply = Prisma.DoubtReplyModel
 /**
+ * Model ResourceStar
+ * 
+ */
+export type ResourceStar = Prisma.ResourceStarModel
+/**
  * Model DeviceToken
  * 
  */

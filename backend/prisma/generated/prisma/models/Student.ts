@@ -340,6 +340,7 @@ export type StudentWhereInput = {
   testScores?: Prisma.TestScoreListRelationFilter
   notificationPreference?: Prisma.XOR<Prisma.NotificationPreferenceNullableScalarRelationFilter, Prisma.NotificationPreferenceWhereInput> | null
   doubts?: Prisma.DoubtListRelationFilter
+  starredResources?: Prisma.ResourceStarListRelationFilter
 }
 
 export type StudentOrderByWithRelationInput = {
@@ -370,6 +371,7 @@ export type StudentOrderByWithRelationInput = {
   testScores?: Prisma.TestScoreOrderByRelationAggregateInput
   notificationPreference?: Prisma.NotificationPreferenceOrderByWithRelationInput
   doubts?: Prisma.DoubtOrderByRelationAggregateInput
+  starredResources?: Prisma.ResourceStarOrderByRelationAggregateInput
 }
 
 export type StudentWhereUniqueInput = Prisma.AtLeast<{
@@ -403,6 +405,7 @@ export type StudentWhereUniqueInput = Prisma.AtLeast<{
   testScores?: Prisma.TestScoreListRelationFilter
   notificationPreference?: Prisma.XOR<Prisma.NotificationPreferenceNullableScalarRelationFilter, Prisma.NotificationPreferenceWhereInput> | null
   doubts?: Prisma.DoubtListRelationFilter
+  starredResources?: Prisma.ResourceStarListRelationFilter
 }, "id" | "email" | "userId">
 
 export type StudentOrderByWithAggregationInput = {
@@ -482,6 +485,7 @@ export type StudentCreateInput = {
   testScores?: Prisma.TestScoreCreateNestedManyWithoutStudentInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutStudentInput
   doubts?: Prisma.DoubtCreateNestedManyWithoutStudentInput
+  starredResources?: Prisma.ResourceStarCreateNestedManyWithoutStudentInput
 }
 
 export type StudentUncheckedCreateInput = {
@@ -510,6 +514,7 @@ export type StudentUncheckedCreateInput = {
   testScores?: Prisma.TestScoreUncheckedCreateNestedManyWithoutStudentInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutStudentInput
   doubts?: Prisma.DoubtUncheckedCreateNestedManyWithoutStudentInput
+  starredResources?: Prisma.ResourceStarUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type StudentUpdateInput = {
@@ -537,6 +542,7 @@ export type StudentUpdateInput = {
   testScores?: Prisma.TestScoreUpdateManyWithoutStudentNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutStudentNestedInput
   doubts?: Prisma.DoubtUpdateManyWithoutStudentNestedInput
+  starredResources?: Prisma.ResourceStarUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentUncheckedUpdateInput = {
@@ -565,6 +571,7 @@ export type StudentUncheckedUpdateInput = {
   testScores?: Prisma.TestScoreUncheckedUpdateManyWithoutStudentNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutStudentNestedInput
   doubts?: Prisma.DoubtUncheckedUpdateManyWithoutStudentNestedInput
+  starredResources?: Prisma.ResourceStarUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentCreateManyInput = {
@@ -896,6 +903,20 @@ export type StudentUpdateOneRequiredWithoutDoubtsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.StudentUpdateToOneWithWhereWithoutDoubtsInput, Prisma.StudentUpdateWithoutDoubtsInput>, Prisma.StudentUncheckedUpdateWithoutDoubtsInput>
 }
 
+export type StudentCreateNestedOneWithoutStarredResourcesInput = {
+  create?: Prisma.XOR<Prisma.StudentCreateWithoutStarredResourcesInput, Prisma.StudentUncheckedCreateWithoutStarredResourcesInput>
+  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutStarredResourcesInput
+  connect?: Prisma.StudentWhereUniqueInput
+}
+
+export type StudentUpdateOneRequiredWithoutStarredResourcesNestedInput = {
+  create?: Prisma.XOR<Prisma.StudentCreateWithoutStarredResourcesInput, Prisma.StudentUncheckedCreateWithoutStarredResourcesInput>
+  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutStarredResourcesInput
+  upsert?: Prisma.StudentUpsertWithoutStarredResourcesInput
+  connect?: Prisma.StudentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.StudentUpdateToOneWithWhereWithoutStarredResourcesInput, Prisma.StudentUpdateWithoutStarredResourcesInput>, Prisma.StudentUncheckedUpdateWithoutStarredResourcesInput>
+}
+
 export type StudentCreateWithoutUserInput = {
   firstname: string
   middlename: string
@@ -920,6 +941,7 @@ export type StudentCreateWithoutUserInput = {
   testScores?: Prisma.TestScoreCreateNestedManyWithoutStudentInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutStudentInput
   doubts?: Prisma.DoubtCreateNestedManyWithoutStudentInput
+  starredResources?: Prisma.ResourceStarCreateNestedManyWithoutStudentInput
 }
 
 export type StudentUncheckedCreateWithoutUserInput = {
@@ -947,6 +969,7 @@ export type StudentUncheckedCreateWithoutUserInput = {
   testScores?: Prisma.TestScoreUncheckedCreateNestedManyWithoutStudentInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutStudentInput
   doubts?: Prisma.DoubtUncheckedCreateNestedManyWithoutStudentInput
+  starredResources?: Prisma.ResourceStarUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type StudentCreateOrConnectWithoutUserInput = {
@@ -989,6 +1012,7 @@ export type StudentUpdateWithoutUserInput = {
   testScores?: Prisma.TestScoreUpdateManyWithoutStudentNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutStudentNestedInput
   doubts?: Prisma.DoubtUpdateManyWithoutStudentNestedInput
+  starredResources?: Prisma.ResourceStarUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentUncheckedUpdateWithoutUserInput = {
@@ -1016,6 +1040,7 @@ export type StudentUncheckedUpdateWithoutUserInput = {
   testScores?: Prisma.TestScoreUncheckedUpdateManyWithoutStudentNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutStudentNestedInput
   doubts?: Prisma.DoubtUncheckedUpdateManyWithoutStudentNestedInput
+  starredResources?: Prisma.ResourceStarUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentCreateWithoutBatchInput = {
@@ -1042,6 +1067,7 @@ export type StudentCreateWithoutBatchInput = {
   testScores?: Prisma.TestScoreCreateNestedManyWithoutStudentInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutStudentInput
   doubts?: Prisma.DoubtCreateNestedManyWithoutStudentInput
+  starredResources?: Prisma.ResourceStarCreateNestedManyWithoutStudentInput
 }
 
 export type StudentUncheckedCreateWithoutBatchInput = {
@@ -1069,6 +1095,7 @@ export type StudentUncheckedCreateWithoutBatchInput = {
   testScores?: Prisma.TestScoreUncheckedCreateNestedManyWithoutStudentInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutStudentInput
   doubts?: Prisma.DoubtUncheckedCreateNestedManyWithoutStudentInput
+  starredResources?: Prisma.ResourceStarUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type StudentCreateOrConnectWithoutBatchInput = {
@@ -1146,6 +1173,7 @@ export type StudentCreateWithoutAttendancesInput = {
   testScores?: Prisma.TestScoreCreateNestedManyWithoutStudentInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutStudentInput
   doubts?: Prisma.DoubtCreateNestedManyWithoutStudentInput
+  starredResources?: Prisma.ResourceStarCreateNestedManyWithoutStudentInput
 }
 
 export type StudentUncheckedCreateWithoutAttendancesInput = {
@@ -1173,6 +1201,7 @@ export type StudentUncheckedCreateWithoutAttendancesInput = {
   testScores?: Prisma.TestScoreUncheckedCreateNestedManyWithoutStudentInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutStudentInput
   doubts?: Prisma.DoubtUncheckedCreateNestedManyWithoutStudentInput
+  starredResources?: Prisma.ResourceStarUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type StudentCreateOrConnectWithoutAttendancesInput = {
@@ -1215,6 +1244,7 @@ export type StudentUpdateWithoutAttendancesInput = {
   testScores?: Prisma.TestScoreUpdateManyWithoutStudentNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutStudentNestedInput
   doubts?: Prisma.DoubtUpdateManyWithoutStudentNestedInput
+  starredResources?: Prisma.ResourceStarUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentUncheckedUpdateWithoutAttendancesInput = {
@@ -1242,6 +1272,7 @@ export type StudentUncheckedUpdateWithoutAttendancesInput = {
   testScores?: Prisma.TestScoreUncheckedUpdateManyWithoutStudentNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutStudentNestedInput
   doubts?: Prisma.DoubtUncheckedUpdateManyWithoutStudentNestedInput
+  starredResources?: Prisma.ResourceStarUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentCreateWithoutSubmissionsInput = {
@@ -1268,6 +1299,7 @@ export type StudentCreateWithoutSubmissionsInput = {
   testScores?: Prisma.TestScoreCreateNestedManyWithoutStudentInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutStudentInput
   doubts?: Prisma.DoubtCreateNestedManyWithoutStudentInput
+  starredResources?: Prisma.ResourceStarCreateNestedManyWithoutStudentInput
 }
 
 export type StudentUncheckedCreateWithoutSubmissionsInput = {
@@ -1295,6 +1327,7 @@ export type StudentUncheckedCreateWithoutSubmissionsInput = {
   testScores?: Prisma.TestScoreUncheckedCreateNestedManyWithoutStudentInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutStudentInput
   doubts?: Prisma.DoubtUncheckedCreateNestedManyWithoutStudentInput
+  starredResources?: Prisma.ResourceStarUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type StudentCreateOrConnectWithoutSubmissionsInput = {
@@ -1337,6 +1370,7 @@ export type StudentUpdateWithoutSubmissionsInput = {
   testScores?: Prisma.TestScoreUpdateManyWithoutStudentNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutStudentNestedInput
   doubts?: Prisma.DoubtUpdateManyWithoutStudentNestedInput
+  starredResources?: Prisma.ResourceStarUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentUncheckedUpdateWithoutSubmissionsInput = {
@@ -1364,6 +1398,7 @@ export type StudentUncheckedUpdateWithoutSubmissionsInput = {
   testScores?: Prisma.TestScoreUncheckedUpdateManyWithoutStudentNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutStudentNestedInput
   doubts?: Prisma.DoubtUncheckedUpdateManyWithoutStudentNestedInput
+  starredResources?: Prisma.ResourceStarUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentCreateWithoutFeeReceiptsInput = {
@@ -1390,6 +1425,7 @@ export type StudentCreateWithoutFeeReceiptsInput = {
   testScores?: Prisma.TestScoreCreateNestedManyWithoutStudentInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutStudentInput
   doubts?: Prisma.DoubtCreateNestedManyWithoutStudentInput
+  starredResources?: Prisma.ResourceStarCreateNestedManyWithoutStudentInput
 }
 
 export type StudentUncheckedCreateWithoutFeeReceiptsInput = {
@@ -1417,6 +1453,7 @@ export type StudentUncheckedCreateWithoutFeeReceiptsInput = {
   testScores?: Prisma.TestScoreUncheckedCreateNestedManyWithoutStudentInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutStudentInput
   doubts?: Prisma.DoubtUncheckedCreateNestedManyWithoutStudentInput
+  starredResources?: Prisma.ResourceStarUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type StudentCreateOrConnectWithoutFeeReceiptsInput = {
@@ -1459,6 +1496,7 @@ export type StudentUpdateWithoutFeeReceiptsInput = {
   testScores?: Prisma.TestScoreUpdateManyWithoutStudentNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutStudentNestedInput
   doubts?: Prisma.DoubtUpdateManyWithoutStudentNestedInput
+  starredResources?: Prisma.ResourceStarUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentUncheckedUpdateWithoutFeeReceiptsInput = {
@@ -1486,6 +1524,7 @@ export type StudentUncheckedUpdateWithoutFeeReceiptsInput = {
   testScores?: Prisma.TestScoreUncheckedUpdateManyWithoutStudentNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutStudentNestedInput
   doubts?: Prisma.DoubtUncheckedUpdateManyWithoutStudentNestedInput
+  starredResources?: Prisma.ResourceStarUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentCreateWithoutNotificationPreferenceInput = {
@@ -1512,6 +1551,7 @@ export type StudentCreateWithoutNotificationPreferenceInput = {
   feeReceipts?: Prisma.FeeReceiptCreateNestedManyWithoutStudentInput
   testScores?: Prisma.TestScoreCreateNestedManyWithoutStudentInput
   doubts?: Prisma.DoubtCreateNestedManyWithoutStudentInput
+  starredResources?: Prisma.ResourceStarCreateNestedManyWithoutStudentInput
 }
 
 export type StudentUncheckedCreateWithoutNotificationPreferenceInput = {
@@ -1539,6 +1579,7 @@ export type StudentUncheckedCreateWithoutNotificationPreferenceInput = {
   feeReceipts?: Prisma.FeeReceiptUncheckedCreateNestedManyWithoutStudentInput
   testScores?: Prisma.TestScoreUncheckedCreateNestedManyWithoutStudentInput
   doubts?: Prisma.DoubtUncheckedCreateNestedManyWithoutStudentInput
+  starredResources?: Prisma.ResourceStarUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type StudentCreateOrConnectWithoutNotificationPreferenceInput = {
@@ -1581,6 +1622,7 @@ export type StudentUpdateWithoutNotificationPreferenceInput = {
   feeReceipts?: Prisma.FeeReceiptUpdateManyWithoutStudentNestedInput
   testScores?: Prisma.TestScoreUpdateManyWithoutStudentNestedInput
   doubts?: Prisma.DoubtUpdateManyWithoutStudentNestedInput
+  starredResources?: Prisma.ResourceStarUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentUncheckedUpdateWithoutNotificationPreferenceInput = {
@@ -1608,6 +1650,7 @@ export type StudentUncheckedUpdateWithoutNotificationPreferenceInput = {
   feeReceipts?: Prisma.FeeReceiptUncheckedUpdateManyWithoutStudentNestedInput
   testScores?: Prisma.TestScoreUncheckedUpdateManyWithoutStudentNestedInput
   doubts?: Prisma.DoubtUncheckedUpdateManyWithoutStudentNestedInput
+  starredResources?: Prisma.ResourceStarUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentCreateWithoutTestScoresInput = {
@@ -1634,6 +1677,7 @@ export type StudentCreateWithoutTestScoresInput = {
   feeReceipts?: Prisma.FeeReceiptCreateNestedManyWithoutStudentInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutStudentInput
   doubts?: Prisma.DoubtCreateNestedManyWithoutStudentInput
+  starredResources?: Prisma.ResourceStarCreateNestedManyWithoutStudentInput
 }
 
 export type StudentUncheckedCreateWithoutTestScoresInput = {
@@ -1661,6 +1705,7 @@ export type StudentUncheckedCreateWithoutTestScoresInput = {
   feeReceipts?: Prisma.FeeReceiptUncheckedCreateNestedManyWithoutStudentInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutStudentInput
   doubts?: Prisma.DoubtUncheckedCreateNestedManyWithoutStudentInput
+  starredResources?: Prisma.ResourceStarUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type StudentCreateOrConnectWithoutTestScoresInput = {
@@ -1703,6 +1748,7 @@ export type StudentUpdateWithoutTestScoresInput = {
   feeReceipts?: Prisma.FeeReceiptUpdateManyWithoutStudentNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutStudentNestedInput
   doubts?: Prisma.DoubtUpdateManyWithoutStudentNestedInput
+  starredResources?: Prisma.ResourceStarUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentUncheckedUpdateWithoutTestScoresInput = {
@@ -1730,6 +1776,7 @@ export type StudentUncheckedUpdateWithoutTestScoresInput = {
   feeReceipts?: Prisma.FeeReceiptUncheckedUpdateManyWithoutStudentNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutStudentNestedInput
   doubts?: Prisma.DoubtUncheckedUpdateManyWithoutStudentNestedInput
+  starredResources?: Prisma.ResourceStarUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentCreateWithoutDoubtsInput = {
@@ -1756,6 +1803,7 @@ export type StudentCreateWithoutDoubtsInput = {
   feeReceipts?: Prisma.FeeReceiptCreateNestedManyWithoutStudentInput
   testScores?: Prisma.TestScoreCreateNestedManyWithoutStudentInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutStudentInput
+  starredResources?: Prisma.ResourceStarCreateNestedManyWithoutStudentInput
 }
 
 export type StudentUncheckedCreateWithoutDoubtsInput = {
@@ -1783,6 +1831,7 @@ export type StudentUncheckedCreateWithoutDoubtsInput = {
   feeReceipts?: Prisma.FeeReceiptUncheckedCreateNestedManyWithoutStudentInput
   testScores?: Prisma.TestScoreUncheckedCreateNestedManyWithoutStudentInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutStudentInput
+  starredResources?: Prisma.ResourceStarUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type StudentCreateOrConnectWithoutDoubtsInput = {
@@ -1825,6 +1874,7 @@ export type StudentUpdateWithoutDoubtsInput = {
   feeReceipts?: Prisma.FeeReceiptUpdateManyWithoutStudentNestedInput
   testScores?: Prisma.TestScoreUpdateManyWithoutStudentNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutStudentNestedInput
+  starredResources?: Prisma.ResourceStarUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentUncheckedUpdateWithoutDoubtsInput = {
@@ -1852,6 +1902,133 @@ export type StudentUncheckedUpdateWithoutDoubtsInput = {
   feeReceipts?: Prisma.FeeReceiptUncheckedUpdateManyWithoutStudentNestedInput
   testScores?: Prisma.TestScoreUncheckedUpdateManyWithoutStudentNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutStudentNestedInput
+  starredResources?: Prisma.ResourceStarUncheckedUpdateManyWithoutStudentNestedInput
+}
+
+export type StudentCreateWithoutStarredResourcesInput = {
+  firstname: string
+  middlename: string
+  lastname: string
+  fullname: string
+  email: string
+  dob: string
+  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  address?: string | null
+  phone?: string | null
+  parentName?: string | null
+  grade?: string | null
+  instituteId?: string | null
+  isDeleted?: boolean | null
+  deletedBy?: string | null
+  updatedAt?: Date | string | null
+  createdAt?: Date | string | null
+  batch?: Prisma.BatchCreateNestedOneWithoutStudentsInput
+  user?: Prisma.UserCreateNestedOneWithoutStudentInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
+  submissions?: Prisma.StudentSubmissionCreateNestedManyWithoutStudentInput
+  feeReceipts?: Prisma.FeeReceiptCreateNestedManyWithoutStudentInput
+  testScores?: Prisma.TestScoreCreateNestedManyWithoutStudentInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutStudentInput
+  doubts?: Prisma.DoubtCreateNestedManyWithoutStudentInput
+}
+
+export type StudentUncheckedCreateWithoutStarredResourcesInput = {
+  id?: number
+  firstname: string
+  middlename: string
+  lastname: string
+  fullname: string
+  email: string
+  dob: string
+  batchId?: number | null
+  userId?: number | null
+  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  address?: string | null
+  phone?: string | null
+  parentName?: string | null
+  grade?: string | null
+  instituteId?: string | null
+  isDeleted?: boolean | null
+  deletedBy?: string | null
+  updatedAt?: Date | string | null
+  createdAt?: Date | string | null
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
+  submissions?: Prisma.StudentSubmissionUncheckedCreateNestedManyWithoutStudentInput
+  feeReceipts?: Prisma.FeeReceiptUncheckedCreateNestedManyWithoutStudentInput
+  testScores?: Prisma.TestScoreUncheckedCreateNestedManyWithoutStudentInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutStudentInput
+  doubts?: Prisma.DoubtUncheckedCreateNestedManyWithoutStudentInput
+}
+
+export type StudentCreateOrConnectWithoutStarredResourcesInput = {
+  where: Prisma.StudentWhereUniqueInput
+  create: Prisma.XOR<Prisma.StudentCreateWithoutStarredResourcesInput, Prisma.StudentUncheckedCreateWithoutStarredResourcesInput>
+}
+
+export type StudentUpsertWithoutStarredResourcesInput = {
+  update: Prisma.XOR<Prisma.StudentUpdateWithoutStarredResourcesInput, Prisma.StudentUncheckedUpdateWithoutStarredResourcesInput>
+  create: Prisma.XOR<Prisma.StudentCreateWithoutStarredResourcesInput, Prisma.StudentUncheckedCreateWithoutStarredResourcesInput>
+  where?: Prisma.StudentWhereInput
+}
+
+export type StudentUpdateToOneWithWhereWithoutStarredResourcesInput = {
+  where?: Prisma.StudentWhereInput
+  data: Prisma.XOR<Prisma.StudentUpdateWithoutStarredResourcesInput, Prisma.StudentUncheckedUpdateWithoutStarredResourcesInput>
+}
+
+export type StudentUpdateWithoutStarredResourcesInput = {
+  firstname?: Prisma.StringFieldUpdateOperationsInput | string
+  middlename?: Prisma.StringFieldUpdateOperationsInput | string
+  lastname?: Prisma.StringFieldUpdateOperationsInput | string
+  fullname?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  dob?: Prisma.StringFieldUpdateOperationsInput | string
+  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instituteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDeleted?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  batch?: Prisma.BatchUpdateOneWithoutStudentsNestedInput
+  user?: Prisma.UserUpdateOneWithoutStudentNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
+  submissions?: Prisma.StudentSubmissionUpdateManyWithoutStudentNestedInput
+  feeReceipts?: Prisma.FeeReceiptUpdateManyWithoutStudentNestedInput
+  testScores?: Prisma.TestScoreUpdateManyWithoutStudentNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutStudentNestedInput
+  doubts?: Prisma.DoubtUpdateManyWithoutStudentNestedInput
+}
+
+export type StudentUncheckedUpdateWithoutStarredResourcesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  firstname?: Prisma.StringFieldUpdateOperationsInput | string
+  middlename?: Prisma.StringFieldUpdateOperationsInput | string
+  lastname?: Prisma.StringFieldUpdateOperationsInput | string
+  fullname?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  dob?: Prisma.StringFieldUpdateOperationsInput | string
+  batchId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  userId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instituteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDeleted?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+  submissions?: Prisma.StudentSubmissionUncheckedUpdateManyWithoutStudentNestedInput
+  feeReceipts?: Prisma.FeeReceiptUncheckedUpdateManyWithoutStudentNestedInput
+  testScores?: Prisma.TestScoreUncheckedUpdateManyWithoutStudentNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutStudentNestedInput
+  doubts?: Prisma.DoubtUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentCreateManyBatchInput = {
@@ -1899,6 +2076,7 @@ export type StudentUpdateWithoutBatchInput = {
   testScores?: Prisma.TestScoreUpdateManyWithoutStudentNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutStudentNestedInput
   doubts?: Prisma.DoubtUpdateManyWithoutStudentNestedInput
+  starredResources?: Prisma.ResourceStarUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentUncheckedUpdateWithoutBatchInput = {
@@ -1926,6 +2104,7 @@ export type StudentUncheckedUpdateWithoutBatchInput = {
   testScores?: Prisma.TestScoreUncheckedUpdateManyWithoutStudentNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutStudentNestedInput
   doubts?: Prisma.DoubtUncheckedUpdateManyWithoutStudentNestedInput
+  starredResources?: Prisma.ResourceStarUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentUncheckedUpdateManyWithoutBatchInput = {
@@ -1960,6 +2139,7 @@ export type StudentCountOutputType = {
   feeReceipts: number
   testScores: number
   doubts: number
+  starredResources: number
 }
 
 export type StudentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1968,6 +2148,7 @@ export type StudentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   feeReceipts?: boolean | StudentCountOutputTypeCountFeeReceiptsArgs
   testScores?: boolean | StudentCountOutputTypeCountTestScoresArgs
   doubts?: boolean | StudentCountOutputTypeCountDoubtsArgs
+  starredResources?: boolean | StudentCountOutputTypeCountStarredResourcesArgs
 }
 
 /**
@@ -2015,6 +2196,13 @@ export type StudentCountOutputTypeCountDoubtsArgs<ExtArgs extends runtime.Types.
   where?: Prisma.DoubtWhereInput
 }
 
+/**
+ * StudentCountOutputType without action
+ */
+export type StudentCountOutputTypeCountStarredResourcesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ResourceStarWhereInput
+}
+
 
 export type StudentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2044,6 +2232,7 @@ export type StudentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   testScores?: boolean | Prisma.Student$testScoresArgs<ExtArgs>
   notificationPreference?: boolean | Prisma.Student$notificationPreferenceArgs<ExtArgs>
   doubts?: boolean | Prisma.Student$doubtsArgs<ExtArgs>
+  starredResources?: boolean | Prisma.Student$starredResourcesArgs<ExtArgs>
   _count?: boolean | Prisma.StudentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["student"]>
 
@@ -2127,6 +2316,7 @@ export type StudentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   testScores?: boolean | Prisma.Student$testScoresArgs<ExtArgs>
   notificationPreference?: boolean | Prisma.Student$notificationPreferenceArgs<ExtArgs>
   doubts?: boolean | Prisma.Student$doubtsArgs<ExtArgs>
+  starredResources?: boolean | Prisma.Student$starredResourcesArgs<ExtArgs>
   _count?: boolean | Prisma.StudentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type StudentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2149,6 +2339,7 @@ export type $StudentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     testScores: Prisma.$TestScorePayload<ExtArgs>[]
     notificationPreference: Prisma.$NotificationPreferencePayload<ExtArgs> | null
     doubts: Prisma.$DoubtPayload<ExtArgs>[]
+    starredResources: Prisma.$ResourceStarPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -2572,6 +2763,7 @@ export interface Prisma__StudentClient<T, Null = never, ExtArgs extends runtime.
   testScores<T extends Prisma.Student$testScoresArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Student$testScoresArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TestScorePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notificationPreference<T extends Prisma.Student$notificationPreferenceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Student$notificationPreferenceArgs<ExtArgs>>): Prisma.Prisma__NotificationPreferenceClient<runtime.Types.Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   doubts<T extends Prisma.Student$doubtsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Student$doubtsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DoubtPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  starredResources<T extends Prisma.Student$starredResourcesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Student$starredResourcesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResourceStarPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3190,6 +3382,30 @@ export type Student$doubtsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.DoubtScalarFieldEnum | Prisma.DoubtScalarFieldEnum[]
+}
+
+/**
+ * Student.starredResources
+ */
+export type Student$starredResourcesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ResourceStar
+   */
+  select?: Prisma.ResourceStarSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ResourceStar
+   */
+  omit?: Prisma.ResourceStarOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ResourceStarInclude<ExtArgs> | null
+  where?: Prisma.ResourceStarWhereInput
+  orderBy?: Prisma.ResourceStarOrderByWithRelationInput | Prisma.ResourceStarOrderByWithRelationInput[]
+  cursor?: Prisma.ResourceStarWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ResourceStarScalarFieldEnum | Prisma.ResourceStarScalarFieldEnum[]
 }
 
 /**

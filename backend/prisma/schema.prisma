@@ -67,6 +67,7 @@ model Student {
   testScores              TestScore[]
   notificationPreference  NotificationPreference?
   doubts                  Doubt[]
+  starredResources        ResourceStar[]
 
   @@index([batchId])
   @@index([userId])
@@ -879,6 +880,25 @@ enum DoubtStatus {
   OPEN
   ANSWERED
   RESOLVED
+}
+
+// ============================================
+// Starred Resources (student bookmarks)
+// ============================================
+
+model ResourceStar {
+  id           Int      @id @default(autoincrement())
+  studentId    Int
+  student      Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  /// "note" | "study_material" | "video"
+  resourceType String
+  resourceId   Int
+
+  createdAt    DateTime @default(now())
+
+  @@unique([studentId, resourceType, resourceId])
+  @@index([studentId])
+  @@map("resource_stars")
 }
 
 // ============================================

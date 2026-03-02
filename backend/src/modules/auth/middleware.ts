@@ -39,6 +39,14 @@ export const isAdminOrTeacher = async (
       });
     }
 
+    const blacklisted = await isTokenBlacklisted(token);
+    if (blacklisted) {
+      return res.status(401).json({
+        success: false,
+        message: "Token has been revoked. Please login again.",
+      });
+    }
+
     const decoded = verifyToken(token);
 
     const user = await prisma.user.findUnique({
@@ -99,6 +107,14 @@ export const isAdmin = async (
       });
     }
 
+    const blacklisted = await isTokenBlacklisted(token);
+    if (blacklisted) {
+      return res.status(401).json({
+        success: false,
+        message: "Token has been revoked. Please login again.",
+      });
+    }
+
     const decoded = verifyToken(token);
 
     const user = await prisma.user.findUnique({
@@ -156,6 +172,14 @@ export const isAuthenticated = async (
       return res.status(401).json({
         success: false,
         message: "No token provided",
+      });
+    }
+
+    const blacklisted = await isTokenBlacklisted(token);
+    if (blacklisted) {
+      return res.status(401).json({
+        success: false,
+        message: "Token has been revoked. Please login again.",
       });
     }
 

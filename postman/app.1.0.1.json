@@ -1,8 +1,8 @@
 {
   "info": {
     "_postman_id": "cipherlearn-app-api-v1.0.8",
-    "name": "CipherLearn App API v1.0.8",
-    "version": "1.0.8",
+    "name": "CipherLearn App API v1.0.9",
+    "version": "1.0.9",
     "description": "Complete API collection for CipherLearn Mobile App (Student + Teacher single app).\n\n**Auth Flow:**\n1. Admin creates student/teacher accounts from dashboard → registration email sent\n2. User opens app → enters registered email\n3. First time: set password (POST /app/auth/setup-password)\n4. Login (POST /app/auth/login) → JWT returned with role\n5. Role-based dashboard: STUDENT or TEACHER\n\n**Endpoints by role:**\n\nStudent-only:\n- Profile, Fees, Notifications (preferences)\n- Attendance: self-view (summary, history, calendar, QR mark)\n- Assignments: browse, submit, view submission\n- Tests: upcoming, results, performance analytics\n- Resources: videos, notes, study materials\n\nTeacher (requires TEACHER role JWT):\n- Attendance: get batch students, bulk mark, reports, date detail\n- Assignments: create/update/delete, review per-student status\n- Tests: manage grading (score sheet, bulk save scores, publish results, summary)\n- Resources: upload/manage study materials (PDF, video, etc.)\n\nShared (both roles):\n- Auth, Dashboard, Lectures/Timetable, Announcements\n- Notifications: device token registration\n\n**Lecture creation is admin-only (via dashboard).** Teachers and students can only VIEW lectures, add notes, and mark complete.\n\n**Security Headers on all requests:**\n- Authorization: Bearer {{appToken}}\n- Content-Type: application/json (or multipart/form-data for uploads)\n\n**Rate Limits:**\n- Auth: 5 req/15min (login), 3 req/hr (password reset)\n- File uploads: 10 uploads/5min per IP\n- General reads: 120 req/min per IP\n- Token refresh: 10 req/min per IP\n\n**File Upload Limits:**\n- Assignment submission: 25 MB/file, 5 files (PDF, Word, Excel, PPT, images, ZIP)\n- Assignment attachments (teacher): 50 MB/file, 5 files\n- Study materials (teacher): 100 MB/file, 5 files (includes video: MP4, MOV, AVI)\n- All uploads: memory storage → Cloudinary, magic number validated\n\n**Caching:**\n- Announcement list: 3 min | detail: 5 min\n- Notification preferences: 10 min per student\n- Fee structures: 60 min per batch\n- Attendance: 2 min\n\n**Setup:**\n1. Import into Postman\n2. Create environment: baseUrl = http://localhost:5000/api\n3. Run 'App Login' → appToken auto-saved\n4. Use STUDENT email for student routes, TEACHER email for teacher routes\n\n**Base URL:** http://localhost:5000/api",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
@@ -2585,6 +2585,107 @@
               ]
             },
             "description": "Teacher: soft-delete a study material.\n\nSets isDeleted=true + records deletedBy. Hidden from students immediately. Files remain on Cloudinary.\n\nAuth: TEACHER role + must own the material."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Starred Resources",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{appToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/app/resources/starred",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "app",
+                "resources",
+                "starred"
+              ]
+            },
+            "description": "Student: get all starred resources grouped by type.\n\nResponse: { data: { notes: AppNote[], studyMaterials: AppStudyMaterial[], videos: AppVideo[] } }\n\nAuth: STUDENT role required."
+          },
+          "response": []
+        },
+        {
+          "name": "Star a Resource",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{appToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resourceType\": \"note\",\n  \"resourceId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/app/resources/starred",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "app",
+                "resources",
+                "starred"
+              ]
+            },
+            "description": "Student: star a resource. Idempotent — starring an already-starred resource is a no-op.\n\nBody: { resourceType: \"note\" | \"study_material\" | \"video\", resourceId: number }\n\nAuth: STUDENT role required."
+          },
+          "response": []
+        },
+        {
+          "name": "Unstar a Resource",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{appToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resourceType\": \"note\",\n  \"resourceId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/app/resources/starred",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "app",
+                "resources",
+                "starred"
+              ]
+            },
+            "description": "Student: unstar a resource. Silently succeeds if the star does not exist.\n\nBody: { resourceType: \"note\" | \"study_material\" | \"video\", resourceId: number }\n\nAuth: STUDENT role required."
           },
           "response": []
         },

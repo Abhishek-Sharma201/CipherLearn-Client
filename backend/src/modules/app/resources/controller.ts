@@ -3,7 +3,7 @@ import { resourcesService } from "./service";
 import logger from "../../../utils/logger";
 import CloudinaryService from "../../../config/cloudinairy.config";
 import { validateMagicNumber } from "../../../config/multer.config";
-import type { AppResourceQuery, AppResourceFile, CreateMaterialInput, UpdateMaterialInput } from "./types";
+import type { AppResourceQuery, AppResourceFile, CreateMaterialInput, UpdateMaterialInput, StarResourceType } from "./types";
 
 const cloudinaryService = new CloudinaryService();
 
@@ -332,6 +332,85 @@ class ResourcesController {
       const message =
         error instanceof Error ? error.message : "Failed to delete material";
       return res.status(400).json({ success: false, message });
+    }
+  }
+
+  // ==================== STARRED RESOURCES ====================
+
+  /**
+   * POST /app/resources/starred
+   * Student: star a resource
+   * Body (JSON): { resourceType: "note"|"study_material"|"video", resourceId: number }
+   */
+  async starResource(req: Request, res: Response) {
+    try {
+      const student = req.student;
+      if (!student) {
+        return res.status(401).json({ success: false, message: "Student not authenticated" });
+      }
+
+      const { resourceType, resourceId } = req.body;
+      if (!resourceType || !resourceId) {
+        return res.status(400).json({ success: false, message: "resourceType and resourceId are required" });
+      }
+
+      const validTypes: StarResourceType[] = ["note", "study_material", "video"];
+      if (!validTypes.includes(resourceType)) {
+        return res.status(400).json({ success: false, message: "resourceType must be note, study_material, or video" });
+      }
+
+      await resourcesService.starResource(student.id, resourceType as StarResourceType, Number(resourceId));
+
+      return res.status(200).json({ success: true, message: "Resource starred" });
+    } catch (error) {
+      logger.error("ResourcesController.starResource error:", error);
+      return res.status(500).json({ success: false, message: "Failed to star resource" });
+    }
+  }
+
+  /**
+   * DELETE /app/resources/starred
+   * Student: unstar a resource
+   * Body (JSON): { resourceType: "note"|"study_material"|"video", resourceId: number }
+   */
+  async unstarResource(req: Request, res: Response) {
+    try {
+      const student = req.student;
+      if (!student) {
+        return res.status(401).json({ success: false, message: "Student not authenticated" });
+      }
+
+      const { resourceType, resourceId } = req.body;
+      if (!resourceType || !resourceId) {
+        return res.status(400).json({ success: false, message: "resourceType and resourceId are required" });
+      }
+
+      await resourcesService.unstarResource(student.id, resourceType as StarResourceType, Number(resourceId));
+
+      return res.status(200).json({ success: true, message: "Resource unstarred" });
+    } catch (error) {
+      logger.error("ResourcesController.unstarResource error:", error);
+      return res.status(500).json({ success: false, message: "Failed to unstar resource" });
+    }
+  }
+
+  /**
+   * GET /app/resources/starred
+   * Student: get all their starred resources grouped by type
+   */
+  async getStarredResources(req: Request, res: Response) {
+    try {
+      const student = req.student;
+      if (!student) {
+        return res.status(401).json({ success: false, message: "Student not authenticated" });
+      }
+
+      const result = await resourcesService.getStarredResources(student.id, student.batchId);
+
+      return res.status(200).json({ success: true, data: result });
+    } catch (error) {
+      logger.error("ResourcesController.getStarredResources error:", error);
+      return res.status(500).json({ success: false, message: "Failed to get starred resources" });
     }
   }
 

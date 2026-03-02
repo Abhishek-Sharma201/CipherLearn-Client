@@ -113,6 +113,10 @@ export const AppKeys = {
   // Notification preferences: per student
   notifPrefs: (studentId: number) =>
     buildKey("app", "notif", "prefs", sanitizeId(studentId)),
+
+  // Starred resources: per student
+  starredResources: (studentId: number) =>
+    buildKey("app", "starred", sanitizeId(studentId)),
 };
 
 // ========================
@@ -129,4 +133,5 @@ export const InvalidationPatterns = {
   appProfile: "app:profile:",
   appAttendance: "app:attendance:",
   appNotifPrefs: "app:notif:",
+  appStarred: "app:starred:",
 };

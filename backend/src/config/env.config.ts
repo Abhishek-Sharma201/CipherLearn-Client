@@ -8,7 +8,7 @@ export const config = {
     HOST: process.env.APP_HOST || "localhost",
     ENV: process.env.NODE_ENV || "development",
     CLIENT_URL: process.env.CLIENT_URL || "",
-    SALT: Number(process.env.SALT),
+    SALT: Number(process.env.SALT) || 10,
     ADMIN_EMAILS: process.env.ADMIN_EMAILS,
   },
   DB: {

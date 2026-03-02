@@ -3,7 +3,27 @@ import { prisma } from "../../../config/db.config";
 import {
   SubmissionStatus,
   AssignmentStatus,
+  SubmissionType,
 } from "../../../../prisma/generated/prisma/enums";
+
+/**
+ * Normalize submissionType from mobile/frontend to the Prisma enum value.
+ * Mobile apps may send "FILE" (old name) instead of the schema value "FILE_UPLOAD".
+ */
+function normalizeSubmissionType(raw: string | undefined): SubmissionType {
+  switch (raw) {
+    case "FILE":
+    case "FILE_UPLOAD":
+      return SubmissionType.FILE_UPLOAD;
+    case "TEXT":
+    case "TEXT_ENTRY":
+      return SubmissionType.TEXT_ENTRY;
+    case "BOTH":
+      return SubmissionType.BOTH;
+    default:
+      return SubmissionType.FILE_UPLOAD;
+  }
+}
 import type { Prisma } from "../../../../prisma/generated/prisma/client";
 import type {
   UpcomingAssignment,
@@ -507,7 +527,7 @@ class AssignmentsService {
             batchId,
             teacherId,
             groupId,
-            submissionType: input.submissionType ?? "FILE_UPLOAD",
+            submissionType: normalizeSubmissionType(input.submissionType as string | undefined),
             assignmentStatus: input.assignmentStatus ?? "PUBLISHED",
             allowLateSubmissions: input.allowLateSubmissions ?? false,
             plagiarismCheck: input.plagiarismCheck ?? false,
@@ -550,7 +570,7 @@ class AssignmentsService {
           dueDate: input.dueDate ? new Date(input.dueDate) : null,
         }),
         ...(input.submissionType !== undefined && {
-          submissionType: input.submissionType,
+          submissionType: normalizeSubmissionType(input.submissionType as string | undefined),
         }),
         ...(input.assignmentStatus !== undefined && {
           assignmentStatus: input.assignmentStatus,

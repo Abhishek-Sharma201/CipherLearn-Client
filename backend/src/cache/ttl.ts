@@ -33,3 +33,6 @@ export const APP_NOTIF_PREFS = 600; // 10 min — preferences rarely change
 // App attendance
 export const APP_ATTENDANCE_PERF = 120;
 export const APP_ATTENDANCE_CALENDAR = 120;
+
+// App starred resources (student bookmarks)
+export const APP_STARRED_RESOURCES = 300;

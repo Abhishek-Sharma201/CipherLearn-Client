@@ -71,6 +71,39 @@ router.delete(
 // ==================== STUDENT ROUTES ====================
 
 /**
+ * GET /app/resources/starred
+ * Student: get all starred resources grouped by type (notes, studyMaterials, videos)
+ */
+router.get(
+  "/starred",
+  isStudent,
+  appReadRateLimiter,
+  resourcesController.getStarredResources.bind(resourcesController)
+);
+
+/**
+ * POST /app/resources/starred
+ * Student: star a resource
+ * Body: { resourceType: "note"|"study_material"|"video", resourceId: number }
+ */
+router.post(
+  "/starred",
+  isStudent,
+  resourcesController.starResource.bind(resourcesController)
+);
+
+/**
+ * DELETE /app/resources/starred
+ * Student: unstar a resource
+ * Body: { resourceType: "note"|"study_material"|"video", resourceId: number }
+ */
+router.delete(
+  "/starred",
+  isStudent,
+  resourcesController.unstarResource.bind(resourcesController)
+);
+
+/**
  * GET /app/resources/videos
  * Student: YouTube videos for their batch
  *   ?search=&category=&limit=

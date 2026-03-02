@@ -84,3 +84,13 @@ export interface GetTeacherMaterialsQuery {
   page?: number;
   limit?: number;
 }
+
+// ─── Starred Resources ────────────────────────────────────────────────────────
+
+export type StarResourceType = "note" | "study_material" | "video";
+
+export interface StarredResourcesResponse {
+  notes: AppNote[];
+  studyMaterials: AppStudyMaterial[];
+  videos: AppVideo[];
+}

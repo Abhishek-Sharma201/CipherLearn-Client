@@ -78,6 +78,7 @@ export const ModelName = {
   TeacherProfile: 'TeacherProfile',
   Doubt: 'Doubt',
   DoubtReply: 'DoubtReply',
+  ResourceStar: 'ResourceStar',
   DeviceToken: 'DeviceToken',
   AppSettings: 'AppSettings'
 } as const
@@ -602,6 +603,17 @@ export const DoubtReplyScalarFieldEnum = {
 } as const
 
 export type DoubtReplyScalarFieldEnum = (typeof DoubtReplyScalarFieldEnum)[keyof typeof DoubtReplyScalarFieldEnum]
+
+
+export const ResourceStarScalarFieldEnum = {
+  id: 'id',
+  studentId: 'studentId',
+  resourceType: 'resourceType',
+  resourceId: 'resourceId',
+  createdAt: 'createdAt'
+} as const
+
+export type ResourceStarScalarFieldEnum = (typeof ResourceStarScalarFieldEnum)[keyof typeof ResourceStarScalarFieldEnum]
 
 
 export const DeviceTokenScalarFieldEnum = {

@@ -2,7 +2,7 @@ import { Prisma } from "../../../../prisma/generated/prisma/client";
 import { prisma } from "../../../config/db.config";
 import { cacheService } from "../../../cache/index";
 import { AppKeys, InvalidationPatterns } from "../../../cache/keys";
-import { APP_VIDEOS, APP_NOTES, APP_MATERIALS } from "../../../cache/ttl";
+import { APP_VIDEOS, APP_NOTES, APP_MATERIALS, APP_STARRED_RESOURCES } from "../../../cache/ttl";
 import type {
   AppVideo,
   AppNote,
@@ -13,6 +13,8 @@ import type {
   CreateMaterialInput,
   UpdateMaterialInput,
   GetTeacherMaterialsQuery,
+  StarResourceType,
+  StarredResourcesResponse,
 } from "./types";
 
 class ResourcesService {
@@ -354,6 +356,111 @@ class ResourcesService {
     });
 
     cacheService.delByPrefix(InvalidationPatterns.appResources);
+  }
+
+  // ==================== STARRED RESOURCES ====================
+
+  /**
+   * Star a resource (note | study_material | video).
+   * Idempotent — starring an already-starred resource is a no-op.
+   */
+  async starResource(
+    studentId: number,
+    resourceType: StarResourceType,
+    resourceId: number
+  ): Promise<void> {
+    await prisma.resourceStar.upsert({
+      where: {
+        studentId_resourceType_resourceId: { studentId, resourceType, resourceId },
+      },
+      create: { studentId, resourceType, resourceId },
+      update: {},
+    });
+    cacheService.delByPrefix(`app:starred:${studentId}`);
+  }
+
+  /**
+   * Unstar a resource. Silently succeeds if the star doesn't exist.
+   */
+  async unstarResource(
+    studentId: number,
+    resourceType: StarResourceType,
+    resourceId: number
+  ): Promise<void> {
+    await prisma.resourceStar.deleteMany({
+      where: { studentId, resourceType, resourceId },
+    });
+    cacheService.delByPrefix(`app:starred:${studentId}`);
+  }
+
+  /**
+   * Get all starred resources for a student, grouped by type.
+   * Returns the full resource objects (note / study material / video).
+   */
+  async getStarredResources(
+    studentId: number,
+    batchId: number | null
+  ): Promise<StarredResourcesResponse> {
+    const cacheKey = AppKeys.starredResources(studentId);
+
+    return cacheService.getOrSet(
+      cacheKey,
+      async () => {
+        const stars = await prisma.resourceStar.findMany({
+          where: { studentId },
+          orderBy: { createdAt: "desc" },
+        });
+
+        const noteIds = stars.filter((s) => s.resourceType === "note").map((s) => s.resourceId);
+        const materialIds = stars.filter((s) => s.resourceType === "study_material").map((s) => s.resourceId);
+        const videoIds = stars.filter((s) => s.resourceType === "video").map((s) => s.resourceId);
+
+        const [rawNotes, rawMaterials, rawVideos] = await Promise.all([
+          noteIds.length > 0
+            ? prisma.note.findMany({
+                where: { id: { in: noteIds }, isDeleted: false, ...(batchId ? { batchId } : {}) },
+              })
+            : Promise.resolve([]),
+          materialIds.length > 0
+            ? prisma.studyMaterial.findMany({
+                where: { id: { in: materialIds }, isDeleted: false, materialStatus: "PUBLISHED", ...(batchId ? { batchId } : {}) },
+              })
+            : Promise.resolve([]),
+          videoIds.length > 0
+            ? prisma.youtubeVideo.findMany({
+                where: { id: { in: videoIds }, isDeleted: false, ...(batchId ? { batchId } : {}) },
+              })
+            : Promise.resolve([]),
+        ]);
+
+        return {
+          notes: rawNotes.map((n) => ({
+            id: n.id,
+            title: n.title,
+            content: n.content,
+            category: n.category,
+            createdAt: n.createdAt?.toISOString() ?? new Date().toISOString(),
+          })) as AppNote[],
+          studyMaterials: rawMaterials.map((m) => ({
+            id: m.id,
+            title: m.title,
+            description: m.description,
+            files: (m.files as unknown as AppResourceFile[]) || [],
+            category: m.category,
+            createdAt: m.createdAt.toISOString(),
+          })) as AppStudyMaterial[],
+          videos: rawVideos.map((v) => ({
+            id: v.id,
+            title: v.title,
+            description: v.description,
+            url: v.url,
+            category: v.category,
+            createdAt: v.createdAt?.toISOString() ?? new Date().toISOString(),
+          })) as AppVideo[],
+        };
+      },
+      APP_STARRED_RESOURCES
+    );
   }
 
   /**

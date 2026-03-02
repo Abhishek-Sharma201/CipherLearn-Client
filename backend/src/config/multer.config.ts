@@ -26,6 +26,9 @@ const MAGIC_NUMBERS: Record<string, number[] | null> = {
   "video/mp4": null,
   "video/quicktime": null,
   "video/x-msvideo": null,
+  // Generic binary — reported by Android/iOS file pickers for any file type;
+  // skip magic number check here, Cloudinary validates the actual content on upload
+  "application/octet-stream": null,
 };
 
 // ─── Shared MIME-type sets ────────────────────────────────────────────────────
@@ -61,6 +64,8 @@ export const SUBMISSION_MIME_TYPES = new Set([
   "text/plain",
   "application/zip",
   "application/x-zip-compressed",
+  // Android/iOS file pickers report this for any file — Cloudinary validates content
+  "application/octet-stream",
 ]);
 
 /** Teacher assignment brief attachments — 50 MB/file, 5 files */
@@ -77,6 +82,8 @@ export const ASSIGNMENT_MIME_TYPES = new Set([
   "image/webp",
   "text/plain",
   "application/zip",
+  // Android/iOS file pickers report this for any file — Cloudinary validates content
+  "application/octet-stream",
 ]);
 
 /** Study material uploads (includes video) — 100 MB/file, 5 files */
@@ -96,6 +103,8 @@ export const MATERIAL_MIME_TYPES = new Set([
   "video/x-msvideo",
   "text/plain",
   "application/zip",
+  // Android/iOS file pickers report this for any file — Cloudinary validates content
+  "application/octet-stream",
 ]);
 
 // ─── Factory ──────────────────────────────────────────────────────────────────

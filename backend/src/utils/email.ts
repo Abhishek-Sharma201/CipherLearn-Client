@@ -176,6 +176,66 @@ export const sendAccountRegistrationEmail = async (
 };
 
 /**
+ * Send password reset email to admin/teacher (dashboard)
+ * Includes the raw reset token for use with POST /api/auth/reset-password
+ */
+export const sendAdminPasswordResetEmail = async (
+  email: string,
+  name: string,
+  resetToken: string
+): Promise<boolean> => {
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Admin Password Reset</title>
+    </head>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="background: linear-gradient(135deg, #0F766E 0%, #0d9488 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 28px;">CipherLearn</h1>
+        <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0;">Password Reset Request</p>
+      </div>
+
+      <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; border: 1px solid #e5e7eb; border-top: none;">
+        <p style="font-size: 16px;">Hello <strong>${name}</strong>,</p>
+
+        <p style="font-size: 16px;">We received a request to reset your admin account password. Use the token below with the reset password endpoint:</p>
+
+        <div style="background: white; border: 2px solid #0F766E; border-radius: 10px; padding: 20px; margin: 25px 0; word-break: break-all;">
+          <p style="margin: 0 0 8px 0; color: #6b7280; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Reset Token</p>
+          <code style="font-size: 13px; color: #0F766E; font-family: monospace;">${resetToken}</code>
+        </div>
+
+        <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;">
+          <p style="margin: 0; color: #92400e; font-size: 14px;">
+            <strong>Important:</strong> This token expires in 1 hour. Do not share it with anyone.
+          </p>
+        </div>
+
+        <p style="font-size: 14px; color: #6b7280;">
+          If you did not request a password reset, please ignore this email. Your account remains secure.
+        </p>
+
+        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 25px 0;">
+
+        <p style="font-size: 12px; color: #9ca3af; text-align: center; margin: 0;">
+          This is an automated message from CipherLearn. Please do not reply to this email.
+        </p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  return sendEmail({
+    to: email,
+    subject: "Admin Password Reset — CipherLearn",
+    html,
+  });
+};
+
+/**
  * Send welcome email after password setup
  */
 export const sendWelcomeEmail = async (

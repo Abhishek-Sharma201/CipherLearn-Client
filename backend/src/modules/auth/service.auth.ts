@@ -7,7 +7,10 @@ import {
   compareHash,
   generateHash,
   generateLoginToken,
+  verifyToken,
 } from "./utils.auth";
+import { sendAdminPasswordResetEmail } from "../../utils/email";
+import logger from "../../utils/logger";
 
 export default class AuthService {
   async signup(data: SignupData): Promise<boolean> {
@@ -61,6 +64,7 @@ export default class AuthService {
           name: true,
           email: true,
           password: true,
+          isPasswordSet: true,
           role: true,
         },
       });
@@ -69,8 +73,8 @@ export default class AuthService {
         throw new Error("Email not registered");
       }
 
-      // Check if password is set (required for dashboard login)
-      if (!user.password) {
+      // Check password is set and the isPasswordSet flag is true
+      if (!user.password || !user.isPasswordSet) {
         throw new Error("Password not set. Please set up your password first.");
       }
 
@@ -102,10 +106,20 @@ export default class AuthService {
 
   async logout(token: string): Promise<void> {
     try {
-      return;
+      const decoded = verifyToken(token);
+      const expiresAt = new Date((decoded.exp as number) * 1000);
+
+      await prisma.tokenBlacklist.create({
+        data: {
+          token,
+          userId: decoded.id as number,
+          expiresAt,
+          reason: "logout",
+        },
+      });
     } catch (error) {
-      console.error("Logout failed:", error);
-      return;
+      // Token may already be expired or invalid; still treat logout as success
+      logger.warn(`Dashboard logout: could not blacklist token — ${error}`);
     }
   }
 
@@ -127,7 +141,7 @@ export default class AuthService {
 
       return true;
     } catch (error) {
-      console.error("resetPassword error:", error);
+      logger.error("resetPassword error:", error);
       return false;
     }
   }
@@ -150,9 +164,7 @@ export default class AuthService {
     }
   }
 
-  async forgotPassword(
-    email: string
-  ): Promise<{ ok: boolean; resetToken?: string }> {
+  async forgotPassword(email: string): Promise<{ ok: boolean }> {
     try {
       const user = await prisma.user.findUnique({
         where: { email },
@@ -163,13 +175,14 @@ export default class AuthService {
 
       const token = generateLoginToken({ id: user.id, email: user.email });
 
-      console.log(
-        `Password reset token for ${email}: ${token} (send via email)`
+      // Send token via email — do not return it in the HTTP response
+      sendAdminPasswordResetEmail(user.email, user.name, token).catch((err) =>
+        logger.error(`Failed to send admin password reset email to ${email}:`, err)
       );
 
-      return { ok: true, resetToken: token };
+      return { ok: true };
     } catch (error) {
-      console.error("forgotPassword error:", error);
+      logger.error("forgotPassword error:", error);
       return { ok: false };
     }
   }
