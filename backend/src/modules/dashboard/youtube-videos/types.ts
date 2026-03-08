@@ -2,7 +2,7 @@ import { Prisma } from "../../../../prisma/generated/prisma/client";
 import { YoutubeVideoVisibility } from "../../../../prisma/generated/prisma/enums";
 
 export type YoutubeVideo = Omit<
-  Prisma.YoutubeVideoCreateInput,
+  Prisma.YoutubeVideoUncheckedCreateInput,
   "id" | "createdAt" | "updatedAt" | "isDeleted" | "deletedBy"
 >;
 

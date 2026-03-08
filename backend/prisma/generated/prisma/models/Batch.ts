@@ -242,6 +242,8 @@ export type BatchWhereInput = {
   lectures?: Prisma.LectureListRelationFilter
   tests?: Prisma.TestListRelationFilter
   doubts?: Prisma.DoubtListRelationFilter
+  youtubeVideos?: Prisma.YoutubeVideoListRelationFilter
+  notes?: Prisma.NoteListRelationFilter
   attendances?: Prisma.AttendanceListRelationFilter
 }
 
@@ -264,6 +266,8 @@ export type BatchOrderByWithRelationInput = {
   lectures?: Prisma.LectureOrderByRelationAggregateInput
   tests?: Prisma.TestOrderByRelationAggregateInput
   doubts?: Prisma.DoubtOrderByRelationAggregateInput
+  youtubeVideos?: Prisma.YoutubeVideoOrderByRelationAggregateInput
+  notes?: Prisma.NoteOrderByRelationAggregateInput
   attendances?: Prisma.AttendanceOrderByRelationAggregateInput
 }
 
@@ -289,6 +293,8 @@ export type BatchWhereUniqueInput = Prisma.AtLeast<{
   lectures?: Prisma.LectureListRelationFilter
   tests?: Prisma.TestListRelationFilter
   doubts?: Prisma.DoubtListRelationFilter
+  youtubeVideos?: Prisma.YoutubeVideoListRelationFilter
+  notes?: Prisma.NoteListRelationFilter
   attendances?: Prisma.AttendanceListRelationFilter
 }, "id">
 
@@ -340,6 +346,8 @@ export type BatchCreateInput = {
   lectures?: Prisma.LectureCreateNestedManyWithoutBatchInput
   tests?: Prisma.TestCreateNestedManyWithoutBatchInput
   doubts?: Prisma.DoubtCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteCreateNestedManyWithoutBatchInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutBatchInput
 }
 
@@ -362,6 +370,8 @@ export type BatchUncheckedCreateInput = {
   lectures?: Prisma.LectureUncheckedCreateNestedManyWithoutBatchInput
   tests?: Prisma.TestUncheckedCreateNestedManyWithoutBatchInput
   doubts?: Prisma.DoubtUncheckedCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutBatchInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutBatchInput
 }
 
@@ -383,6 +393,8 @@ export type BatchUpdateInput = {
   lectures?: Prisma.LectureUpdateManyWithoutBatchNestedInput
   tests?: Prisma.TestUpdateManyWithoutBatchNestedInput
   doubts?: Prisma.DoubtUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutBatchNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutBatchNestedInput
 }
 
@@ -405,6 +417,8 @@ export type BatchUncheckedUpdateInput = {
   lectures?: Prisma.LectureUncheckedUpdateManyWithoutBatchNestedInput
   tests?: Prisma.TestUncheckedUpdateManyWithoutBatchNestedInput
   doubts?: Prisma.DoubtUncheckedUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutBatchNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutBatchNestedInput
 }
 
@@ -545,6 +559,34 @@ export type BatchUpdateOneRequiredWithoutAttendancesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.BatchUpdateToOneWithWhereWithoutAttendancesInput, Prisma.BatchUpdateWithoutAttendancesInput>, Prisma.BatchUncheckedUpdateWithoutAttendancesInput>
 }
 
+export type BatchCreateNestedOneWithoutYoutubeVideosInput = {
+  create?: Prisma.XOR<Prisma.BatchCreateWithoutYoutubeVideosInput, Prisma.BatchUncheckedCreateWithoutYoutubeVideosInput>
+  connectOrCreate?: Prisma.BatchCreateOrConnectWithoutYoutubeVideosInput
+  connect?: Prisma.BatchWhereUniqueInput
+}
+
+export type BatchUpdateOneRequiredWithoutYoutubeVideosNestedInput = {
+  create?: Prisma.XOR<Prisma.BatchCreateWithoutYoutubeVideosInput, Prisma.BatchUncheckedCreateWithoutYoutubeVideosInput>
+  connectOrCreate?: Prisma.BatchCreateOrConnectWithoutYoutubeVideosInput
+  upsert?: Prisma.BatchUpsertWithoutYoutubeVideosInput
+  connect?: Prisma.BatchWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BatchUpdateToOneWithWhereWithoutYoutubeVideosInput, Prisma.BatchUpdateWithoutYoutubeVideosInput>, Prisma.BatchUncheckedUpdateWithoutYoutubeVideosInput>
+}
+
+export type BatchCreateNestedOneWithoutNotesInput = {
+  create?: Prisma.XOR<Prisma.BatchCreateWithoutNotesInput, Prisma.BatchUncheckedCreateWithoutNotesInput>
+  connectOrCreate?: Prisma.BatchCreateOrConnectWithoutNotesInput
+  connect?: Prisma.BatchWhereUniqueInput
+}
+
+export type BatchUpdateOneRequiredWithoutNotesNestedInput = {
+  create?: Prisma.XOR<Prisma.BatchCreateWithoutNotesInput, Prisma.BatchUncheckedCreateWithoutNotesInput>
+  connectOrCreate?: Prisma.BatchCreateOrConnectWithoutNotesInput
+  upsert?: Prisma.BatchUpsertWithoutNotesInput
+  connect?: Prisma.BatchWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BatchUpdateToOneWithWhereWithoutNotesInput, Prisma.BatchUpdateWithoutNotesInput>, Prisma.BatchUncheckedUpdateWithoutNotesInput>
+}
+
 export type BatchCreateNestedOneWithoutAssignmentSlotsInput = {
   create?: Prisma.XOR<Prisma.BatchCreateWithoutAssignmentSlotsInput, Prisma.BatchUncheckedCreateWithoutAssignmentSlotsInput>
   connectOrCreate?: Prisma.BatchCreateOrConnectWithoutAssignmentSlotsInput
@@ -660,6 +702,8 @@ export type BatchCreateWithoutStudentsInput = {
   lectures?: Prisma.LectureCreateNestedManyWithoutBatchInput
   tests?: Prisma.TestCreateNestedManyWithoutBatchInput
   doubts?: Prisma.DoubtCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteCreateNestedManyWithoutBatchInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutBatchInput
 }
 
@@ -681,6 +725,8 @@ export type BatchUncheckedCreateWithoutStudentsInput = {
   lectures?: Prisma.LectureUncheckedCreateNestedManyWithoutBatchInput
   tests?: Prisma.TestUncheckedCreateNestedManyWithoutBatchInput
   doubts?: Prisma.DoubtUncheckedCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutBatchInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutBatchInput
 }
 
@@ -717,6 +763,8 @@ export type BatchUpdateWithoutStudentsInput = {
   lectures?: Prisma.LectureUpdateManyWithoutBatchNestedInput
   tests?: Prisma.TestUpdateManyWithoutBatchNestedInput
   doubts?: Prisma.DoubtUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutBatchNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutBatchNestedInput
 }
 
@@ -738,6 +786,8 @@ export type BatchUncheckedUpdateWithoutStudentsInput = {
   lectures?: Prisma.LectureUncheckedUpdateManyWithoutBatchNestedInput
   tests?: Prisma.TestUncheckedUpdateManyWithoutBatchNestedInput
   doubts?: Prisma.DoubtUncheckedUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutBatchNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutBatchNestedInput
 }
 
@@ -758,6 +808,8 @@ export type BatchCreateWithoutQrAttendanceTokensInput = {
   lectures?: Prisma.LectureCreateNestedManyWithoutBatchInput
   tests?: Prisma.TestCreateNestedManyWithoutBatchInput
   doubts?: Prisma.DoubtCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteCreateNestedManyWithoutBatchInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutBatchInput
 }
 
@@ -779,6 +831,8 @@ export type BatchUncheckedCreateWithoutQrAttendanceTokensInput = {
   lectures?: Prisma.LectureUncheckedCreateNestedManyWithoutBatchInput
   tests?: Prisma.TestUncheckedCreateNestedManyWithoutBatchInput
   doubts?: Prisma.DoubtUncheckedCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutBatchInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutBatchInput
 }
 
@@ -815,6 +869,8 @@ export type BatchUpdateWithoutQrAttendanceTokensInput = {
   lectures?: Prisma.LectureUpdateManyWithoutBatchNestedInput
   tests?: Prisma.TestUpdateManyWithoutBatchNestedInput
   doubts?: Prisma.DoubtUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutBatchNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutBatchNestedInput
 }
 
@@ -836,6 +892,8 @@ export type BatchUncheckedUpdateWithoutQrAttendanceTokensInput = {
   lectures?: Prisma.LectureUncheckedUpdateManyWithoutBatchNestedInput
   tests?: Prisma.TestUncheckedUpdateManyWithoutBatchNestedInput
   doubts?: Prisma.DoubtUncheckedUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutBatchNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutBatchNestedInput
 }
 
@@ -856,6 +914,8 @@ export type BatchCreateWithoutSheetsInput = {
   lectures?: Prisma.LectureCreateNestedManyWithoutBatchInput
   tests?: Prisma.TestCreateNestedManyWithoutBatchInput
   doubts?: Prisma.DoubtCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteCreateNestedManyWithoutBatchInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutBatchInput
 }
 
@@ -877,6 +937,8 @@ export type BatchUncheckedCreateWithoutSheetsInput = {
   lectures?: Prisma.LectureUncheckedCreateNestedManyWithoutBatchInput
   tests?: Prisma.TestUncheckedCreateNestedManyWithoutBatchInput
   doubts?: Prisma.DoubtUncheckedCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutBatchInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutBatchInput
 }
 
@@ -913,6 +975,8 @@ export type BatchUpdateWithoutSheetsInput = {
   lectures?: Prisma.LectureUpdateManyWithoutBatchNestedInput
   tests?: Prisma.TestUpdateManyWithoutBatchNestedInput
   doubts?: Prisma.DoubtUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutBatchNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutBatchNestedInput
 }
 
@@ -934,6 +998,8 @@ export type BatchUncheckedUpdateWithoutSheetsInput = {
   lectures?: Prisma.LectureUncheckedUpdateManyWithoutBatchNestedInput
   tests?: Prisma.TestUncheckedUpdateManyWithoutBatchNestedInput
   doubts?: Prisma.DoubtUncheckedUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutBatchNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutBatchNestedInput
 }
 
@@ -955,6 +1021,8 @@ export type BatchCreateWithoutAttendancesInput = {
   lectures?: Prisma.LectureCreateNestedManyWithoutBatchInput
   tests?: Prisma.TestCreateNestedManyWithoutBatchInput
   doubts?: Prisma.DoubtCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteCreateNestedManyWithoutBatchInput
 }
 
 export type BatchUncheckedCreateWithoutAttendancesInput = {
@@ -976,6 +1044,8 @@ export type BatchUncheckedCreateWithoutAttendancesInput = {
   lectures?: Prisma.LectureUncheckedCreateNestedManyWithoutBatchInput
   tests?: Prisma.TestUncheckedCreateNestedManyWithoutBatchInput
   doubts?: Prisma.DoubtUncheckedCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutBatchInput
 }
 
 export type BatchCreateOrConnectWithoutAttendancesInput = {
@@ -1012,6 +1082,8 @@ export type BatchUpdateWithoutAttendancesInput = {
   lectures?: Prisma.LectureUpdateManyWithoutBatchNestedInput
   tests?: Prisma.TestUpdateManyWithoutBatchNestedInput
   doubts?: Prisma.DoubtUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutBatchNestedInput
 }
 
 export type BatchUncheckedUpdateWithoutAttendancesInput = {
@@ -1033,6 +1105,220 @@ export type BatchUncheckedUpdateWithoutAttendancesInput = {
   lectures?: Prisma.LectureUncheckedUpdateManyWithoutBatchNestedInput
   tests?: Prisma.TestUncheckedUpdateManyWithoutBatchNestedInput
   doubts?: Prisma.DoubtUncheckedUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutBatchNestedInput
+}
+
+export type BatchCreateWithoutYoutubeVideosInput = {
+  name: string
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  isDeleted?: boolean | null
+  deletedBy?: string | null
+  updatedAt?: Date | string | null
+  createdAt?: Date | string | null
+  students?: Prisma.StudentCreateNestedManyWithoutBatchInput
+  sheets?: Prisma.AttendanceSheetCreateNestedManyWithoutBatchInput
+  qrAttendanceTokens?: Prisma.QRAttendanceTokenCreateNestedManyWithoutBatchInput
+  assignmentSlots?: Prisma.AssignmentSlotCreateNestedManyWithoutBatchInput
+  studyMaterials?: Prisma.StudyMaterialCreateNestedManyWithoutBatchInput
+  feeStructures?: Prisma.FeeStructureCreateNestedManyWithoutBatchInput
+  feeReceipts?: Prisma.FeeReceiptCreateNestedManyWithoutBatchInput
+  lectures?: Prisma.LectureCreateNestedManyWithoutBatchInput
+  tests?: Prisma.TestCreateNestedManyWithoutBatchInput
+  doubts?: Prisma.DoubtCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteCreateNestedManyWithoutBatchInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutBatchInput
+}
+
+export type BatchUncheckedCreateWithoutYoutubeVideosInput = {
+  id?: number
+  name: string
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  isDeleted?: boolean | null
+  deletedBy?: string | null
+  updatedAt?: Date | string | null
+  createdAt?: Date | string | null
+  students?: Prisma.StudentUncheckedCreateNestedManyWithoutBatchInput
+  sheets?: Prisma.AttendanceSheetUncheckedCreateNestedManyWithoutBatchInput
+  qrAttendanceTokens?: Prisma.QRAttendanceTokenUncheckedCreateNestedManyWithoutBatchInput
+  assignmentSlots?: Prisma.AssignmentSlotUncheckedCreateNestedManyWithoutBatchInput
+  studyMaterials?: Prisma.StudyMaterialUncheckedCreateNestedManyWithoutBatchInput
+  feeStructures?: Prisma.FeeStructureUncheckedCreateNestedManyWithoutBatchInput
+  feeReceipts?: Prisma.FeeReceiptUncheckedCreateNestedManyWithoutBatchInput
+  lectures?: Prisma.LectureUncheckedCreateNestedManyWithoutBatchInput
+  tests?: Prisma.TestUncheckedCreateNestedManyWithoutBatchInput
+  doubts?: Prisma.DoubtUncheckedCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutBatchInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutBatchInput
+}
+
+export type BatchCreateOrConnectWithoutYoutubeVideosInput = {
+  where: Prisma.BatchWhereUniqueInput
+  create: Prisma.XOR<Prisma.BatchCreateWithoutYoutubeVideosInput, Prisma.BatchUncheckedCreateWithoutYoutubeVideosInput>
+}
+
+export type BatchUpsertWithoutYoutubeVideosInput = {
+  update: Prisma.XOR<Prisma.BatchUpdateWithoutYoutubeVideosInput, Prisma.BatchUncheckedUpdateWithoutYoutubeVideosInput>
+  create: Prisma.XOR<Prisma.BatchCreateWithoutYoutubeVideosInput, Prisma.BatchUncheckedCreateWithoutYoutubeVideosInput>
+  where?: Prisma.BatchWhereInput
+}
+
+export type BatchUpdateToOneWithWhereWithoutYoutubeVideosInput = {
+  where?: Prisma.BatchWhereInput
+  data: Prisma.XOR<Prisma.BatchUpdateWithoutYoutubeVideosInput, Prisma.BatchUncheckedUpdateWithoutYoutubeVideosInput>
+}
+
+export type BatchUpdateWithoutYoutubeVideosInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  isDeleted?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  students?: Prisma.StudentUpdateManyWithoutBatchNestedInput
+  sheets?: Prisma.AttendanceSheetUpdateManyWithoutBatchNestedInput
+  qrAttendanceTokens?: Prisma.QRAttendanceTokenUpdateManyWithoutBatchNestedInput
+  assignmentSlots?: Prisma.AssignmentSlotUpdateManyWithoutBatchNestedInput
+  studyMaterials?: Prisma.StudyMaterialUpdateManyWithoutBatchNestedInput
+  feeStructures?: Prisma.FeeStructureUpdateManyWithoutBatchNestedInput
+  feeReceipts?: Prisma.FeeReceiptUpdateManyWithoutBatchNestedInput
+  lectures?: Prisma.LectureUpdateManyWithoutBatchNestedInput
+  tests?: Prisma.TestUpdateManyWithoutBatchNestedInput
+  doubts?: Prisma.DoubtUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutBatchNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutBatchNestedInput
+}
+
+export type BatchUncheckedUpdateWithoutYoutubeVideosInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  isDeleted?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  students?: Prisma.StudentUncheckedUpdateManyWithoutBatchNestedInput
+  sheets?: Prisma.AttendanceSheetUncheckedUpdateManyWithoutBatchNestedInput
+  qrAttendanceTokens?: Prisma.QRAttendanceTokenUncheckedUpdateManyWithoutBatchNestedInput
+  assignmentSlots?: Prisma.AssignmentSlotUncheckedUpdateManyWithoutBatchNestedInput
+  studyMaterials?: Prisma.StudyMaterialUncheckedUpdateManyWithoutBatchNestedInput
+  feeStructures?: Prisma.FeeStructureUncheckedUpdateManyWithoutBatchNestedInput
+  feeReceipts?: Prisma.FeeReceiptUncheckedUpdateManyWithoutBatchNestedInput
+  lectures?: Prisma.LectureUncheckedUpdateManyWithoutBatchNestedInput
+  tests?: Prisma.TestUncheckedUpdateManyWithoutBatchNestedInput
+  doubts?: Prisma.DoubtUncheckedUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutBatchNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutBatchNestedInput
+}
+
+export type BatchCreateWithoutNotesInput = {
+  name: string
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  isDeleted?: boolean | null
+  deletedBy?: string | null
+  updatedAt?: Date | string | null
+  createdAt?: Date | string | null
+  students?: Prisma.StudentCreateNestedManyWithoutBatchInput
+  sheets?: Prisma.AttendanceSheetCreateNestedManyWithoutBatchInput
+  qrAttendanceTokens?: Prisma.QRAttendanceTokenCreateNestedManyWithoutBatchInput
+  assignmentSlots?: Prisma.AssignmentSlotCreateNestedManyWithoutBatchInput
+  studyMaterials?: Prisma.StudyMaterialCreateNestedManyWithoutBatchInput
+  feeStructures?: Prisma.FeeStructureCreateNestedManyWithoutBatchInput
+  feeReceipts?: Prisma.FeeReceiptCreateNestedManyWithoutBatchInput
+  lectures?: Prisma.LectureCreateNestedManyWithoutBatchInput
+  tests?: Prisma.TestCreateNestedManyWithoutBatchInput
+  doubts?: Prisma.DoubtCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoCreateNestedManyWithoutBatchInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutBatchInput
+}
+
+export type BatchUncheckedCreateWithoutNotesInput = {
+  id?: number
+  name: string
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  isDeleted?: boolean | null
+  deletedBy?: string | null
+  updatedAt?: Date | string | null
+  createdAt?: Date | string | null
+  students?: Prisma.StudentUncheckedCreateNestedManyWithoutBatchInput
+  sheets?: Prisma.AttendanceSheetUncheckedCreateNestedManyWithoutBatchInput
+  qrAttendanceTokens?: Prisma.QRAttendanceTokenUncheckedCreateNestedManyWithoutBatchInput
+  assignmentSlots?: Prisma.AssignmentSlotUncheckedCreateNestedManyWithoutBatchInput
+  studyMaterials?: Prisma.StudyMaterialUncheckedCreateNestedManyWithoutBatchInput
+  feeStructures?: Prisma.FeeStructureUncheckedCreateNestedManyWithoutBatchInput
+  feeReceipts?: Prisma.FeeReceiptUncheckedCreateNestedManyWithoutBatchInput
+  lectures?: Prisma.LectureUncheckedCreateNestedManyWithoutBatchInput
+  tests?: Prisma.TestUncheckedCreateNestedManyWithoutBatchInput
+  doubts?: Prisma.DoubtUncheckedCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedCreateNestedManyWithoutBatchInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutBatchInput
+}
+
+export type BatchCreateOrConnectWithoutNotesInput = {
+  where: Prisma.BatchWhereUniqueInput
+  create: Prisma.XOR<Prisma.BatchCreateWithoutNotesInput, Prisma.BatchUncheckedCreateWithoutNotesInput>
+}
+
+export type BatchUpsertWithoutNotesInput = {
+  update: Prisma.XOR<Prisma.BatchUpdateWithoutNotesInput, Prisma.BatchUncheckedUpdateWithoutNotesInput>
+  create: Prisma.XOR<Prisma.BatchCreateWithoutNotesInput, Prisma.BatchUncheckedCreateWithoutNotesInput>
+  where?: Prisma.BatchWhereInput
+}
+
+export type BatchUpdateToOneWithWhereWithoutNotesInput = {
+  where?: Prisma.BatchWhereInput
+  data: Prisma.XOR<Prisma.BatchUpdateWithoutNotesInput, Prisma.BatchUncheckedUpdateWithoutNotesInput>
+}
+
+export type BatchUpdateWithoutNotesInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  isDeleted?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  students?: Prisma.StudentUpdateManyWithoutBatchNestedInput
+  sheets?: Prisma.AttendanceSheetUpdateManyWithoutBatchNestedInput
+  qrAttendanceTokens?: Prisma.QRAttendanceTokenUpdateManyWithoutBatchNestedInput
+  assignmentSlots?: Prisma.AssignmentSlotUpdateManyWithoutBatchNestedInput
+  studyMaterials?: Prisma.StudyMaterialUpdateManyWithoutBatchNestedInput
+  feeStructures?: Prisma.FeeStructureUpdateManyWithoutBatchNestedInput
+  feeReceipts?: Prisma.FeeReceiptUpdateManyWithoutBatchNestedInput
+  lectures?: Prisma.LectureUpdateManyWithoutBatchNestedInput
+  tests?: Prisma.TestUpdateManyWithoutBatchNestedInput
+  doubts?: Prisma.DoubtUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUpdateManyWithoutBatchNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutBatchNestedInput
+}
+
+export type BatchUncheckedUpdateWithoutNotesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  totalStudents?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  timings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  isDeleted?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  students?: Prisma.StudentUncheckedUpdateManyWithoutBatchNestedInput
+  sheets?: Prisma.AttendanceSheetUncheckedUpdateManyWithoutBatchNestedInput
+  qrAttendanceTokens?: Prisma.QRAttendanceTokenUncheckedUpdateManyWithoutBatchNestedInput
+  assignmentSlots?: Prisma.AssignmentSlotUncheckedUpdateManyWithoutBatchNestedInput
+  studyMaterials?: Prisma.StudyMaterialUncheckedUpdateManyWithoutBatchNestedInput
+  feeStructures?: Prisma.FeeStructureUncheckedUpdateManyWithoutBatchNestedInput
+  feeReceipts?: Prisma.FeeReceiptUncheckedUpdateManyWithoutBatchNestedInput
+  lectures?: Prisma.LectureUncheckedUpdateManyWithoutBatchNestedInput
+  tests?: Prisma.TestUncheckedUpdateManyWithoutBatchNestedInput
+  doubts?: Prisma.DoubtUncheckedUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedUpdateManyWithoutBatchNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutBatchNestedInput
 }
 
 export type BatchCreateWithoutAssignmentSlotsInput = {
@@ -1052,6 +1338,8 @@ export type BatchCreateWithoutAssignmentSlotsInput = {
   lectures?: Prisma.LectureCreateNestedManyWithoutBatchInput
   tests?: Prisma.TestCreateNestedManyWithoutBatchInput
   doubts?: Prisma.DoubtCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteCreateNestedManyWithoutBatchInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutBatchInput
 }
 
@@ -1073,6 +1361,8 @@ export type BatchUncheckedCreateWithoutAssignmentSlotsInput = {
   lectures?: Prisma.LectureUncheckedCreateNestedManyWithoutBatchInput
   tests?: Prisma.TestUncheckedCreateNestedManyWithoutBatchInput
   doubts?: Prisma.DoubtUncheckedCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutBatchInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutBatchInput
 }
 
@@ -1109,6 +1399,8 @@ export type BatchUpdateWithoutAssignmentSlotsInput = {
   lectures?: Prisma.LectureUpdateManyWithoutBatchNestedInput
   tests?: Prisma.TestUpdateManyWithoutBatchNestedInput
   doubts?: Prisma.DoubtUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutBatchNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutBatchNestedInput
 }
 
@@ -1130,6 +1422,8 @@ export type BatchUncheckedUpdateWithoutAssignmentSlotsInput = {
   lectures?: Prisma.LectureUncheckedUpdateManyWithoutBatchNestedInput
   tests?: Prisma.TestUncheckedUpdateManyWithoutBatchNestedInput
   doubts?: Prisma.DoubtUncheckedUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutBatchNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutBatchNestedInput
 }
 
@@ -1150,6 +1444,8 @@ export type BatchCreateWithoutStudyMaterialsInput = {
   lectures?: Prisma.LectureCreateNestedManyWithoutBatchInput
   tests?: Prisma.TestCreateNestedManyWithoutBatchInput
   doubts?: Prisma.DoubtCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteCreateNestedManyWithoutBatchInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutBatchInput
 }
 
@@ -1171,6 +1467,8 @@ export type BatchUncheckedCreateWithoutStudyMaterialsInput = {
   lectures?: Prisma.LectureUncheckedCreateNestedManyWithoutBatchInput
   tests?: Prisma.TestUncheckedCreateNestedManyWithoutBatchInput
   doubts?: Prisma.DoubtUncheckedCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutBatchInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutBatchInput
 }
 
@@ -1207,6 +1505,8 @@ export type BatchUpdateWithoutStudyMaterialsInput = {
   lectures?: Prisma.LectureUpdateManyWithoutBatchNestedInput
   tests?: Prisma.TestUpdateManyWithoutBatchNestedInput
   doubts?: Prisma.DoubtUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutBatchNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutBatchNestedInput
 }
 
@@ -1228,6 +1528,8 @@ export type BatchUncheckedUpdateWithoutStudyMaterialsInput = {
   lectures?: Prisma.LectureUncheckedUpdateManyWithoutBatchNestedInput
   tests?: Prisma.TestUncheckedUpdateManyWithoutBatchNestedInput
   doubts?: Prisma.DoubtUncheckedUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutBatchNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutBatchNestedInput
 }
 
@@ -1248,6 +1550,8 @@ export type BatchCreateWithoutFeeStructuresInput = {
   lectures?: Prisma.LectureCreateNestedManyWithoutBatchInput
   tests?: Prisma.TestCreateNestedManyWithoutBatchInput
   doubts?: Prisma.DoubtCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteCreateNestedManyWithoutBatchInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutBatchInput
 }
 
@@ -1269,6 +1573,8 @@ export type BatchUncheckedCreateWithoutFeeStructuresInput = {
   lectures?: Prisma.LectureUncheckedCreateNestedManyWithoutBatchInput
   tests?: Prisma.TestUncheckedCreateNestedManyWithoutBatchInput
   doubts?: Prisma.DoubtUncheckedCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutBatchInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutBatchInput
 }
 
@@ -1305,6 +1611,8 @@ export type BatchUpdateWithoutFeeStructuresInput = {
   lectures?: Prisma.LectureUpdateManyWithoutBatchNestedInput
   tests?: Prisma.TestUpdateManyWithoutBatchNestedInput
   doubts?: Prisma.DoubtUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutBatchNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutBatchNestedInput
 }
 
@@ -1326,6 +1634,8 @@ export type BatchUncheckedUpdateWithoutFeeStructuresInput = {
   lectures?: Prisma.LectureUncheckedUpdateManyWithoutBatchNestedInput
   tests?: Prisma.TestUncheckedUpdateManyWithoutBatchNestedInput
   doubts?: Prisma.DoubtUncheckedUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutBatchNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutBatchNestedInput
 }
 
@@ -1346,6 +1656,8 @@ export type BatchCreateWithoutFeeReceiptsInput = {
   lectures?: Prisma.LectureCreateNestedManyWithoutBatchInput
   tests?: Prisma.TestCreateNestedManyWithoutBatchInput
   doubts?: Prisma.DoubtCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteCreateNestedManyWithoutBatchInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutBatchInput
 }
 
@@ -1367,6 +1679,8 @@ export type BatchUncheckedCreateWithoutFeeReceiptsInput = {
   lectures?: Prisma.LectureUncheckedCreateNestedManyWithoutBatchInput
   tests?: Prisma.TestUncheckedCreateNestedManyWithoutBatchInput
   doubts?: Prisma.DoubtUncheckedCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutBatchInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutBatchInput
 }
 
@@ -1403,6 +1717,8 @@ export type BatchUpdateWithoutFeeReceiptsInput = {
   lectures?: Prisma.LectureUpdateManyWithoutBatchNestedInput
   tests?: Prisma.TestUpdateManyWithoutBatchNestedInput
   doubts?: Prisma.DoubtUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutBatchNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutBatchNestedInput
 }
 
@@ -1424,6 +1740,8 @@ export type BatchUncheckedUpdateWithoutFeeReceiptsInput = {
   lectures?: Prisma.LectureUncheckedUpdateManyWithoutBatchNestedInput
   tests?: Prisma.TestUncheckedUpdateManyWithoutBatchNestedInput
   doubts?: Prisma.DoubtUncheckedUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutBatchNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutBatchNestedInput
 }
 
@@ -1444,6 +1762,8 @@ export type BatchCreateWithoutLecturesInput = {
   feeReceipts?: Prisma.FeeReceiptCreateNestedManyWithoutBatchInput
   tests?: Prisma.TestCreateNestedManyWithoutBatchInput
   doubts?: Prisma.DoubtCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteCreateNestedManyWithoutBatchInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutBatchInput
 }
 
@@ -1465,6 +1785,8 @@ export type BatchUncheckedCreateWithoutLecturesInput = {
   feeReceipts?: Prisma.FeeReceiptUncheckedCreateNestedManyWithoutBatchInput
   tests?: Prisma.TestUncheckedCreateNestedManyWithoutBatchInput
   doubts?: Prisma.DoubtUncheckedCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutBatchInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutBatchInput
 }
 
@@ -1501,6 +1823,8 @@ export type BatchUpdateWithoutLecturesInput = {
   feeReceipts?: Prisma.FeeReceiptUpdateManyWithoutBatchNestedInput
   tests?: Prisma.TestUpdateManyWithoutBatchNestedInput
   doubts?: Prisma.DoubtUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutBatchNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutBatchNestedInput
 }
 
@@ -1522,6 +1846,8 @@ export type BatchUncheckedUpdateWithoutLecturesInput = {
   feeReceipts?: Prisma.FeeReceiptUncheckedUpdateManyWithoutBatchNestedInput
   tests?: Prisma.TestUncheckedUpdateManyWithoutBatchNestedInput
   doubts?: Prisma.DoubtUncheckedUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutBatchNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutBatchNestedInput
 }
 
@@ -1542,6 +1868,8 @@ export type BatchCreateWithoutTestsInput = {
   feeReceipts?: Prisma.FeeReceiptCreateNestedManyWithoutBatchInput
   lectures?: Prisma.LectureCreateNestedManyWithoutBatchInput
   doubts?: Prisma.DoubtCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteCreateNestedManyWithoutBatchInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutBatchInput
 }
 
@@ -1563,6 +1891,8 @@ export type BatchUncheckedCreateWithoutTestsInput = {
   feeReceipts?: Prisma.FeeReceiptUncheckedCreateNestedManyWithoutBatchInput
   lectures?: Prisma.LectureUncheckedCreateNestedManyWithoutBatchInput
   doubts?: Prisma.DoubtUncheckedCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutBatchInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutBatchInput
 }
 
@@ -1599,6 +1929,8 @@ export type BatchUpdateWithoutTestsInput = {
   feeReceipts?: Prisma.FeeReceiptUpdateManyWithoutBatchNestedInput
   lectures?: Prisma.LectureUpdateManyWithoutBatchNestedInput
   doubts?: Prisma.DoubtUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutBatchNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutBatchNestedInput
 }
 
@@ -1620,6 +1952,8 @@ export type BatchUncheckedUpdateWithoutTestsInput = {
   feeReceipts?: Prisma.FeeReceiptUncheckedUpdateManyWithoutBatchNestedInput
   lectures?: Prisma.LectureUncheckedUpdateManyWithoutBatchNestedInput
   doubts?: Prisma.DoubtUncheckedUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutBatchNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutBatchNestedInput
 }
 
@@ -1640,6 +1974,8 @@ export type BatchCreateWithoutDoubtsInput = {
   feeReceipts?: Prisma.FeeReceiptCreateNestedManyWithoutBatchInput
   lectures?: Prisma.LectureCreateNestedManyWithoutBatchInput
   tests?: Prisma.TestCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteCreateNestedManyWithoutBatchInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutBatchInput
 }
 
@@ -1661,6 +1997,8 @@ export type BatchUncheckedCreateWithoutDoubtsInput = {
   feeReceipts?: Prisma.FeeReceiptUncheckedCreateNestedManyWithoutBatchInput
   lectures?: Prisma.LectureUncheckedCreateNestedManyWithoutBatchInput
   tests?: Prisma.TestUncheckedCreateNestedManyWithoutBatchInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedCreateNestedManyWithoutBatchInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutBatchInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutBatchInput
 }
 
@@ -1697,6 +2035,8 @@ export type BatchUpdateWithoutDoubtsInput = {
   feeReceipts?: Prisma.FeeReceiptUpdateManyWithoutBatchNestedInput
   lectures?: Prisma.LectureUpdateManyWithoutBatchNestedInput
   tests?: Prisma.TestUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutBatchNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutBatchNestedInput
 }
 
@@ -1718,6 +2058,8 @@ export type BatchUncheckedUpdateWithoutDoubtsInput = {
   feeReceipts?: Prisma.FeeReceiptUncheckedUpdateManyWithoutBatchNestedInput
   lectures?: Prisma.LectureUncheckedUpdateManyWithoutBatchNestedInput
   tests?: Prisma.TestUncheckedUpdateManyWithoutBatchNestedInput
+  youtubeVideos?: Prisma.YoutubeVideoUncheckedUpdateManyWithoutBatchNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutBatchNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutBatchNestedInput
 }
 
@@ -1737,6 +2079,8 @@ export type BatchCountOutputType = {
   lectures: number
   tests: number
   doubts: number
+  youtubeVideos: number
+  notes: number
   attendances: number
 }
 
@@ -1751,6 +2095,8 @@ export type BatchCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.
   lectures?: boolean | BatchCountOutputTypeCountLecturesArgs
   tests?: boolean | BatchCountOutputTypeCountTestsArgs
   doubts?: boolean | BatchCountOutputTypeCountDoubtsArgs
+  youtubeVideos?: boolean | BatchCountOutputTypeCountYoutubeVideosArgs
+  notes?: boolean | BatchCountOutputTypeCountNotesArgs
   attendances?: boolean | BatchCountOutputTypeCountAttendancesArgs
 }
 
@@ -1837,6 +2183,20 @@ export type BatchCountOutputTypeCountDoubtsArgs<ExtArgs extends runtime.Types.Ex
 /**
  * BatchCountOutputType without action
  */
+export type BatchCountOutputTypeCountYoutubeVideosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.YoutubeVideoWhereInput
+}
+
+/**
+ * BatchCountOutputType without action
+ */
+export type BatchCountOutputTypeCountNotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NoteWhereInput
+}
+
+/**
+ * BatchCountOutputType without action
+ */
 export type BatchCountOutputTypeCountAttendancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.AttendanceWhereInput
 }
@@ -1861,6 +2221,8 @@ export type BatchSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   lectures?: boolean | Prisma.Batch$lecturesArgs<ExtArgs>
   tests?: boolean | Prisma.Batch$testsArgs<ExtArgs>
   doubts?: boolean | Prisma.Batch$doubtsArgs<ExtArgs>
+  youtubeVideos?: boolean | Prisma.Batch$youtubeVideosArgs<ExtArgs>
+  notes?: boolean | Prisma.Batch$notesArgs<ExtArgs>
   attendances?: boolean | Prisma.Batch$attendancesArgs<ExtArgs>
   _count?: boolean | Prisma.BatchCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["batch"]>
@@ -1910,6 +2272,8 @@ export type BatchInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   lectures?: boolean | Prisma.Batch$lecturesArgs<ExtArgs>
   tests?: boolean | Prisma.Batch$testsArgs<ExtArgs>
   doubts?: boolean | Prisma.Batch$doubtsArgs<ExtArgs>
+  youtubeVideos?: boolean | Prisma.Batch$youtubeVideosArgs<ExtArgs>
+  notes?: boolean | Prisma.Batch$notesArgs<ExtArgs>
   attendances?: boolean | Prisma.Batch$attendancesArgs<ExtArgs>
   _count?: boolean | Prisma.BatchCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1929,6 +2293,8 @@ export type $BatchPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     lectures: Prisma.$LecturePayload<ExtArgs>[]
     tests: Prisma.$TestPayload<ExtArgs>[]
     doubts: Prisma.$DoubtPayload<ExtArgs>[]
+    youtubeVideos: Prisma.$YoutubeVideoPayload<ExtArgs>[]
+    notes: Prisma.$NotePayload<ExtArgs>[]
     attendances: Prisma.$AttendancePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -2344,6 +2710,8 @@ export interface Prisma__BatchClient<T, Null = never, ExtArgs extends runtime.Ty
   lectures<T extends Prisma.Batch$lecturesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Batch$lecturesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LecturePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tests<T extends Prisma.Batch$testsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Batch$testsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   doubts<T extends Prisma.Batch$doubtsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Batch$doubtsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DoubtPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  youtubeVideos<T extends Prisma.Batch$youtubeVideosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Batch$youtubeVideosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$YoutubeVideoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notes<T extends Prisma.Batch$notesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Batch$notesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   attendances<T extends Prisma.Batch$attendancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Batch$attendancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -3007,6 +3375,54 @@ export type Batch$doubtsArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.DoubtScalarFieldEnum | Prisma.DoubtScalarFieldEnum[]
+}
+
+/**
+ * Batch.youtubeVideos
+ */
+export type Batch$youtubeVideosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the YoutubeVideo
+   */
+  select?: Prisma.YoutubeVideoSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the YoutubeVideo
+   */
+  omit?: Prisma.YoutubeVideoOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.YoutubeVideoInclude<ExtArgs> | null
+  where?: Prisma.YoutubeVideoWhereInput
+  orderBy?: Prisma.YoutubeVideoOrderByWithRelationInput | Prisma.YoutubeVideoOrderByWithRelationInput[]
+  cursor?: Prisma.YoutubeVideoWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.YoutubeVideoScalarFieldEnum | Prisma.YoutubeVideoScalarFieldEnum[]
+}
+
+/**
+ * Batch.notes
+ */
+export type Batch$notesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Note
+   */
+  select?: Prisma.NoteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Note
+   */
+  omit?: Prisma.NoteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NoteInclude<ExtArgs> | null
+  where?: Prisma.NoteWhereInput
+  orderBy?: Prisma.NoteOrderByWithRelationInput | Prisma.NoteOrderByWithRelationInput[]
+  cursor?: Prisma.NoteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NoteScalarFieldEnum | Prisma.NoteScalarFieldEnum[]
 }
 
 /**

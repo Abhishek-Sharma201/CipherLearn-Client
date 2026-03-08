@@ -90,7 +90,6 @@ export type StudentCountAggregateOutputType = {
   dob: number
   batchId: number
   userId: number
-  attendance: number
   address: number
   phone: number
   parentName: number
@@ -168,7 +167,6 @@ export type StudentCountAggregateInputType = {
   dob?: true
   batchId?: true
   userId?: true
-  attendance?: true
   address?: true
   phone?: true
   parentName?: true
@@ -277,7 +275,6 @@ export type StudentGroupByOutputType = {
   dob: string
   batchId: number | null
   userId: number | null
-  attendance: runtime.JsonValue | null
   address: string | null
   phone: string | null
   parentName: string | null
@@ -322,7 +319,6 @@ export type StudentWhereInput = {
   dob?: Prisma.StringFilter<"Student"> | string
   batchId?: Prisma.IntNullableFilter<"Student"> | number | null
   userId?: Prisma.IntNullableFilter<"Student"> | number | null
-  attendance?: Prisma.JsonNullableFilter<"Student">
   address?: Prisma.StringNullableFilter<"Student"> | string | null
   phone?: Prisma.StringNullableFilter<"Student"> | string | null
   parentName?: Prisma.StringNullableFilter<"Student"> | string | null
@@ -353,7 +349,6 @@ export type StudentOrderByWithRelationInput = {
   dob?: Prisma.SortOrder
   batchId?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
-  attendance?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   parentName?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -387,7 +382,6 @@ export type StudentWhereUniqueInput = Prisma.AtLeast<{
   fullname?: Prisma.StringFilter<"Student"> | string
   dob?: Prisma.StringFilter<"Student"> | string
   batchId?: Prisma.IntNullableFilter<"Student"> | number | null
-  attendance?: Prisma.JsonNullableFilter<"Student">
   address?: Prisma.StringNullableFilter<"Student"> | string | null
   phone?: Prisma.StringNullableFilter<"Student"> | string | null
   parentName?: Prisma.StringNullableFilter<"Student"> | string | null
@@ -418,7 +412,6 @@ export type StudentOrderByWithAggregationInput = {
   dob?: Prisma.SortOrder
   batchId?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
-  attendance?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   parentName?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -448,7 +441,6 @@ export type StudentScalarWhereWithAggregatesInput = {
   dob?: Prisma.StringWithAggregatesFilter<"Student"> | string
   batchId?: Prisma.IntNullableWithAggregatesFilter<"Student"> | number | null
   userId?: Prisma.IntNullableWithAggregatesFilter<"Student"> | number | null
-  attendance?: Prisma.JsonNullableWithAggregatesFilter<"Student">
   address?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
   phone?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
   parentName?: Prisma.StringNullableWithAggregatesFilter<"Student"> | string | null
@@ -467,7 +459,6 @@ export type StudentCreateInput = {
   fullname: string
   email: string
   dob: string
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: string | null
   phone?: string | null
   parentName?: string | null
@@ -498,7 +489,6 @@ export type StudentUncheckedCreateInput = {
   dob: string
   batchId?: number | null
   userId?: number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: string | null
   phone?: string | null
   parentName?: string | null
@@ -524,7 +514,6 @@ export type StudentUpdateInput = {
   fullname?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.StringFieldUpdateOperationsInput | string
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -555,7 +544,6 @@ export type StudentUncheckedUpdateInput = {
   dob?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   userId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -584,7 +572,6 @@ export type StudentCreateManyInput = {
   dob: string
   batchId?: number | null
   userId?: number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: string | null
   phone?: string | null
   parentName?: string | null
@@ -603,7 +590,6 @@ export type StudentUpdateManyMutationInput = {
   fullname?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.StringFieldUpdateOperationsInput | string
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -625,7 +611,6 @@ export type StudentUncheckedUpdateManyInput = {
   dob?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   userId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -652,7 +637,6 @@ export type StudentCountOrderByAggregateInput = {
   dob?: Prisma.SortOrder
   batchId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  attendance?: Prisma.SortOrder
   address?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   parentName?: Prisma.SortOrder
@@ -924,7 +908,6 @@ export type StudentCreateWithoutUserInput = {
   fullname: string
   email: string
   dob: string
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: string | null
   phone?: string | null
   parentName?: string | null
@@ -953,7 +936,6 @@ export type StudentUncheckedCreateWithoutUserInput = {
   email: string
   dob: string
   batchId?: number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: string | null
   phone?: string | null
   parentName?: string | null
@@ -995,7 +977,6 @@ export type StudentUpdateWithoutUserInput = {
   fullname?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.StringFieldUpdateOperationsInput | string
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1024,7 +1005,6 @@ export type StudentUncheckedUpdateWithoutUserInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1050,7 +1030,6 @@ export type StudentCreateWithoutBatchInput = {
   fullname: string
   email: string
   dob: string
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: string | null
   phone?: string | null
   parentName?: string | null
@@ -1079,7 +1058,6 @@ export type StudentUncheckedCreateWithoutBatchInput = {
   email: string
   dob: string
   userId?: number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: string | null
   phone?: string | null
   parentName?: string | null
@@ -1137,7 +1115,6 @@ export type StudentScalarWhereInput = {
   dob?: Prisma.StringFilter<"Student"> | string
   batchId?: Prisma.IntNullableFilter<"Student"> | number | null
   userId?: Prisma.IntNullableFilter<"Student"> | number | null
-  attendance?: Prisma.JsonNullableFilter<"Student">
   address?: Prisma.StringNullableFilter<"Student"> | string | null
   phone?: Prisma.StringNullableFilter<"Student"> | string | null
   parentName?: Prisma.StringNullableFilter<"Student"> | string | null
@@ -1156,7 +1133,6 @@ export type StudentCreateWithoutAttendancesInput = {
   fullname: string
   email: string
   dob: string
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: string | null
   phone?: string | null
   parentName?: string | null
@@ -1186,7 +1162,6 @@ export type StudentUncheckedCreateWithoutAttendancesInput = {
   dob: string
   batchId?: number | null
   userId?: number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: string | null
   phone?: string | null
   parentName?: string | null
@@ -1227,7 +1202,6 @@ export type StudentUpdateWithoutAttendancesInput = {
   fullname?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.StringFieldUpdateOperationsInput | string
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1257,7 +1231,6 @@ export type StudentUncheckedUpdateWithoutAttendancesInput = {
   dob?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   userId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1282,7 +1255,6 @@ export type StudentCreateWithoutSubmissionsInput = {
   fullname: string
   email: string
   dob: string
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: string | null
   phone?: string | null
   parentName?: string | null
@@ -1312,7 +1284,6 @@ export type StudentUncheckedCreateWithoutSubmissionsInput = {
   dob: string
   batchId?: number | null
   userId?: number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: string | null
   phone?: string | null
   parentName?: string | null
@@ -1353,7 +1324,6 @@ export type StudentUpdateWithoutSubmissionsInput = {
   fullname?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.StringFieldUpdateOperationsInput | string
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1383,7 +1353,6 @@ export type StudentUncheckedUpdateWithoutSubmissionsInput = {
   dob?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   userId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1408,7 +1377,6 @@ export type StudentCreateWithoutFeeReceiptsInput = {
   fullname: string
   email: string
   dob: string
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: string | null
   phone?: string | null
   parentName?: string | null
@@ -1438,7 +1406,6 @@ export type StudentUncheckedCreateWithoutFeeReceiptsInput = {
   dob: string
   batchId?: number | null
   userId?: number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: string | null
   phone?: string | null
   parentName?: string | null
@@ -1479,7 +1446,6 @@ export type StudentUpdateWithoutFeeReceiptsInput = {
   fullname?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.StringFieldUpdateOperationsInput | string
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1509,7 +1475,6 @@ export type StudentUncheckedUpdateWithoutFeeReceiptsInput = {
   dob?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   userId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1534,7 +1499,6 @@ export type StudentCreateWithoutNotificationPreferenceInput = {
   fullname: string
   email: string
   dob: string
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: string | null
   phone?: string | null
   parentName?: string | null
@@ -1564,7 +1528,6 @@ export type StudentUncheckedCreateWithoutNotificationPreferenceInput = {
   dob: string
   batchId?: number | null
   userId?: number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: string | null
   phone?: string | null
   parentName?: string | null
@@ -1605,7 +1568,6 @@ export type StudentUpdateWithoutNotificationPreferenceInput = {
   fullname?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.StringFieldUpdateOperationsInput | string
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1635,7 +1597,6 @@ export type StudentUncheckedUpdateWithoutNotificationPreferenceInput = {
   dob?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   userId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1660,7 +1621,6 @@ export type StudentCreateWithoutTestScoresInput = {
   fullname: string
   email: string
   dob: string
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: string | null
   phone?: string | null
   parentName?: string | null
@@ -1690,7 +1650,6 @@ export type StudentUncheckedCreateWithoutTestScoresInput = {
   dob: string
   batchId?: number | null
   userId?: number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: string | null
   phone?: string | null
   parentName?: string | null
@@ -1731,7 +1690,6 @@ export type StudentUpdateWithoutTestScoresInput = {
   fullname?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.StringFieldUpdateOperationsInput | string
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1761,7 +1719,6 @@ export type StudentUncheckedUpdateWithoutTestScoresInput = {
   dob?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   userId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1786,7 +1743,6 @@ export type StudentCreateWithoutDoubtsInput = {
   fullname: string
   email: string
   dob: string
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: string | null
   phone?: string | null
   parentName?: string | null
@@ -1816,7 +1772,6 @@ export type StudentUncheckedCreateWithoutDoubtsInput = {
   dob: string
   batchId?: number | null
   userId?: number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: string | null
   phone?: string | null
   parentName?: string | null
@@ -1857,7 +1812,6 @@ export type StudentUpdateWithoutDoubtsInput = {
   fullname?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.StringFieldUpdateOperationsInput | string
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1887,7 +1841,6 @@ export type StudentUncheckedUpdateWithoutDoubtsInput = {
   dob?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   userId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1912,7 +1865,6 @@ export type StudentCreateWithoutStarredResourcesInput = {
   fullname: string
   email: string
   dob: string
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: string | null
   phone?: string | null
   parentName?: string | null
@@ -1942,7 +1894,6 @@ export type StudentUncheckedCreateWithoutStarredResourcesInput = {
   dob: string
   batchId?: number | null
   userId?: number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: string | null
   phone?: string | null
   parentName?: string | null
@@ -1983,7 +1934,6 @@ export type StudentUpdateWithoutStarredResourcesInput = {
   fullname?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.StringFieldUpdateOperationsInput | string
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2013,7 +1963,6 @@ export type StudentUncheckedUpdateWithoutStarredResourcesInput = {
   dob?: Prisma.StringFieldUpdateOperationsInput | string
   batchId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   userId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2040,7 +1989,6 @@ export type StudentCreateManyBatchInput = {
   email: string
   dob: string
   userId?: number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: string | null
   phone?: string | null
   parentName?: string | null
@@ -2059,7 +2007,6 @@ export type StudentUpdateWithoutBatchInput = {
   fullname?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.StringFieldUpdateOperationsInput | string
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2088,7 +2035,6 @@ export type StudentUncheckedUpdateWithoutBatchInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2116,7 +2062,6 @@ export type StudentUncheckedUpdateManyWithoutBatchInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   dob?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  attendance?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2214,7 +2159,6 @@ export type StudentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   dob?: boolean
   batchId?: boolean
   userId?: boolean
-  attendance?: boolean
   address?: boolean
   phone?: boolean
   parentName?: boolean
@@ -2246,7 +2190,6 @@ export type StudentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   dob?: boolean
   batchId?: boolean
   userId?: boolean
-  attendance?: boolean
   address?: boolean
   phone?: boolean
   parentName?: boolean
@@ -2270,7 +2213,6 @@ export type StudentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   dob?: boolean
   batchId?: boolean
   userId?: boolean
-  attendance?: boolean
   address?: boolean
   phone?: boolean
   parentName?: boolean
@@ -2294,7 +2236,6 @@ export type StudentSelectScalar = {
   dob?: boolean
   batchId?: boolean
   userId?: boolean
-  attendance?: boolean
   address?: boolean
   phone?: boolean
   parentName?: boolean
@@ -2306,7 +2247,7 @@ export type StudentSelectScalar = {
   createdAt?: boolean
 }
 
-export type StudentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstname" | "middlename" | "lastname" | "fullname" | "email" | "dob" | "batchId" | "userId" | "attendance" | "address" | "phone" | "parentName" | "grade" | "instituteId" | "isDeleted" | "deletedBy" | "updatedAt" | "createdAt", ExtArgs["result"]["student"]>
+export type StudentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstname" | "middlename" | "lastname" | "fullname" | "email" | "dob" | "batchId" | "userId" | "address" | "phone" | "parentName" | "grade" | "instituteId" | "isDeleted" | "deletedBy" | "updatedAt" | "createdAt", ExtArgs["result"]["student"]>
 export type StudentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   batch?: boolean | Prisma.Student$batchArgs<ExtArgs>
   user?: boolean | Prisma.Student$userArgs<ExtArgs>
@@ -2351,7 +2292,6 @@ export type $StudentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     dob: string
     batchId: number | null
     userId: number | null
-    attendance: runtime.JsonValue | null
     address: string | null
     phone: string | null
     parentName: string | null
@@ -2802,7 +2742,6 @@ export interface StudentFieldRefs {
   readonly dob: Prisma.FieldRef<"Student", 'String'>
   readonly batchId: Prisma.FieldRef<"Student", 'Int'>
   readonly userId: Prisma.FieldRef<"Student", 'Int'>
-  readonly attendance: Prisma.FieldRef<"Student", 'Json'>
   readonly address: Prisma.FieldRef<"Student", 'String'>
   readonly phone: Prisma.FieldRef<"Student", 'String'>
   readonly parentName: Prisma.FieldRef<"Student", 'String'>

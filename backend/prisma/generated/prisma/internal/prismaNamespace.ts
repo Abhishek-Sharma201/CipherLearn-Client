@@ -2718,7 +2718,6 @@ export const StudentScalarFieldEnum = {
   dob: 'dob',
   batchId: 'batchId',
   userId: 'userId',
-  attendance: 'attendance',
   address: 'address',
   phone: 'phone',
   parentName: 'parentName',
