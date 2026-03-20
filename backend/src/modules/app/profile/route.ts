@@ -33,9 +33,9 @@ router.put(
 
 /**
  * GET /app/profile
- * Student: get own profile (auth enforced in app/route.ts via isStudent)
+ * Student: get own profile
  */
-router.get("/", profileController.getProfile.bind(profileController));
+router.get("/", isStudent, profileController.getProfile.bind(profileController));
 
 /**
  * PUT /app/profile

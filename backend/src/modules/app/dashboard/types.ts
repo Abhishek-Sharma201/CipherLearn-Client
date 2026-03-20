@@ -30,3 +30,20 @@ export interface DashboardData {
   quickAccess: QuickAccessCounts;
   feesSummary: AppFeesSummary;
 }
+
+export interface TeacherQuickAccessCounts {
+  assignedBatches: number;
+  assignmentsCreated: number;
+  pendingSubmissions: number;
+  testsCreated: number;
+  unpublishedResults: number;
+  studyMaterials: number;
+}
+
+export interface TeacherDashboardData {
+  profile: import("../profile/types").TeacherProfileResponse;
+  todayLectures: import("../lectures/types").AppLectureResponse[];
+  nextClass: import("../lectures/types").DailyScheduleResponse["nextClass"];
+  announcements: AppAnnouncementListItem[];
+  quickAccess: TeacherQuickAccessCounts;
+}

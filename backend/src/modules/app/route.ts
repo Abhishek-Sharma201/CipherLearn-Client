@@ -15,6 +15,7 @@ import { profileController } from "./profile/controller";
 import { settingsService } from "../dashboard/settings/service";
 import { config } from "../../config/env.config";
 import { appReadRateLimiter } from "../../middleware/rateLimiter";
+import { dashboardController } from "./dashboard/controller";
 
 const router = Router();
 
@@ -76,8 +77,16 @@ router.use("/fees", isStudent, feesRoutes);
 // Routes accessible to students and teachers
 // Each route module handles role-specific logic internally
 
-// Dashboard - different views for students vs teachers
-router.use("/dashboard", isAppUser, dashboardRoutes);
+// Dashboard - student-only (current implementation relies on req.student)
+router.use("/dashboard", isStudent, dashboardRoutes);
+
+// Teacher dashboard overview
+router.get(
+  "/teacher/dashboard",
+  isTeacher,
+  appReadRateLimiter,
+  dashboardController.getTeacherDashboard.bind(dashboardController)
+);
 
 // Attendance - role-specific auth handled within the route module
 router.use("/attendance", attendanceRoutes);

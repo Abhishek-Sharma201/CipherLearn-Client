@@ -1,11 +1,21 @@
 import { prisma } from "../../../config/db.config";
-import type { TodayLecture, QuickAccessCounts, DashboardData } from "./types";
+import type {
+  TodayLecture,
+  QuickAccessCounts,
+  DashboardData,
+  TeacherQuickAccessCounts,
+  TeacherDashboardData,
+} from "./types";
 import type { BatchTimings } from "../types";
 import { profileService } from "../profile/service";
 import { attendanceService } from "../attendance/service";
 import { assignmentsService } from "../assignments/service";
 import { announcementsService } from "../announcements/service";
 import { feesService } from "../fees/service";
+import AppLectureService from "../lectures/service";
+import { TestStatus, SubmissionStatus } from "../../../../prisma/generated/prisma/enums";
+
+const lectureService = new AppLectureService();
 
 class DashboardService {
   /**
@@ -133,6 +143,74 @@ class DashboardService {
       announcements: announcementsResult.announcements,
       quickAccess,
       feesSummary,
+    };
+  }
+
+  async getTeacherQuickAccessCounts(teacherId: number): Promise<TeacherQuickAccessCounts> {
+    const [
+      taughtBatches,
+      assignmentsCreated,
+      pendingSubmissions,
+      testsCreated,
+      unpublishedResults,
+      studyMaterials,
+    ] = await Promise.all([
+      prisma.lecture.findMany({
+        where: { teacherId, isDeleted: false },
+        select: { batchId: true },
+        distinct: ["batchId"],
+      }),
+      prisma.assignmentSlot.count({
+        where: { teacherId, isDeleted: false },
+      }),
+      prisma.studentSubmission.count({
+        where: {
+          status: SubmissionStatus.PENDING,
+          slot: {
+            teacherId,
+            isDeleted: false,
+          },
+        },
+      }),
+      prisma.test.count({
+        where: { teacherId, isDeleted: false },
+      }),
+      prisma.test.count({
+        where: {
+          teacherId,
+          isDeleted: false,
+          status: { in: [TestStatus.COMPLETED, TestStatus.ONGOING] },
+        },
+      }),
+      prisma.studyMaterial.count({
+        where: { teacherId, isDeleted: false },
+      }),
+    ]);
+
+    return {
+      assignedBatches: taughtBatches.length,
+      assignmentsCreated,
+      pendingSubmissions,
+      testsCreated,
+      unpublishedResults,
+      studyMaterials,
+    };
+  }
+
+  async getTeacherDashboard(teacherId: number): Promise<TeacherDashboardData> {
+    const [profile, todaySchedule, announcementsResult, quickAccess] = await Promise.all([
+      profileService.getTeacherProfile(teacherId),
+      lectureService.getTeacherSchedule(teacherId),
+      announcementsService.getAnnouncements({ limit: 5 }),
+      this.getTeacherQuickAccessCounts(teacherId),
+    ]);
+
+    return {
+      profile,
+      todayLectures: todaySchedule.lectures,
+      nextClass: todaySchedule.nextClass,
+      announcements: announcementsResult.announcements,
+      quickAccess,
     };
   }
 }

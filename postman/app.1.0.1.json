@@ -128,6 +128,9 @@
                   "        pm.environment.set('appToken', token);",
                   "        console.log('App token set: ' + token.substring(0, 20) + '...');",
                   "    }",
+                  "    if (jsonData.data.refreshToken) {",
+                  "        pm.environment.set('appRefreshToken', jsonData.data.refreshToken);",
+                  "    }",
                   "    if (jsonData.data.user) {",
                   "        pm.environment.set('appUserId', jsonData.data.user.id);",
                   "        pm.environment.set('appUserRole', jsonData.data.user.role);",
@@ -176,10 +179,14 @@
             "method": "POST",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{appToken}}"
+                "key": "Content-Type",
+                "value": "application/json"
               }
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"refreshToken\": \"{{appRefreshToken}}\"\n}"
+            },
             "url": {
               "raw": "{{baseUrl}}/app/auth/refresh-token",
               "host": [
@@ -265,7 +272,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"student@example.com\",\n    \"otp\": \"123456\",\n    \"newPassword\": \"NewPassword@123\"\n}"
+              "raw": "{\n    \"resetToken\": \"paste-reset-token-from-verify-otp\",\n    \"password\": \"NewPassword@123\",\n    \"confirmPassword\": \"NewPassword@123\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/app/auth/reset-password",
@@ -336,10 +343,10 @@
     },
     {
       "name": "Profile",
-      "description": "Student profile (student-only)",
+      "description": "Student and teacher profile endpoints",
       "item": [
         {
-          "name": "Get My Profile",
+          "name": "Student: Get My Profile",
           "request": {
             "method": "GET",
             "header": [
@@ -395,6 +402,64 @@
           "response": []
         },
         {
+          "name": "Teacher: Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{appToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/app/profile/teacher",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "app",
+                "profile",
+                "teacher"
+              ]
+            },
+            "description": "Teacher: get own profile with extended fields."
+          },
+          "response": []
+        },
+        {
+          "name": "Teacher: Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{appToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/app/profile/teacher",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "app",
+                "profile",
+                "teacher"
+              ]
+            },
+            "description": "Teacher: update profile fields like qualification, work timings, subjects, and bio.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"phone\": \"+91 9876543210\",\n    \"qualification\": \"M.Sc Mathematics\",\n    \"experience\": 5,\n    \"workTimingFrom\": \"09:00\",\n    \"workTimingTo\": \"17:00\",\n    \"primarySubjects\": [\"Mathematics\"],\n    \"secondarySubjects\": [\"Physics\"],\n    \"bio\": \"Focused on conceptual clarity.\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Student: Get My Teacher",
           "request": {
             "method": "GET",
@@ -423,7 +488,7 @@
     },
     {
       "name": "Dashboard",
-      "description": "App dashboard data (student + teacher)",
+      "description": "App dashboard data (student-only in current backend implementation)",
       "item": [
         {
           "name": "Get Dashboard",
@@ -445,7 +510,32 @@
                 "dashboard"
               ]
             },
-            "description": "Get dashboard overview. Different content for students vs teachers."
+            "description": "Student-only dashboard overview."
+          },
+          "response": []
+        },
+        {
+          "name": "Teacher: Get Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{appToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/app/teacher/dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "app",
+                "teacher",
+                "dashboard"
+              ]
+            },
+            "description": "Teacher-only dashboard overview (profile, today's lectures, announcements, quick access counts)."
           },
           "response": []
         },

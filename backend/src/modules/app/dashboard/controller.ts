@@ -89,6 +89,35 @@ class DashboardController {
       });
     }
   }
+
+  /**
+   * Get teacher dashboard data
+   * GET /app/teacher/dashboard
+   */
+  async getTeacherDashboard(req: Request, res: Response) {
+    try {
+      const user = req.user;
+      if (!user) {
+        return res.status(401).json({
+          success: false,
+          message: "Teacher not authenticated",
+        });
+      }
+
+      const dashboard = await dashboardService.getTeacherDashboard(user.id);
+
+      return res.status(200).json({
+        success: true,
+        data: dashboard,
+      });
+    } catch (error) {
+      logger.error("DashboardController.getTeacherDashboard error:", error);
+      return res.status(500).json({
+        success: false,
+        message: `Failed to get teacher dashboard: ${error}`,
+      });
+    }
+  }
 }
 
 export const dashboardController = new DashboardController();

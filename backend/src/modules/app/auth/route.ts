@@ -7,7 +7,7 @@ import {
   tokenRefreshRateLimiter,
   generalRateLimiter,
 } from "../../../middleware/rateLimiter";
-import { isStudent } from "../../auth/middleware";
+import { isAppUser } from "../../auth/middleware";
 
 const router = Router();
 
@@ -66,7 +66,7 @@ router.post(
 router.post(
   "/logout",
   generalRateLimiter,
-  isStudent,
+  isAppUser,
   authController.logout
 );
 
@@ -74,7 +74,7 @@ router.post(
 router.get(
   "/me",
   generalRateLimiter,
-  isStudent,
+  isAppUser,
   authController.getMe
 );
 
