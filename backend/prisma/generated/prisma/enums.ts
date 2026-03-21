@@ -225,3 +225,13 @@ export const DevicePlatform = {
 } as const
 
 export type DevicePlatform = (typeof DevicePlatform)[keyof typeof DevicePlatform]
+
+
+export const NotificationType = {
+  INFO: 'INFO',
+  WARNING: 'WARNING',
+  SUCCESS: 'SUCCESS',
+  ALERT: 'ALERT'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]

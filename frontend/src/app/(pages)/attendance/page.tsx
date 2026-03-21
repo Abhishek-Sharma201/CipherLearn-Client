@@ -13,7 +13,7 @@ export default function AttendancePage() {
     const isAdmin = user?.role === 'ADMIN' || user?.role === 'TEACHER'
 
     return (
-        <div className="space-y-6 py-6 px-6 max-w-[1100px] mx-auto animate-in fade-in slide-in-from-bottom-2 duration-500">
+        <div className="space-y-8 max-w-[1400px] mx-auto animate-in fade-in duration-500">
             {/* ─── Slim Header ─── */}
             <div>
                 <h1 className="text-2xl font-black tracking-tight">Attendance</h1>

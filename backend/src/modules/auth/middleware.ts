@@ -70,6 +70,7 @@ export const isAdminOrTeacher = async (
     }
 
     if (user.role !== UserRoles.ADMIN && user.role !== UserRoles.TEACHER) {
+      log("warn", "isAdminOrTeacher role denied", { userId: user.id, role: user.role, path: req.path });
       return res.status(403).json({
         success: false,
         message: "Access denied: Admins and Teachers only",
@@ -79,7 +80,7 @@ export const isAdminOrTeacher = async (
     req.user = user;
     next();
   } catch (error) {
-    log("error", "auth.next failed", { err: error instanceof Error ? error.message : String(error), userId: req.user?.id });
+    log("error", "isAdminOrTeacher middleware failed", { err: error instanceof Error ? error.message : String(error), path: req.path });
     return res
       .status(403)
       .json({ success: false, message: `Access denied : ${error}` });
@@ -139,6 +140,7 @@ export const isAdmin = async (
     }
 
     if (user.role !== UserRoles.ADMIN) {
+      log("warn", "isAdmin role denied", { userId: user.id, role: user.role, path: req.path });
       return res.status(403).json({
         success: false,
         message: "Access denied: Admins only",
@@ -148,7 +150,7 @@ export const isAdmin = async (
     req.user = user;
     next();
   } catch (error) {
-    log("error", "auth.next failed", { err: error instanceof Error ? error.message : String(error), userId: req.user?.id });
+    log("error", "isAdmin middleware failed", { err: error instanceof Error ? error.message : String(error), path: req.path });
     return res
       .status(403)
       .json({ success: false, message: `Access denied : ${error}` });
@@ -210,7 +212,7 @@ export const isAuthenticated = async (
     req.user = user;
     next();
   } catch (error) {
-    log("error", "auth.next failed", { err: error instanceof Error ? error.message : String(error), userId: req.user?.id });
+    log("error", "isAuthenticated middleware failed", { err: error instanceof Error ? error.message : String(error), path: req.path });
     return res
       .status(403)
       .json({ success: false, message: `Access denied : ${error}` });
@@ -276,6 +278,7 @@ export const isAppUser = async (
 
     // Check if account is locked
     if (user.lockedUntil && user.lockedUntil > new Date()) {
+      log("warn", "isAppUser account locked", { userId: user.id, lockedUntil: user.lockedUntil, path: req.path });
       return res.status(403).json({
         success: false,
         message: "Account is locked. Please try again later.",
@@ -284,6 +287,7 @@ export const isAppUser = async (
 
     // Only STUDENT and TEACHER can access app routes
     if (user.role !== UserRoles.STUDENT && user.role !== UserRoles.TEACHER) {
+      log("warn", "isAppUser role denied", { userId: user.id, role: user.role, path: req.path });
       return res.status(403).json({
         success: false,
         message: "Access denied",
@@ -311,7 +315,7 @@ export const isAppUser = async (
 
     next();
   } catch (error) {
-    log("error", "auth.next failed", { err: error instanceof Error ? error.message : String(error), userId: req.user?.id });
+    log("error", "isAppUser middleware failed", { err: error instanceof Error ? error.message : String(error), path: req.path });
     return res
       .status(403)
       .json({ success: false, message: `Access denied : ${error}` });
@@ -375,6 +379,7 @@ export const isTeacher = async (
     }
 
     if (user.lockedUntil && user.lockedUntil > new Date()) {
+      log("warn", "isTeacher account locked", { userId: user.id, lockedUntil: user.lockedUntil, path: req.path });
       return res.status(403).json({
         success: false,
         message: "Account is locked. Please try again later.",
@@ -382,6 +387,7 @@ export const isTeacher = async (
     }
 
     if (user.role !== UserRoles.TEACHER) {
+      log("warn", "isTeacher role denied", { userId: user.id, role: user.role, path: req.path });
       return res.status(403).json({
         success: false,
         message: "Access denied: Teachers only",
@@ -391,7 +397,7 @@ export const isTeacher = async (
     req.user = user;
     next();
   } catch (error) {
-    log("error", "auth.next failed", { err: error instanceof Error ? error.message : String(error), userId: req.user?.id });
+    log("error", "isTeacher middleware failed", { err: error instanceof Error ? error.message : String(error), path: req.path });
     return res
       .status(403)
       .json({ success: false, message: `Access denied : ${error}` });
@@ -455,6 +461,7 @@ export const isStudent = async (
     }
 
     if (user.lockedUntil && user.lockedUntil > new Date()) {
+      log("warn", "isStudent account locked", { userId: user.id, lockedUntil: user.lockedUntil, path: req.path });
       return res.status(403).json({
         success: false,
         message: "Account is locked. Please try again later.",
@@ -462,6 +469,7 @@ export const isStudent = async (
     }
 
     if (user.role !== UserRoles.STUDENT) {
+      log("warn", "isStudent role denied", { userId: user.id, role: user.role, path: req.path });
       return res.status(403).json({
         success: false,
         message: "Access denied: Students only",
@@ -481,6 +489,7 @@ export const isStudent = async (
     }
 
     if (!student) {
+      log("warn", "isStudent profile not found", { userId: user.id, email: user.email, path: req.path });
       return res.status(404).json({
         success: false,
         message: "Student profile not found",
@@ -491,7 +500,7 @@ export const isStudent = async (
     req.student = student;
     next();
   } catch (error) {
-    log("error", "auth.next failed", { err: error instanceof Error ? error.message : String(error), userId: req.user?.id });
+    log("error", "isStudent middleware failed", { err: error instanceof Error ? error.message : String(error), path: req.path });
     return res
       .status(403)
       .json({ success: false, message: `Access denied : ${error}` });

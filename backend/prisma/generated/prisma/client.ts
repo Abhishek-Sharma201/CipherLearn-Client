@@ -187,3 +187,8 @@ export type DeviceToken = Prisma.DeviceTokenModel
  * 
  */
 export type AppSettings = Prisma.AppSettingsModel
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel

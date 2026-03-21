@@ -1,11 +1,12 @@
 "use client"
 
-import { Bell, Search, Menu, Sun, Moon } from "lucide-react"
+import { Search, Menu, Sun, Moon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useAppSelector } from "@/redux/hooks"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
+import { NotificationPanel } from "./NotificationPanel"
 
 function getGreeting() {
     const hour = new Date().getHours()
@@ -99,17 +100,8 @@ export function Navbar() {
                         </Button>
                     )}
 
-                    {/* Notification bell */}
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="relative h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-secondary"
-                    >
-                        <Bell className="h-4 w-4" />
-                        {/* Notification dot */}
-                        <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-accent border-2 border-background" />
-                        <span className="sr-only">Notifications</span>
-                    </Button>
+                    {/* Notifications */}
+                    <NotificationPanel />
 
                     {/* Divider */}
                     <div className="h-5 w-px bg-border hidden sm:block" />

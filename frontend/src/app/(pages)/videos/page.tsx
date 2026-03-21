@@ -1,5 +1,7 @@
 "use client"
 
+import { PermissionGate } from "@/components/layout/PermissionGate"
+
 import { useState } from "react"
 import { VideoGrid } from "@/components/videos/VideoGrid"
 import { AddVideoDialog } from "@/components/videos/AddVideoDialog"
@@ -27,7 +29,8 @@ export default function VideosPage() {
     const batches = batchesData || []
 
     return (
-        <div className="space-y-6 animate-fade-in">
+        <PermissionGate permissionKey="canUploadVideos" featureName="Video Lectures">
+        <div className="space-y-8 max-w-[1400px] mx-auto animate-in fade-in duration-500">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-foreground tracking-tight">Video Lectures</h1>
@@ -69,5 +72,6 @@ export default function VideosPage() {
 
             <VideoGrid batchId={selectedBatchId} searchQuery={searchQuery} isAdmin={isAdmin} />
         </div>
+        </PermissionGate>
     )
 }

@@ -51,7 +51,7 @@ export default function StudentsPage() {
     const uniqueBatches = new Set(students.map((s: Student) => s.batchId)).size
 
     return (
-        <div className="space-y-6 py-5 px-6 max-w-[1400px] mx-auto animate-in fade-in duration-500">
+        <div className="space-y-8 max-w-[1400px] mx-auto animate-in fade-in duration-500">
             {/* Header */}
             <div className="flex flex-col sm:flex-row items-baseline sm:items-center justify-between gap-4 pb-5 border-b border-border/40">
                 <div>

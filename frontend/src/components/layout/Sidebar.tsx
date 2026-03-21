@@ -27,6 +27,7 @@ import { cn } from "@/lib/utils"
 import { useSelector } from "react-redux"
 import { RootState } from "@/redux/store"
 import { siteConfig } from "@/config/siteConfig"
+import { useTeacherPermissions } from "@/hooks/useTeacherPermissions"
 
 export function Sidebar() {
     const pathname = usePathname()
@@ -35,6 +36,7 @@ export function Sidebar() {
     const role = useSelector((state: RootState) => state.auth.user?.role)
     const isAdmin = role === "ADMIN"
     const { features } = siteConfig
+    const { hasPermission } = useTeacherPermissions()
 
     const navGroups = [
         {
@@ -50,24 +52,24 @@ export function Sidebar() {
                 { href: "/students", label: "Students", icon: Users, show: true },
                 { href: "/teachers", label: "Teachers", icon: GraduationCap, show: isAdmin },
                 { href: "/attendance", label: "Attendance", icon: ClipboardList, show: features.qrAttendance || isAdmin },
-                { href: "/fees", label: "Fees", icon: Receipt, show: features.fees || isAdmin },
+                { href: "/fees", label: "Fees", icon: Receipt, show: (features.fees || isAdmin) && hasPermission("canViewFees") },
             ]
         },
         {
             label: "Schedule",
             items: [
-                { href: "/lectures", label: "Lectures", icon: Calendar, show: true },
+                { href: "/lectures", label: "Lectures", icon: Calendar, show: hasPermission("canManageLectures") },
                 { href: "/tests", label: "Tests", icon: ClipboardCheck, show: true },
             ]
         },
         {
             label: "Resources",
             items: [
-                { href: "/resources", label: "Resource Hub", icon: FolderOpen, show: features.studyMaterials || isAdmin },
-                { href: "/assignments", label: "Assignments", icon: FileUp, show: features.assignments || isAdmin },
-                { href: "/notes", label: "Notes", icon: FileText, show: true },
-                { href: "/videos", label: "Videos", icon: Video, show: features.videos || isAdmin },
-                { href: "/announcements", label: "Announcements", icon: Megaphone, show: features.announcements || isAdmin },
+                { href: "/resources", label: "Resource Hub", icon: FolderOpen, show: (features.studyMaterials || isAdmin) && hasPermission("canManageStudyMaterials") },
+                { href: "/assignments", label: "Assignments", icon: FileUp, show: (features.assignments || isAdmin) && hasPermission("canManageAssignments") },
+                { href: "/notes", label: "Notes", icon: FileText, show: hasPermission("canUploadNotes") },
+                { href: "/videos", label: "Videos", icon: Video, show: (features.videos || isAdmin) && hasPermission("canUploadVideos") },
+                { href: "/announcements", label: "Announcements", icon: Megaphone, show: (features.announcements || isAdmin) && hasPermission("canSendAnnouncements") },
             ]
         },
         {
