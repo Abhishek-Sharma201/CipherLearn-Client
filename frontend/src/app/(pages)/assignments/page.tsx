@@ -1,5 +1,7 @@
 "use client";
 
+import { PermissionGate } from "@/components/layout/PermissionGate";
+
 import { useState } from "react";
 import { useAppSelector } from "@/redux/hooks";
 import { Button } from "@/components/ui/button";
@@ -151,7 +153,8 @@ export default function AssignmentsPage() {
   };
 
   return (
-    <div className="space-y-6 py-6 px-6 max-w-[1400px] mx-auto">
+    <PermissionGate permissionKey="canManageAssignments" featureName="Assignments">
+    <div className="space-y-8 max-w-[1400px] mx-auto animate-in fade-in duration-500">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-border pb-6">
         <div>
@@ -464,5 +467,6 @@ export default function AssignmentsPage() {
         </DialogContent>
       </Dialog>
     </div>
+    </PermissionGate>
   );
 }

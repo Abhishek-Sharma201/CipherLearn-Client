@@ -1,6 +1,6 @@
 import { Router } from "express";
 import FeesController from "./controller";
-import { isAdmin, isAuthenticated } from "../../auth/middleware";
+import { isAdmin, isAdminOrTeacher, isAuthenticated } from "../../auth/middleware";
 
 const router = Router();
 const controller = new FeesController();
@@ -9,29 +9,29 @@ const controller = new FeesController();
 router.use(isAuthenticated);
 
 // =====================
-// FEE STRUCTURES (Admin only)
+// FEE STRUCTURES (Admin/Teacher)
 // =====================
-router.post("/structures", isAdmin, controller.createFeeStructure.bind(controller));
-router.get("/structures/batch/:batchId", isAdmin, controller.getFeeStructuresByBatch.bind(controller));
-router.put("/structures/:id", isAdmin, controller.updateFeeStructure.bind(controller));
-router.delete("/structures/:id", isAdmin, controller.deleteFeeStructure.bind(controller));
+router.post("/structures", isAdminOrTeacher, controller.createFeeStructure.bind(controller));
+router.get("/structures/batch/:batchId", isAdminOrTeacher, controller.getFeeStructuresByBatch.bind(controller));
+router.put("/structures/:id", isAdminOrTeacher, controller.updateFeeStructure.bind(controller));
+router.delete("/structures/:id", isAdminOrTeacher, controller.deleteFeeStructure.bind(controller));
 
 // =====================
-// FEE RECEIPTS (Admin only)
+// FEE RECEIPTS (Admin/Teacher)
 // =====================
-router.post("/receipts", isAdmin, controller.createReceipt.bind(controller));
-router.post("/receipts/bulk", isAdmin, controller.bulkCreateReceipts.bind(controller));
-router.get("/receipts", isAdmin, controller.getReceipts.bind(controller));
-router.get("/receipts/summary", isAdmin, controller.getReceiptsSummary.bind(controller));
-router.get("/receipts/:id", isAdmin, controller.getReceiptById.bind(controller));
-router.get("/receipts/:id/pdf", isAdmin, controller.downloadReceiptPDF.bind(controller));
-router.put("/receipts/:id", isAdmin, controller.updateReceipt.bind(controller));
-router.delete("/receipts/:id", isAdmin, controller.deleteReceipt.bind(controller));
+router.post("/receipts", isAdminOrTeacher, controller.createReceipt.bind(controller));
+router.post("/receipts/bulk", isAdminOrTeacher, controller.bulkCreateReceipts.bind(controller));
+router.get("/receipts", isAdminOrTeacher, controller.getReceipts.bind(controller));
+router.get("/receipts/summary", isAdminOrTeacher, controller.getReceiptsSummary.bind(controller));
+router.get("/receipts/:id", isAdminOrTeacher, controller.getReceiptById.bind(controller));
+router.get("/receipts/:id/pdf", isAdminOrTeacher, controller.downloadReceiptPDF.bind(controller));
+router.put("/receipts/:id", isAdminOrTeacher, controller.updateReceipt.bind(controller));
+router.delete("/receipts/:id", isAdminOrTeacher, controller.deleteReceipt.bind(controller));
 
 // =====================
-// STUDENT FEES SUMMARY (Admin only)
+// STUDENT FEES SUMMARY (Admin/Teacher)
 // =====================
-router.get("/student/:studentId/summary", isAdmin, controller.getStudentFeesSummary.bind(controller));
+router.get("/student/:studentId/summary", isAdminOrTeacher, controller.getStudentFeesSummary.bind(controller));
 
 // =====================
 // STUDENT-FACING ENDPOINTS (Authenticated students)

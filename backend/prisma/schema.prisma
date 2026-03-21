@@ -35,6 +35,7 @@ model User {
   doubtReplies         DoubtReply[]
   deviceTokens         DeviceToken[]
   instagramAccount     InstagramAccount?
+  notifications        Notification[]   @relation("UserNotifications")
 
   @@map("users")
 }
@@ -954,4 +955,27 @@ model AppSettings {
   updatedAt DateTime @updatedAt
 
   @@map("app_settings")
+}
+
+enum NotificationType {
+  INFO
+  WARNING
+  SUCCESS
+  ALERT
+}
+
+model Notification {
+  id        Int              @id @default(autoincrement())
+  userId    Int
+  user      User             @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      NotificationType @default(INFO)
+  isRead    Boolean          @default(false)
+  link      String?
+  createdAt DateTime         @default(now())
+
+  @@index([userId, isRead])
+  @@index([userId, createdAt])
+  @@map("notifications")
 }

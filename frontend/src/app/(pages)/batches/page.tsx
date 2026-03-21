@@ -8,7 +8,7 @@ import { CreateBatchDialog } from "@/components/batches/CreateBatchDialog"
 
 export default function BatchesPage() {
     return (
-        <div className="space-y-10 py-8 px-6 max-w-[1400px] mx-auto animate-fade-in">
+        <div className="space-y-8 max-w-[1400px] mx-auto animate-in fade-in duration-500">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8 border-b border-border/40 pb-10">
                 <div>
                     <h1 className="text-3xl font-black tracking-tighter">

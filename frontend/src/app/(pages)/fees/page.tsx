@@ -1,5 +1,7 @@
 "use client";
 
+import { PermissionGate } from "@/components/layout/PermissionGate";
+
 import { useState } from "react";
 import {
   Receipt,
@@ -534,10 +536,11 @@ function StudentFeesView() {
 // Main Fees Page
 export default function FeesPage() {
   const { user } = useAppSelector((state) => state.auth);
-  const isAdmin = user?.role === "ADMIN";
+  const isAdminView = user?.role === "ADMIN" || user?.role === "TEACHER";
 
   return (
-    <div className="space-y-12 py-10 px-8 max-w-[1400px] mx-auto animate-in fade-in duration-700">
+    <PermissionGate permissionKey="canViewFees" featureName="Fees Management">
+    <div className="space-y-8 max-w-[1400px] mx-auto animate-in fade-in duration-500">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-baseline sm:items-center justify-between gap-8 border-b border-border/40 pb-12">
         <div>
@@ -545,7 +548,7 @@ export default function FeesPage() {
             Fees Management
           </h1>
           <p className="text-muted-foreground mt-1.5 text-sm font-medium">
-            {isAdmin
+            {isAdminView
               ? "Manage student fee receipts, track payments, and generate reports."
               : "View your fee receipts and payment history."}
           </p>
@@ -562,7 +565,8 @@ export default function FeesPage() {
       </div>
 
       {/* Content based on role */}
-      {isAdmin ? <AdminFeesView /> : <StudentFeesView />}
+      {isAdminView ? <AdminFeesView /> : <StudentFeesView />}
     </div>
+    </PermissionGate>
   );
 }

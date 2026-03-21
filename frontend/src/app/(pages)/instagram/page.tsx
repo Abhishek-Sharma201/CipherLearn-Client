@@ -46,7 +46,7 @@ export default function InstagramPage() {
     }
 
     return (
-        <div className="space-y-8 animate-fade-in p-1">
+        <div className="space-y-8 max-w-[1400px] mx-auto animate-in fade-in duration-500">
             {/* Header */}
             <div>
                 <h1 className="text-3xl font-black tracking-tighter text-foreground flex items-center gap-3">

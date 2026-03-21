@@ -1,5 +1,7 @@
 "use client"
 
+import { PermissionGate } from "@/components/layout/PermissionGate"
+
 import { useState } from "react"
 import { useSelector } from "react-redux"
 import { RootState } from "@/redux/store"
@@ -15,7 +17,8 @@ export default function AnnouncementsPage() {
     const isAdmin = user?.role === "ADMIN"
 
     return (
-        <div className="space-y-10 py-8 px-6 max-w-[1400px] mx-auto animate-fade-in">
+        <PermissionGate permissionKey="canSendAnnouncements" featureName="Announcements">
+        <div className="space-y-8 max-w-[1400px] mx-auto animate-in fade-in duration-500">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8 border-b border-border/40 pb-10">
                 <div>
                     <h1 className="text-3xl font-black tracking-tighter">
@@ -70,5 +73,6 @@ export default function AnnouncementsPage() {
                 />
             </div>
         </div>
+        </PermissionGate>
     )
 }

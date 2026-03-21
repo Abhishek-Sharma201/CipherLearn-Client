@@ -14,6 +14,7 @@ import lecturesRoutes from "./lectures/route";
 import testsRoutes from "./tests/route";
 import instagramRoutes from "./instagram/route";
 import settingsRoutes from "./settings/route";
+import notificationRoutes from "./notifications/route";
 
 const router = Router();
 
@@ -32,6 +33,7 @@ router.use("/teachers", teachersRoutes);
 router.use("/tests", testsRoutes);
 router.use("/youtube-videos", youtubeVideoRoutes);
 router.use("/settings", settingsRoutes);
+router.use("/notifications", notificationRoutes);
 
 export default router;
 

@@ -1,5 +1,7 @@
 "use client"
 
+import { PermissionGate } from "@/components/layout/PermissionGate"
+
 import { useState } from "react"
 import { useSelector } from "react-redux"
 import { RootState } from "@/redux/store"
@@ -30,7 +32,8 @@ export default function StudyMaterialsPage() {
     const categories = categoriesData?.data || []
 
     return (
-        <div className="space-y-6 animate-fade-in">
+        <PermissionGate permissionKey="canManageStudyMaterials" featureName="Study Materials">
+        <div className="space-y-8 max-w-[1400px] mx-auto animate-in fade-in duration-500">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-foreground tracking-tight">Study Materials</h1>
@@ -87,5 +90,6 @@ export default function StudyMaterialsPage() {
                 />
             </Card>
         </div>
+        </PermissionGate>
     )
 }

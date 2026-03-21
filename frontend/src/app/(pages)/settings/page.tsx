@@ -302,7 +302,7 @@ export default function SettingsPage() {
     const isAdmin = user?.role === 'ADMIN'
 
     return (
-        <div className="space-y-12 py-10 px-8 max-w-[1000px] mx-auto animate-in fade-in duration-700">
+        <div className="space-y-10 max-w-[1000px] mx-auto animate-in fade-in duration-500">
             {/* Header */}
             <div className="flex flex-col sm:flex-row items-baseline sm:items-center justify-between gap-8 border-b border-border/40 pb-12">
                 <div>

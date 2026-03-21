@@ -6,7 +6,7 @@ import { AddTeacherDialog } from "@/components/teachers/AddTeacherDialog"
 
 export default function TeachersPage() {
     return (
-        <div className="space-y-12 py-10 px-8 max-w-[1400px] mx-auto animate-in fade-in duration-700">
+        <div className="space-y-8 max-w-[1400px] mx-auto animate-in fade-in duration-500">
             <div className="flex flex-col sm:flex-row items-baseline sm:items-center justify-between gap-8 border-b border-border/40 pb-12">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tighter text-foreground">

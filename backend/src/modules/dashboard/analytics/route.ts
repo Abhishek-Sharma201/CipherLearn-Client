@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { isAdmin, isAuthenticated } from "../../auth/middleware";
+import { isAdminOrTeacher, isAuthenticated } from "../../auth/middleware";
 import AnalyticsController from "./controller";
 
 const router = Router();
-router.use(isAuthenticated, isAdmin);
+router.use(isAuthenticated, isAdminOrTeacher);
 
 const controller = new AnalyticsController();
 

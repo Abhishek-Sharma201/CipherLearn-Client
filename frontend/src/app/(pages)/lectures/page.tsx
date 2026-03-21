@@ -7,6 +7,7 @@ import { LectureCalendar } from "@/components/lectures/LectureCalendar"
 import { AddLectureDialog } from "@/components/lectures/AddLectureDialog"
 import { CalendarDays, List } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { PermissionGate } from "@/components/layout/PermissionGate"
 
 type ViewMode = "calendar" | "list"
 
@@ -15,8 +16,9 @@ export default function LecturesPage() {
 
     if (view === "calendar") {
         return (
-            // Full-height layout: fits exactly in the viewport with no scroll
-            // 100vh - navbar(64px) - padding top+bottom (p-5=40px or md:p-7=56px)
+            <PermissionGate permissionKey="canManageLectures" featureName="Lectures">
+            {/* Full-height layout: fits exactly in the viewport with no scroll
+                100vh - navbar(64px) - padding top+bottom (p-5=40px or md:p-7=56px) */}
             <div
                 className="flex flex-col animate-fade-in h-[calc(100vh-104px)] md:h-[calc(100vh-120px)]"
             >
@@ -59,10 +61,12 @@ export default function LecturesPage() {
                     <LectureCalendar />
                 </div>
             </div>
+            </PermissionGate>
         )
     }
 
     return (
+        <PermissionGate permissionKey="canManageLectures" featureName="Lectures">
         <div className="space-y-6 animate-fade-in">
             {/* Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -106,5 +110,6 @@ export default function LecturesPage() {
                 <LectureTable />
             </Card>
         </div>
+        </PermissionGate>
     )
 }

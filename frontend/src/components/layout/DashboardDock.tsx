@@ -14,6 +14,10 @@ import { useDockPreferences, AVAILABLE_APPS } from "@/hooks/useDockPreferences"
 import { DockSettingsPanel } from "@/components/dock/DockSettingsPanel"
 import { useState, useRef, useEffect } from "react"
 import { AnimatePresence } from "framer-motion"
+import { useTeacherPermissions } from "@/hooks/useTeacherPermissions"
+import { useSelector } from "react-redux"
+import { RootState } from "@/redux/store"
+import { siteConfig } from "@/config/siteConfig"
 
 export function DashboardDock() {
     const pathname = usePathname()
@@ -40,14 +44,28 @@ export function DashboardDock() {
         setShowSettings(true)
     }
 
+    const { hasPermission } = useTeacherPermissions()
+    const role = useSelector((state: RootState) => state.auth.user?.role)
+    const isAdmin = role === "ADMIN"
+    const { features } = siteConfig
+
     if (!isMounted) return null;
 
-    // Filter available apps based on selection order
-    const visibleApps = AVAILABLE_APPS.filter(app => preferences.selectedApps.includes(app.id));
+    // Filter available apps based on selection order AND permissions
+    const visibleApps = AVAILABLE_APPS.filter(app => {
+        // Must be selected in preferences
+        if (!preferences.selectedApps.includes(app.id)) return false;
 
-    // Sort visible apps based on the order in selectedApps (optional, or just keep default order)
-    // For now, let's keep the order defined in AVAILABLE_APPS essentially, but filtered.
-    // If we want user-defined order, we'd need drag-and-drop. Let's stick to filter for now.
+        // Must pass permission checks
+        if (app.id === 'fees') {
+            return (features.fees || isAdmin) && hasPermission("canViewFees");
+        }
+        if (app.id === 'attendance') {
+            return features.qrAttendance || isAdmin;
+        }
+
+        return true;
+    });
 
     return (
         <div 

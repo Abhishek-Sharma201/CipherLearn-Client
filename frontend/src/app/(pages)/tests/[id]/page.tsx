@@ -61,7 +61,7 @@ export default function TestDetailPage({ params }: { params: Promise<{ id: strin
 
     if (isLoading) {
         return (
-            <div className="py-10 px-8 max-w-[1400px] mx-auto space-y-8 animate-in fade-in duration-700">
+            <div className="max-w-[1400px] mx-auto space-y-8 animate-in fade-in duration-500">
                 <div className="flex items-center gap-4 border-b border-border/40 pb-8">
                     <Skeleton className="h-8 w-8 rounded-md" />
                     <div className="space-y-2">
@@ -103,7 +103,7 @@ export default function TestDetailPage({ params }: { params: Promise<{ id: strin
 
     if (isError || !test) {
         return (
-            <div className="py-10 px-8 max-w-[1400px] mx-auto">
+            <div className="max-w-[1400px] mx-auto">
                 <Card className="text-center py-20 bg-destructive/5 border-dashed border-destructive/30 flex flex-col items-center">
                     <h3 className="text-sm font-semibold text-destructive uppercase">Test Not Found</h3>
                     <Link href="/tests" className="mt-6">
@@ -117,7 +117,7 @@ export default function TestDetailPage({ params }: { params: Promise<{ id: strin
     const statusStyle = STATUS_STYLES[test.status]
 
     return (
-        <div className="space-y-8 py-10 px-8 max-w-[1400px] mx-auto animate-in fade-in duration-700">
+        <div className="space-y-8 max-w-[1400px] mx-auto animate-in fade-in duration-500">
             {/* Header */}
             <div className="flex flex-col sm:flex-row items-baseline sm:items-center justify-between gap-4 border-b border-border/40 pb-8">
                 <div className="flex items-center gap-4">

@@ -1,5 +1,7 @@
 "use client"
 
+import { PermissionGate } from "@/components/layout/PermissionGate"
+
 import { useState } from "react"
 import { useSelector } from "react-redux"
 import { RootState } from "@/redux/store"
@@ -62,7 +64,8 @@ export default function ResourcesPage() {
     const currentTab = TABS.find((t) => t.id === activeTab)!
 
     return (
-        <div className="space-y-6 animate-fade-in">
+        <PermissionGate permissionKey="canManageStudyMaterials" featureName="Resource Hub">
+        <div className="space-y-8 max-w-[1400px] mx-auto animate-in fade-in duration-500">
 
             {/* Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
@@ -161,5 +164,6 @@ export default function ResourcesPage() {
                 )}
             </Card>
         </div>
+        </PermissionGate>
     )
 }

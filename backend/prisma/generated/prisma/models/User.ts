@@ -270,6 +270,7 @@ export type UserWhereInput = {
   doubtReplies?: Prisma.DoubtReplyListRelationFilter
   deviceTokens?: Prisma.DeviceTokenListRelationFilter
   instagramAccount?: Prisma.XOR<Prisma.InstagramAccountNullableScalarRelationFilter, Prisma.InstagramAccountWhereInput> | null
+  notifications?: Prisma.NotificationListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -293,6 +294,7 @@ export type UserOrderByWithRelationInput = {
   doubtReplies?: Prisma.DoubtReplyOrderByRelationAggregateInput
   deviceTokens?: Prisma.DeviceTokenOrderByRelationAggregateInput
   instagramAccount?: Prisma.InstagramAccountOrderByWithRelationInput
+  notifications?: Prisma.NotificationOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -319,6 +321,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   doubtReplies?: Prisma.DoubtReplyListRelationFilter
   deviceTokens?: Prisma.DeviceTokenListRelationFilter
   instagramAccount?: Prisma.XOR<Prisma.InstagramAccountNullableScalarRelationFilter, Prisma.InstagramAccountWhereInput> | null
+  notifications?: Prisma.NotificationListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -375,6 +378,7 @@ export type UserCreateInput = {
   doubtReplies?: Prisma.DoubtReplyCreateNestedManyWithoutUserInput
   deviceTokens?: Prisma.DeviceTokenCreateNestedManyWithoutUserInput
   instagramAccount?: Prisma.InstagramAccountCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -398,6 +402,7 @@ export type UserUncheckedCreateInput = {
   doubtReplies?: Prisma.DoubtReplyUncheckedCreateNestedManyWithoutUserInput
   deviceTokens?: Prisma.DeviceTokenUncheckedCreateNestedManyWithoutUserInput
   instagramAccount?: Prisma.InstagramAccountUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -420,6 +425,7 @@ export type UserUpdateInput = {
   doubtReplies?: Prisma.DoubtReplyUpdateManyWithoutUserNestedInput
   deviceTokens?: Prisma.DeviceTokenUpdateManyWithoutUserNestedInput
   instagramAccount?: Prisma.InstagramAccountUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -443,6 +449,7 @@ export type UserUncheckedUpdateInput = {
   doubtReplies?: Prisma.DoubtReplyUncheckedUpdateManyWithoutUserNestedInput
   deviceTokens?: Prisma.DeviceTokenUncheckedUpdateManyWithoutUserNestedInput
   instagramAccount?: Prisma.InstagramAccountUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -720,6 +727,20 @@ export type UserUpdateOneRequiredWithoutDeviceTokensNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDeviceTokensInput, Prisma.UserUpdateWithoutDeviceTokensInput>, Prisma.UserUncheckedUpdateWithoutDeviceTokensInput>
 }
 
+export type UserCreateNestedOneWithoutNotificationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationsInput
+  upsert?: Prisma.UserUpsertWithoutNotificationsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutNotificationsInput, Prisma.UserUpdateWithoutNotificationsInput>, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
+}
+
 export type UserCreateWithoutStudentInput = {
   name: string
   email: string
@@ -739,6 +760,7 @@ export type UserCreateWithoutStudentInput = {
   doubtReplies?: Prisma.DoubtReplyCreateNestedManyWithoutUserInput
   deviceTokens?: Prisma.DeviceTokenCreateNestedManyWithoutUserInput
   instagramAccount?: Prisma.InstagramAccountCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutStudentInput = {
@@ -761,6 +783,7 @@ export type UserUncheckedCreateWithoutStudentInput = {
   doubtReplies?: Prisma.DoubtReplyUncheckedCreateNestedManyWithoutUserInput
   deviceTokens?: Prisma.DeviceTokenUncheckedCreateNestedManyWithoutUserInput
   instagramAccount?: Prisma.InstagramAccountUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutStudentInput = {
@@ -798,6 +821,7 @@ export type UserUpdateWithoutStudentInput = {
   doubtReplies?: Prisma.DoubtReplyUpdateManyWithoutUserNestedInput
   deviceTokens?: Prisma.DeviceTokenUpdateManyWithoutUserNestedInput
   instagramAccount?: Prisma.InstagramAccountUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStudentInput = {
@@ -820,6 +844,7 @@ export type UserUncheckedUpdateWithoutStudentInput = {
   doubtReplies?: Prisma.DoubtReplyUncheckedUpdateManyWithoutUserNestedInput
   deviceTokens?: Prisma.DeviceTokenUncheckedUpdateManyWithoutUserNestedInput
   instagramAccount?: Prisma.InstagramAccountUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTeacherAssignmentsInput = {
@@ -841,6 +866,7 @@ export type UserCreateWithoutTeacherAssignmentsInput = {
   doubtReplies?: Prisma.DoubtReplyCreateNestedManyWithoutUserInput
   deviceTokens?: Prisma.DeviceTokenCreateNestedManyWithoutUserInput
   instagramAccount?: Prisma.InstagramAccountCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTeacherAssignmentsInput = {
@@ -863,6 +889,7 @@ export type UserUncheckedCreateWithoutTeacherAssignmentsInput = {
   doubtReplies?: Prisma.DoubtReplyUncheckedCreateNestedManyWithoutUserInput
   deviceTokens?: Prisma.DeviceTokenUncheckedCreateNestedManyWithoutUserInput
   instagramAccount?: Prisma.InstagramAccountUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTeacherAssignmentsInput = {
@@ -900,6 +927,7 @@ export type UserUpdateWithoutTeacherAssignmentsInput = {
   doubtReplies?: Prisma.DoubtReplyUpdateManyWithoutUserNestedInput
   deviceTokens?: Prisma.DeviceTokenUpdateManyWithoutUserNestedInput
   instagramAccount?: Prisma.InstagramAccountUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTeacherAssignmentsInput = {
@@ -922,6 +950,7 @@ export type UserUncheckedUpdateWithoutTeacherAssignmentsInput = {
   doubtReplies?: Prisma.DoubtReplyUncheckedUpdateManyWithoutUserNestedInput
   deviceTokens?: Prisma.DeviceTokenUncheckedUpdateManyWithoutUserNestedInput
   instagramAccount?: Prisma.InstagramAccountUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTeacherMaterialsInput = {
@@ -943,6 +972,7 @@ export type UserCreateWithoutTeacherMaterialsInput = {
   doubtReplies?: Prisma.DoubtReplyCreateNestedManyWithoutUserInput
   deviceTokens?: Prisma.DeviceTokenCreateNestedManyWithoutUserInput
   instagramAccount?: Prisma.InstagramAccountCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTeacherMaterialsInput = {
@@ -965,6 +995,7 @@ export type UserUncheckedCreateWithoutTeacherMaterialsInput = {
   doubtReplies?: Prisma.DoubtReplyUncheckedCreateNestedManyWithoutUserInput
   deviceTokens?: Prisma.DeviceTokenUncheckedCreateNestedManyWithoutUserInput
   instagramAccount?: Prisma.InstagramAccountUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTeacherMaterialsInput = {
@@ -1002,6 +1033,7 @@ export type UserUpdateWithoutTeacherMaterialsInput = {
   doubtReplies?: Prisma.DoubtReplyUpdateManyWithoutUserNestedInput
   deviceTokens?: Prisma.DeviceTokenUpdateManyWithoutUserNestedInput
   instagramAccount?: Prisma.InstagramAccountUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTeacherMaterialsInput = {
@@ -1024,6 +1056,7 @@ export type UserUncheckedUpdateWithoutTeacherMaterialsInput = {
   doubtReplies?: Prisma.DoubtReplyUncheckedUpdateManyWithoutUserNestedInput
   deviceTokens?: Prisma.DeviceTokenUncheckedUpdateManyWithoutUserNestedInput
   instagramAccount?: Prisma.InstagramAccountUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPasswordResetTokensInput = {
@@ -1045,6 +1078,7 @@ export type UserCreateWithoutPasswordResetTokensInput = {
   doubtReplies?: Prisma.DoubtReplyCreateNestedManyWithoutUserInput
   deviceTokens?: Prisma.DeviceTokenCreateNestedManyWithoutUserInput
   instagramAccount?: Prisma.InstagramAccountCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPasswordResetTokensInput = {
@@ -1067,6 +1101,7 @@ export type UserUncheckedCreateWithoutPasswordResetTokensInput = {
   doubtReplies?: Prisma.DoubtReplyUncheckedCreateNestedManyWithoutUserInput
   deviceTokens?: Prisma.DeviceTokenUncheckedCreateNestedManyWithoutUserInput
   instagramAccount?: Prisma.InstagramAccountUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPasswordResetTokensInput = {
@@ -1104,6 +1139,7 @@ export type UserUpdateWithoutPasswordResetTokensInput = {
   doubtReplies?: Prisma.DoubtReplyUpdateManyWithoutUserNestedInput
   deviceTokens?: Prisma.DeviceTokenUpdateManyWithoutUserNestedInput
   instagramAccount?: Prisma.InstagramAccountUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPasswordResetTokensInput = {
@@ -1126,6 +1162,7 @@ export type UserUncheckedUpdateWithoutPasswordResetTokensInput = {
   doubtReplies?: Prisma.DoubtReplyUncheckedUpdateManyWithoutUserNestedInput
   deviceTokens?: Prisma.DeviceTokenUncheckedUpdateManyWithoutUserNestedInput
   instagramAccount?: Prisma.InstagramAccountUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLecturesInput = {
@@ -1147,6 +1184,7 @@ export type UserCreateWithoutLecturesInput = {
   doubtReplies?: Prisma.DoubtReplyCreateNestedManyWithoutUserInput
   deviceTokens?: Prisma.DeviceTokenCreateNestedManyWithoutUserInput
   instagramAccount?: Prisma.InstagramAccountCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLecturesInput = {
@@ -1169,6 +1207,7 @@ export type UserUncheckedCreateWithoutLecturesInput = {
   doubtReplies?: Prisma.DoubtReplyUncheckedCreateNestedManyWithoutUserInput
   deviceTokens?: Prisma.DeviceTokenUncheckedCreateNestedManyWithoutUserInput
   instagramAccount?: Prisma.InstagramAccountUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLecturesInput = {
@@ -1206,6 +1245,7 @@ export type UserUpdateWithoutLecturesInput = {
   doubtReplies?: Prisma.DoubtReplyUpdateManyWithoutUserNestedInput
   deviceTokens?: Prisma.DeviceTokenUpdateManyWithoutUserNestedInput
   instagramAccount?: Prisma.InstagramAccountUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLecturesInput = {
@@ -1228,6 +1268,7 @@ export type UserUncheckedUpdateWithoutLecturesInput = {
   doubtReplies?: Prisma.DoubtReplyUncheckedUpdateManyWithoutUserNestedInput
   deviceTokens?: Prisma.DeviceTokenUncheckedUpdateManyWithoutUserNestedInput
   instagramAccount?: Prisma.InstagramAccountUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTeacherTestsInput = {
@@ -1249,6 +1290,7 @@ export type UserCreateWithoutTeacherTestsInput = {
   doubtReplies?: Prisma.DoubtReplyCreateNestedManyWithoutUserInput
   deviceTokens?: Prisma.DeviceTokenCreateNestedManyWithoutUserInput
   instagramAccount?: Prisma.InstagramAccountCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTeacherTestsInput = {
@@ -1271,6 +1313,7 @@ export type UserUncheckedCreateWithoutTeacherTestsInput = {
   doubtReplies?: Prisma.DoubtReplyUncheckedCreateNestedManyWithoutUserInput
   deviceTokens?: Prisma.DeviceTokenUncheckedCreateNestedManyWithoutUserInput
   instagramAccount?: Prisma.InstagramAccountUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTeacherTestsInput = {
@@ -1308,6 +1351,7 @@ export type UserUpdateWithoutTeacherTestsInput = {
   doubtReplies?: Prisma.DoubtReplyUpdateManyWithoutUserNestedInput
   deviceTokens?: Prisma.DeviceTokenUpdateManyWithoutUserNestedInput
   instagramAccount?: Prisma.InstagramAccountUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTeacherTestsInput = {
@@ -1330,6 +1374,7 @@ export type UserUncheckedUpdateWithoutTeacherTestsInput = {
   doubtReplies?: Prisma.DoubtReplyUncheckedUpdateManyWithoutUserNestedInput
   deviceTokens?: Prisma.DeviceTokenUncheckedUpdateManyWithoutUserNestedInput
   instagramAccount?: Prisma.InstagramAccountUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutInstagramAccountInput = {
@@ -1351,6 +1396,7 @@ export type UserCreateWithoutInstagramAccountInput = {
   teacherTests?: Prisma.TestCreateNestedManyWithoutTeacherInput
   doubtReplies?: Prisma.DoubtReplyCreateNestedManyWithoutUserInput
   deviceTokens?: Prisma.DeviceTokenCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutInstagramAccountInput = {
@@ -1373,6 +1419,7 @@ export type UserUncheckedCreateWithoutInstagramAccountInput = {
   teacherTests?: Prisma.TestUncheckedCreateNestedManyWithoutTeacherInput
   doubtReplies?: Prisma.DoubtReplyUncheckedCreateNestedManyWithoutUserInput
   deviceTokens?: Prisma.DeviceTokenUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutInstagramAccountInput = {
@@ -1410,6 +1457,7 @@ export type UserUpdateWithoutInstagramAccountInput = {
   teacherTests?: Prisma.TestUpdateManyWithoutTeacherNestedInput
   doubtReplies?: Prisma.DoubtReplyUpdateManyWithoutUserNestedInput
   deviceTokens?: Prisma.DeviceTokenUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInstagramAccountInput = {
@@ -1432,6 +1480,7 @@ export type UserUncheckedUpdateWithoutInstagramAccountInput = {
   teacherTests?: Prisma.TestUncheckedUpdateManyWithoutTeacherNestedInput
   doubtReplies?: Prisma.DoubtReplyUncheckedUpdateManyWithoutUserNestedInput
   deviceTokens?: Prisma.DeviceTokenUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTeacherProfileInput = {
@@ -1453,6 +1502,7 @@ export type UserCreateWithoutTeacherProfileInput = {
   doubtReplies?: Prisma.DoubtReplyCreateNestedManyWithoutUserInput
   deviceTokens?: Prisma.DeviceTokenCreateNestedManyWithoutUserInput
   instagramAccount?: Prisma.InstagramAccountCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTeacherProfileInput = {
@@ -1475,6 +1525,7 @@ export type UserUncheckedCreateWithoutTeacherProfileInput = {
   doubtReplies?: Prisma.DoubtReplyUncheckedCreateNestedManyWithoutUserInput
   deviceTokens?: Prisma.DeviceTokenUncheckedCreateNestedManyWithoutUserInput
   instagramAccount?: Prisma.InstagramAccountUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTeacherProfileInput = {
@@ -1512,6 +1563,7 @@ export type UserUpdateWithoutTeacherProfileInput = {
   doubtReplies?: Prisma.DoubtReplyUpdateManyWithoutUserNestedInput
   deviceTokens?: Prisma.DeviceTokenUpdateManyWithoutUserNestedInput
   instagramAccount?: Prisma.InstagramAccountUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTeacherProfileInput = {
@@ -1534,6 +1586,7 @@ export type UserUncheckedUpdateWithoutTeacherProfileInput = {
   doubtReplies?: Prisma.DoubtReplyUncheckedUpdateManyWithoutUserNestedInput
   deviceTokens?: Prisma.DeviceTokenUncheckedUpdateManyWithoutUserNestedInput
   instagramAccount?: Prisma.InstagramAccountUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutDoubtRepliesInput = {
@@ -1555,6 +1608,7 @@ export type UserCreateWithoutDoubtRepliesInput = {
   teacherTests?: Prisma.TestCreateNestedManyWithoutTeacherInput
   deviceTokens?: Prisma.DeviceTokenCreateNestedManyWithoutUserInput
   instagramAccount?: Prisma.InstagramAccountCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDoubtRepliesInput = {
@@ -1577,6 +1631,7 @@ export type UserUncheckedCreateWithoutDoubtRepliesInput = {
   teacherTests?: Prisma.TestUncheckedCreateNestedManyWithoutTeacherInput
   deviceTokens?: Prisma.DeviceTokenUncheckedCreateNestedManyWithoutUserInput
   instagramAccount?: Prisma.InstagramAccountUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDoubtRepliesInput = {
@@ -1614,6 +1669,7 @@ export type UserUpdateWithoutDoubtRepliesInput = {
   teacherTests?: Prisma.TestUpdateManyWithoutTeacherNestedInput
   deviceTokens?: Prisma.DeviceTokenUpdateManyWithoutUserNestedInput
   instagramAccount?: Prisma.InstagramAccountUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDoubtRepliesInput = {
@@ -1636,6 +1692,7 @@ export type UserUncheckedUpdateWithoutDoubtRepliesInput = {
   teacherTests?: Prisma.TestUncheckedUpdateManyWithoutTeacherNestedInput
   deviceTokens?: Prisma.DeviceTokenUncheckedUpdateManyWithoutUserNestedInput
   instagramAccount?: Prisma.InstagramAccountUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutDeviceTokensInput = {
@@ -1657,6 +1714,7 @@ export type UserCreateWithoutDeviceTokensInput = {
   teacherTests?: Prisma.TestCreateNestedManyWithoutTeacherInput
   doubtReplies?: Prisma.DoubtReplyCreateNestedManyWithoutUserInput
   instagramAccount?: Prisma.InstagramAccountCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDeviceTokensInput = {
@@ -1679,6 +1737,7 @@ export type UserUncheckedCreateWithoutDeviceTokensInput = {
   teacherTests?: Prisma.TestUncheckedCreateNestedManyWithoutTeacherInput
   doubtReplies?: Prisma.DoubtReplyUncheckedCreateNestedManyWithoutUserInput
   instagramAccount?: Prisma.InstagramAccountUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDeviceTokensInput = {
@@ -1716,6 +1775,7 @@ export type UserUpdateWithoutDeviceTokensInput = {
   teacherTests?: Prisma.TestUpdateManyWithoutTeacherNestedInput
   doubtReplies?: Prisma.DoubtReplyUpdateManyWithoutUserNestedInput
   instagramAccount?: Prisma.InstagramAccountUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDeviceTokensInput = {
@@ -1738,6 +1798,113 @@ export type UserUncheckedUpdateWithoutDeviceTokensInput = {
   teacherTests?: Prisma.TestUncheckedUpdateManyWithoutTeacherNestedInput
   doubtReplies?: Prisma.DoubtReplyUncheckedUpdateManyWithoutUserNestedInput
   instagramAccount?: Prisma.InstagramAccountUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutNotificationsInput = {
+  name: string
+  email: string
+  password?: string | null
+  role?: $Enums.UserRoles
+  isPasswordSet?: boolean
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  updatedAt?: Date | string | null
+  createdAt?: Date | string | null
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  student?: Prisma.StudentCreateNestedOneWithoutUserInput
+  teacherProfile?: Prisma.TeacherProfileCreateNestedOneWithoutUserInput
+  lectures?: Prisma.LectureCreateNestedManyWithoutTeacherInput
+  teacherAssignments?: Prisma.AssignmentSlotCreateNestedManyWithoutTeacherInput
+  teacherMaterials?: Prisma.StudyMaterialCreateNestedManyWithoutTeacherInput
+  teacherTests?: Prisma.TestCreateNestedManyWithoutTeacherInput
+  doubtReplies?: Prisma.DoubtReplyCreateNestedManyWithoutUserInput
+  deviceTokens?: Prisma.DeviceTokenCreateNestedManyWithoutUserInput
+  instagramAccount?: Prisma.InstagramAccountCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutNotificationsInput = {
+  id?: number
+  name: string
+  email: string
+  password?: string | null
+  role?: $Enums.UserRoles
+  isPasswordSet?: boolean
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  updatedAt?: Date | string | null
+  createdAt?: Date | string | null
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  student?: Prisma.StudentUncheckedCreateNestedOneWithoutUserInput
+  teacherProfile?: Prisma.TeacherProfileUncheckedCreateNestedOneWithoutUserInput
+  lectures?: Prisma.LectureUncheckedCreateNestedManyWithoutTeacherInput
+  teacherAssignments?: Prisma.AssignmentSlotUncheckedCreateNestedManyWithoutTeacherInput
+  teacherMaterials?: Prisma.StudyMaterialUncheckedCreateNestedManyWithoutTeacherInput
+  teacherTests?: Prisma.TestUncheckedCreateNestedManyWithoutTeacherInput
+  doubtReplies?: Prisma.DoubtReplyUncheckedCreateNestedManyWithoutUserInput
+  deviceTokens?: Prisma.DeviceTokenUncheckedCreateNestedManyWithoutUserInput
+  instagramAccount?: Prisma.InstagramAccountUncheckedCreateNestedOneWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutNotificationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+}
+
+export type UserUpsertWithoutNotificationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutNotificationsInput, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutNotificationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutNotificationsInput, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
+}
+
+export type UserUpdateWithoutNotificationsInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles
+  isPasswordSet?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  student?: Prisma.StudentUpdateOneWithoutUserNestedInput
+  teacherProfile?: Prisma.TeacherProfileUpdateOneWithoutUserNestedInput
+  lectures?: Prisma.LectureUpdateManyWithoutTeacherNestedInput
+  teacherAssignments?: Prisma.AssignmentSlotUpdateManyWithoutTeacherNestedInput
+  teacherMaterials?: Prisma.StudyMaterialUpdateManyWithoutTeacherNestedInput
+  teacherTests?: Prisma.TestUpdateManyWithoutTeacherNestedInput
+  doubtReplies?: Prisma.DoubtReplyUpdateManyWithoutUserNestedInput
+  deviceTokens?: Prisma.DeviceTokenUpdateManyWithoutUserNestedInput
+  instagramAccount?: Prisma.InstagramAccountUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutNotificationsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRolesFieldUpdateOperationsInput | $Enums.UserRoles
+  isPasswordSet?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  student?: Prisma.StudentUncheckedUpdateOneWithoutUserNestedInput
+  teacherProfile?: Prisma.TeacherProfileUncheckedUpdateOneWithoutUserNestedInput
+  lectures?: Prisma.LectureUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherAssignments?: Prisma.AssignmentSlotUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherMaterials?: Prisma.StudyMaterialUncheckedUpdateManyWithoutTeacherNestedInput
+  teacherTests?: Prisma.TestUncheckedUpdateManyWithoutTeacherNestedInput
+  doubtReplies?: Prisma.DoubtReplyUncheckedUpdateManyWithoutUserNestedInput
+  deviceTokens?: Prisma.DeviceTokenUncheckedUpdateManyWithoutUserNestedInput
+  instagramAccount?: Prisma.InstagramAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 
@@ -1753,6 +1920,7 @@ export type UserCountOutputType = {
   teacherTests: number
   doubtReplies: number
   deviceTokens: number
+  notifications: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1763,6 +1931,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   teacherTests?: boolean | UserCountOutputTypeCountTeacherTestsArgs
   doubtReplies?: boolean | UserCountOutputTypeCountDoubtRepliesArgs
   deviceTokens?: boolean | UserCountOutputTypeCountDeviceTokensArgs
+  notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
 }
 
 /**
@@ -1824,6 +1993,13 @@ export type UserCountOutputTypeCountDeviceTokensArgs<ExtArgs extends runtime.Typ
   where?: Prisma.DeviceTokenWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NotificationWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1846,6 +2022,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   doubtReplies?: boolean | Prisma.User$doubtRepliesArgs<ExtArgs>
   deviceTokens?: boolean | Prisma.User$deviceTokensArgs<ExtArgs>
   instagramAccount?: boolean | Prisma.User$instagramAccountArgs<ExtArgs>
+  notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1900,6 +2077,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   doubtReplies?: boolean | Prisma.User$doubtRepliesArgs<ExtArgs>
   deviceTokens?: boolean | Prisma.User$deviceTokensArgs<ExtArgs>
   instagramAccount?: boolean | Prisma.User$instagramAccountArgs<ExtArgs>
+  notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1918,6 +2096,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     doubtReplies: Prisma.$DoubtReplyPayload<ExtArgs>[]
     deviceTokens: Prisma.$DeviceTokenPayload<ExtArgs>[]
     instagramAccount: Prisma.$InstagramAccountPayload<ExtArgs> | null
+    notifications: Prisma.$NotificationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -2334,6 +2513,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   doubtReplies<T extends Prisma.User$doubtRepliesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$doubtRepliesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DoubtReplyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   deviceTokens<T extends Prisma.User$deviceTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$deviceTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DeviceTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   instagramAccount<T extends Prisma.User$instagramAccountArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$instagramAccountArgs<ExtArgs>>): Prisma.Prisma__InstagramAccountClient<runtime.Types.Result.GetResult<Prisma.$InstagramAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2983,6 +3163,30 @@ export type User$instagramAccountArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   include?: Prisma.InstagramAccountInclude<ExtArgs> | null
   where?: Prisma.InstagramAccountWhereInput
+}
+
+/**
+ * User.notifications
+ */
+export type User$notificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Notification
+   */
+  select?: Prisma.NotificationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Notification
+   */
+  omit?: Prisma.NotificationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificationInclude<ExtArgs> | null
+  where?: Prisma.NotificationWhereInput
+  orderBy?: Prisma.NotificationOrderByWithRelationInput | Prisma.NotificationOrderByWithRelationInput[]
+  cursor?: Prisma.NotificationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[]
 }
 
 /**
