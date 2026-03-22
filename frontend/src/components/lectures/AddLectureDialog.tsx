@@ -275,7 +275,7 @@ export function AddLectureDialog({ defaultDate, open: extOpen, onOpenChange: ext
 
     // ── Dialog Content ─────────────────────────────────────────────────────────
     const dialogContent = (
-        <DialogContent className="max-w-[700px] p-0 gap-0 overflow-hidden">
+        <DialogContent className="w-full max-w-[700px] md:w-[700px] p-0 gap-0 overflow-hidden">
             {/* Header */}
             <div className="px-8 pt-7 pb-0">
                 <div className="flex items-center justify-between mb-1">
@@ -293,8 +293,8 @@ export function AddLectureDialog({ defaultDate, open: extOpen, onOpenChange: ext
                 <StepBar step={step} />
             </div>
 
-            {/* Step Body — fixed height, no scroll */}
-            <div className="px-8 min-h-[320px]">
+            {/* Step Body — constant height with internal scroll */}
+            <div className="px-8 h-[400px] overflow-y-auto overflow-x-hidden custom-scrollbar">
 
                 {/* ── STEP 0: Subject + Batch + Teacher ──────────────────── */}
                 {step === 0 && (
