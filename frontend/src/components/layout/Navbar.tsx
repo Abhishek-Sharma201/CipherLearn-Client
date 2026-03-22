@@ -42,13 +42,13 @@ function AttendancePill({ pct, loading }: { pct: number | null; loading: boolean
         pct === null || loading
             ? "text-muted-foreground bg-secondary"
             : pct >= 75
-            ? "text-emerald-600 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-950/60"
+            ? "bg-emerald-600 text-white shadow-sm"
             : pct >= 50
-            ? "text-amber-600 bg-amber-50 dark:text-amber-400 dark:bg-amber-950/60"
-            : "text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-950/60"
+            ? "bg-amber-500 text-white shadow-sm"
+            : "bg-red-600 text-white shadow-sm"
 
     return (
-        <div className={cn("hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-colors", color)}>
+        <div className={cn("hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold transition-all duration-300", color)}>
             <TrendingUp className="h-3 w-3 shrink-0" />
             <span>
                 {loading ? "—" : pct === null ? "—" : `${Math.round(pct)}%`}
@@ -75,15 +75,15 @@ function StatPill({
     return (
         <div
             className={cn(
-                "hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold",
-                "text-muted-foreground bg-secondary transition-colors",
+                "hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold",
+                "bg-slate-100 text-slate-900 border border-slate-200/50 dark:bg-secondary dark:text-muted-foreground dark:border-transparent transition-all duration-300",
                 className
             )}
         >
             <Icon className="h-3 w-3 shrink-0" />
             <span>
-                <span className="text-foreground">{loading ? "—" : (value ?? "—")}</span>
-                <span className="font-normal ml-0.5">{label}</span>
+                <span className="">{loading ? "—" : (value ?? "—")}</span>
+                <span className="font-medium ml-0.5 opacity-80">{label}</span>
             </span>
         </div>
     )
@@ -94,7 +94,7 @@ function FeesPill({ summary, loading }: { summary: FeeReceiptSummary | undefined
     const pending = summary ? (summary.byStatus.pending + summary.byStatus.overdue) : null
     if (!loading && (pending === null || pending === 0)) return null
     return (
-        <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold text-orange-600 bg-orange-50 dark:text-orange-400 dark:bg-orange-950/60">
+        <div className="hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-orange-600 text-white shadow-sm transition-all duration-300">
             <AlertCircle className="h-3 w-3 shrink-0" />
             <span>
                 <span>{loading ? "—" : pending}</span>
@@ -126,7 +126,7 @@ export function Navbar() {
     const totalBatches = dashStats?.totalBatches ?? null
 
     return (
-        <header className="sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur-sm">
+        <header className="sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur-sm shadow-sm">
             <div className="flex h-16 items-center px-5 gap-3">
 
                 {/* Left: Date + Live insight pills */}
@@ -163,13 +163,13 @@ export function Navbar() {
                 </div>
 
                 {/* Right: Actions */}
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-2 shrink-0  ">
                     {/* Search */}
                     <form className="hidden md:flex w-[200px]">
                         <Input
                             type="search"
                             placeholder="Search anything..."
-                            className="h-9 text-[13px] bg-secondary border-border"
+                            className="h-9 text-[13px]  border-border"
                             icon={<Search className="h-3.5 w-3.5" />}
                         />
                     </form>
