@@ -109,6 +109,7 @@ export interface CreateBulkLecturesInput {
     room?: string;
     batchId: number;
     teacherId?: number | null;
+    autoAssign?: boolean;
     startTime: string;
     endTime: string;
     recurrence: {

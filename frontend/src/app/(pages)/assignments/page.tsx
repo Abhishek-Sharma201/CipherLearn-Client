@@ -1,6 +1,7 @@
 "use client";
 
 import { PermissionGate } from "@/components/layout/PermissionGate";
+import { AddAssignmentDialog } from "@/components/assignments/AddAssignmentDialog";
 
 import { useState } from "react";
 import { useAppSelector } from "@/redux/hooks";
@@ -71,42 +72,8 @@ export default function AssignmentsPage() {
   const [deleteSlot] = useDeleteSlotMutation();
   const [reviewSubmission, { isLoading: reviewing }] = useReviewSubmissionMutation();
 
-  // Form state
-  const [formData, setFormData] = useState({
-    title: "",
-    subject: "",
-    description: "",
-    batchId: "",
-    dueDate: "",
-  });
-  const [attachments, setAttachments] = useState<File[]>([]);
 
 
-  const handleCreateSlot = async () => {
-    if (!formData.title || !formData.subject || !formData.batchId) return;
-
-    try {
-      const data = new FormData();
-      data.append("title", formData.title);
-      data.append("subject", formData.subject);
-      if (formData.description) data.append("description", formData.description);
-      data.append("batchId", formData.batchId);
-      if (formData.dueDate) data.append("dueDate", formData.dueDate);
-
-      // Add attachments
-      attachments.forEach((file) => {
-        data.append("attachments", file);
-      });
-
-      await createSlot(data).unwrap();
-
-      setFormData({ title: "", subject: "", description: "", batchId: "", dueDate: "" });
-      setAttachments([]);
-      setShowCreateDialog(false);
-    } catch (error) {
-      console.error("Failed to create slot:", error);
-    }
-  };
 
   const handleDeleteSlot = async (id: number) => {
     if (confirm("Are you sure you want to delete this assignment?")) {
@@ -185,92 +152,7 @@ export default function AssignmentsPage() {
           </Select>
 
           {isAdminOrTeacher && (
-            <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-              <DialogTrigger asChild>
-                <Button className="h-9 gap-2 text-xs font-medium">
-                  <Plus className="h-4 w-4" />
-                  Create Assignment
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle>Create Assignment Slot</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4 py-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Title</label>
-                    <Input
-                      placeholder="Assignment title"
-                      value={formData.title}
-                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Subject</label>
-                    <Input
-                      placeholder="Subject"
-                      value={formData.subject}
-                      onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Batch</label>
-                    <Select
-                      value={formData.batchId}
-                      onValueChange={(v) => setFormData({ ...formData, batchId: v })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select batch" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {batchesData?.map((batch) => (
-                          <SelectItem key={batch.id} value={batch.id.toString()}>
-                            {batch.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Due Date (Optional)</label>
-                    <Input
-                      type="datetime-local"
-                      value={formData.dueDate}
-                      onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Description (Optional)</label>
-                    <textarea
-                      className="w-full min-h-[80px] px-3 py-2 text-sm border border-border rounded-md bg-background resize-none focus:outline-none focus:ring-1 focus:ring-ring"
-                      placeholder="Assignment description..."
-                      value={formData.description}
-                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-[14px] font-semibold">Attachments</label>
-                    <FileUpload
-                      files={attachments}
-                      onChange={setAttachments}
-                      accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif,.webp"
-                      maxFiles={5}
-                      maxSize={10 * 1024 * 1024}
-                      label="Attach resources for your students"
-                      hint="PDF, Word, Excel, images accepted"
-                    />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="outline">Cancel</Button>
-                  </DialogClose>
-                  <Button onClick={handleCreateSlot} disabled={creating}>
-                    {creating ? "Creating..." : "Create"}
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+            <AddAssignmentDialog />
           )}
         </div>
       </div>
@@ -331,11 +213,12 @@ export default function AssignmentsPage() {
               {slot.attachments && (slot.attachments as string[]).length > 0 && (
                 <div className="flex flex-wrap gap-1.5 mb-4">
                   {(slot.attachments as string[]).map((url, i) => {
-                    const fileName = url.split("/").pop() || `File ${i + 1}`;
+                    const isStr = typeof url === 'string';
+                    const fileName = isStr ? url.split("/").pop() || `File ${i + 1}` : `File ${i + 1}`;
                     return (
                       <a
                         key={i}
-                        href={url.startsWith('http') ? url : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '')}${url}`}
+                        href={isStr && url.startsWith('http') ? url : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '')}${url}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 px-2 py-1 bg-secondary/50 hover:bg-secondary rounded text-[10px] font-medium text-muted-foreground hover:text-foreground transition-colors"
