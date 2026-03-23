@@ -1,11 +1,44 @@
 import { Router } from "express";
 import { notificationsController } from "./controller";
-import { appReadRateLimiter } from "../../../middleware/rateLimiter";
+import { appReadRateLimiter, appWriteRateLimiter } from "../../../middleware/rateLimiter";
+import { validate } from "../../../middleware/validate";
+import { NotificationsValidations } from "./validation";
 
 const router = Router();
 
 // Auth enforced at parent level (isAppUser applied in app/route.ts)
 // Preference endpoints do an additional isStudent check via req.student
+
+/**
+ * GET /app/notifications
+ * List in-app notifications for the current user (students & teachers)
+ *   ?page=&limit=&unreadOnly=true
+ */
+router.get(
+  "/",
+  appReadRateLimiter,
+  validate(NotificationsValidations.listQuery, "query"),
+  notificationsController.getNotifications.bind(notificationsController)
+);
+
+/**
+ * PUT /app/notifications/read-all
+ * Mark all notifications as read
+ * Must be BEFORE /:id/read to avoid route conflict
+ */
+router.put(
+  "/read-all",
+  notificationsController.markAllRead.bind(notificationsController)
+);
+
+/**
+ * PUT /app/notifications/:id/read
+ * Mark a single notification as read
+ */
+router.put(
+  "/:id/read",
+  notificationsController.markNotificationRead.bind(notificationsController)
+);
 
 /**
  * GET /app/notifications/preferences
@@ -38,7 +71,8 @@ router.get(
  */
 router.put(
   "/preferences",
-  appReadRateLimiter,
+  appWriteRateLimiter,
+  validate(NotificationsValidations.updatePreferences),
   notificationsController.updatePreferences.bind(notificationsController)
 );
 
@@ -51,6 +85,8 @@ router.put(
  */
 router.post(
   "/register-device",
+  appWriteRateLimiter,
+  validate(NotificationsValidations.registerDevice),
   notificationsController.registerDevice.bind(notificationsController)
 );
 
@@ -62,6 +98,8 @@ router.post(
  */
 router.delete(
   "/register-device",
+  appWriteRateLimiter,
+  validate(NotificationsValidations.deregisterDevice),
   notificationsController.deregisterDevice.bind(notificationsController)
 );
 
