@@ -5,95 +5,124 @@ import { log } from "../../../utils/logtail";
 const service = new MaintenanceService();
 
 export default class MaintenanceController {
-  /**
-   * POST /maintenance/auth
-   * Verify maintenance password
-   */
+
   async authenticate(req: Request, res: Response): Promise<Response> {
     try {
       const { password } = req.body;
-      if (!password) {
-        return res.status(400).json({ success: false, message: "Password is required" });
-      }
-
+      if (!password) return res.status(400).json({ success: false, message: "Password required" });
       const valid = await service.verifyPassword(password);
-      if (!valid) {
-        return res.status(403).json({ success: false, message: "Invalid maintenance password" });
-      }
-
-      return res.status(200).json({ success: true, message: "Maintenance mode unlocked" });
+      if (!valid) return res.status(403).json({ success: false, message: "Invalid password" });
+      return res.status(200).json({ success: true });
     } catch (error: any) {
-      log("error", "maintenance.authenticate failed", { err: error.message });
-      return res.status(500).json({ success: false, message: "Internal server error" });
+      log("error", "maintenance.auth failed", { err: error.message });
+      return res.status(500).json({ success: false, message: "Internal error" });
     }
   }
 
-  /**
-   * POST /maintenance/seed
-   * Seed N students + related data
-   */
+  async getStatus(req: Request, res: Response): Promise<Response> {
+    try {
+      const status = await service.getStatus();
+      return res.status(200).json({ success: true, data: status });
+    } catch (error: any) {
+      log("error", "maintenance.status failed", { err: error.message });
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
   async seed(req: Request, res: Response): Promise<Response> {
     try {
-      const { password, count = 100, batchId } = req.body;
-
-      // Re-verify password for destructive ops
+      const { password, count = 10, batchId } = req.body;
       const valid = await service.verifyPassword(password);
-      if (!valid) {
-        return res.status(403).json({ success: false, message: "Invalid maintenance password" });
-      }
-
-      if (count < 1 || count > 500) {
-        return res.status(400).json({ success: false, message: "Count must be between 1 and 500" });
-      }
+      if (!valid) return res.status(403).json({ success: false, message: "Invalid password" });
+      if (count < 1 || count > 500) return res.status(400).json({ success: false, message: "Count: 1-500" });
 
       const result = await service.seed(count, batchId || undefined);
-      return res.status(201).json({
-        success: true,
-        message: `Seeded ${result.summary.students} students with full data`,
-        data: result,
-      });
+      return res.status(201).json({ success: true, data: result });
     } catch (error: any) {
       log("error", "maintenance.seed failed", { err: error.message });
       return res.status(500).json({ success: false, message: error.message });
     }
   }
 
-  /**
-   * GET /maintenance/status
-   * Get counts of seeded data
-   */
-  async getStatus(req: Request, res: Response): Promise<Response> {
+  async cleanup(req: Request, res: Response): Promise<Response> {
     try {
-      const status = await service.getStatus();
-      return res.status(200).json({ success: true, data: status });
+      const { password } = req.body;
+      const valid = await service.verifyPassword(password);
+      if (!valid) return res.status(403).json({ success: false, message: "Invalid password" });
+      const result = await service.cleanup();
+      return res.status(200).json({ success: true, data: result });
     } catch (error: any) {
-      log("error", "maintenance.getStatus failed", { err: error.message });
+      log("error", "maintenance.cleanup failed", { err: error.message });
       return res.status(500).json({ success: false, message: error.message });
     }
   }
 
-  /**
-   * DELETE /maintenance/cleanup
-   * Nuke all SEED-tagged data
-   */
-  async cleanup(req: Request, res: Response): Promise<Response> {
+  async apiHealth(req: Request, res: Response): Promise<Response> {
     try {
-      const { password } = req.body;
-
-      // Re-verify password for destructive ops
-      const valid = await service.verifyPassword(password);
-      if (!valid) {
-        return res.status(403).json({ success: false, message: "Invalid maintenance password" });
-      }
-
-      const result = await service.cleanup();
-      return res.status(200).json({
-        success: true,
-        message: "All seed data has been purged",
-        data: result,
-      });
+      const { baseUrl, token } = req.body;
+      if (!baseUrl || !token) return res.status(400).json({ success: false, message: "baseUrl and token required" });
+      const result = await service.runApiHealth(baseUrl, token);
+      return res.status(200).json({ success: true, data: result });
     } catch (error: any) {
-      log("error", "maintenance.cleanup failed", { err: error.message });
+      log("error", "maintenance.apiHealth failed", { err: error.message });
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  async validationAudit(req: Request, res: Response): Promise<Response> {
+    try {
+      const { baseUrl, token } = req.body;
+      if (!baseUrl || !token) return res.status(400).json({ success: false, message: "baseUrl and token required" });
+      const result = await service.runValidationAudit(baseUrl, token);
+      return res.status(200).json({ success: true, data: result });
+    } catch (error: any) {
+      log("error", "maintenance.validationAudit failed", { err: error.message });
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  async securityAudit(req: Request, res: Response): Promise<Response> {
+    try {
+      const { baseUrl, token } = req.body;
+      if (!baseUrl || !token) return res.status(400).json({ success: false, message: "baseUrl and token required" });
+      const result = await service.runSecurityAudit(baseUrl, token);
+      return res.status(200).json({ success: true, data: result });
+    } catch (error: any) {
+      log("error", "maintenance.securityAudit failed", { err: error.message });
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  async dbIntegrity(req: Request, res: Response): Promise<Response> {
+    try {
+      const result = await service.runDbIntegrity();
+      return res.status(200).json({ success: true, data: result });
+    } catch (error: any) {
+      log("error", "maintenance.dbIntegrity failed", { err: error.message });
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  async loadTest(req: Request, res: Response): Promise<Response> {
+    try {
+      const { baseUrl, token, endpoint, method = "GET", concurrency = 5, iterations = 50 } = req.body;
+      if (!baseUrl || !token || !endpoint) return res.status(400).json({ success: false, message: "baseUrl, token, endpoint required" });
+      if (iterations > 200) return res.status(400).json({ success: false, message: "Max 200 iterations" });
+      if (concurrency > 20) return res.status(400).json({ success: false, message: "Max 20 concurrency" });
+
+      const result = await service.runLoadTest(baseUrl, token, endpoint, method, concurrency, iterations);
+      return res.status(200).json({ success: true, data: result });
+    } catch (error: any) {
+      log("error", "maintenance.loadTest failed", { err: error.message });
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  async getEndpoints(req: Request, res: Response): Promise<Response> {
+    try {
+      const endpoints = service.getEndpointRegistry();
+      return res.status(200).json({ success: true, data: endpoints });
+    } catch (error: any) {
       return res.status(500).json({ success: false, message: error.message });
     }
   }
