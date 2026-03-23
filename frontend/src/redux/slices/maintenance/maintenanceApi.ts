@@ -7,6 +7,7 @@ export interface SeedStudent {
     email: string;
     password: string;
     batchName: string;
+    studentId: number;
 }
 
 export interface SeedResult {
@@ -14,53 +15,53 @@ export interface SeedResult {
     students: SeedStudent[];
 }
 
+export interface SeedDataResult {
+    students: {
+        id: number; firstname: string; lastname: string; email: string; batchId: number | null;
+        batch: { id: number; name: string } | null;
+        user: { id: number; email: string } | null;
+        _count: { attendances: number; feeReceipts: number; testScores: number };
+    }[];
+    batches: {
+        id: number; name: string; timings: any; createdAt: string;
+        _count: { students: number; lectures: number; tests: number; notes: number; feeStructures: number };
+    }[];
+}
+
 export interface HealthResult {
-    total: number;
-    passed: number;
-    failed: number;
-    results: { method: string; path: string; module: string; status: number; time: number; passed: boolean; error?: string }[];
+    total: number; passed: number; failed: number;
+    results: { method: string; path: string; module: string; status: number; time: number; passed: boolean; error?: string; responseSize?: string }[];
 }
 
 export interface ValidationResult {
-    total: number;
-    passed: number;
-    failed: number;
+    total: number; passed: number; failed: number;
     results: { method: string; path: string; module: string; status: number; passed: boolean; desc: string; serverMessage?: string }[];
 }
 
 export interface SecurityResult {
-    total: number;
-    passed: number;
-    failed: number;
+    total: number; passed: number; failed: number;
     results: { test: string; path: string; module: string; status: number; passed: boolean; expected: string }[];
 }
 
 export interface DbIntegrityResult {
-    total: number;
-    issues: number;
+    total: number; issues: number;
     checks: { name: string; table: string; count: number; passed: boolean; detail: string }[];
 }
 
 export interface LoadTestResult {
-    endpoint: string;
-    totalRequests: number;
-    successful: number;
-    failed: number;
-    avgTime: number;
-    minTime: number;
-    maxTime: number;
-    p95Time: number;
-    requestsPerSecond: number;
+    endpoint: string; totalRequests: number; successful: number; failed: number;
+    avgTime: number; minTime: number; maxTime: number; p95Time: number; requestsPerSecond: number;
     statusCodeBreakdown: Record<number, number>;
 }
 
-export interface EndpointInfo {
-    method: string;
-    path: string;
-    module: string;
+export interface PlaygroundResult {
+    request: { method: string; url: string; headers: Record<string, string>; body: any };
+    response: { status: number; time: number; headers: Record<string, string>; body: any };
 }
 
-// ── API Slice ──────────────────────────────────────────────
+export interface EndpointInfo { method: string; path: string; module: string; }
+
+// ── API ────────────────────────────────────────────────────
 
 export const maintenanceApi = api.injectEndpoints({
     overrideExisting: true,
@@ -71,6 +72,10 @@ export const maintenanceApi = api.injectEndpoints({
         maintenanceStatus: builder.query<Record<string, number>, void>({
             query: () => '/dashboard/maintenance/status',
             transformResponse: (r: { data: Record<string, number> }) => r.data,
+        }),
+        maintenanceSeedData: builder.query<SeedDataResult, void>({
+            query: () => '/dashboard/maintenance/seed-data',
+            transformResponse: (r: { data: SeedDataResult }) => r.data,
         }),
         maintenanceSeed: builder.mutation<{ data: SeedResult }, { password: string; count: number; batchId?: number }>({
             query: (body) => ({ url: '/dashboard/maintenance/seed', method: 'POST', body }),
@@ -94,6 +99,9 @@ export const maintenanceApi = api.injectEndpoints({
         maintenanceLoadTest: builder.mutation<{ data: LoadTestResult }, { baseUrl: string; token: string; endpoint: string; method?: string; concurrency?: number; iterations?: number }>({
             query: (body) => ({ url: '/dashboard/maintenance/load-test', method: 'POST', body }),
         }),
+        maintenancePlayground: builder.mutation<{ data: PlaygroundResult }, { baseUrl: string; token: string; endpoint: string; method?: string; body?: any; customHeaders?: Record<string, string> }>({
+            query: (body) => ({ url: '/dashboard/maintenance/playground', method: 'POST', body }),
+        }),
         maintenanceEndpoints: builder.query<EndpointInfo[], void>({
             query: () => '/dashboard/maintenance/endpoints',
             transformResponse: (r: { data: EndpointInfo[] }) => r.data,
@@ -104,6 +112,7 @@ export const maintenanceApi = api.injectEndpoints({
 export const {
     useMaintenanceAuthMutation,
     useMaintenanceStatusQuery,
+    useMaintenanceSeedDataQuery,
     useMaintenanceSeedMutation,
     useMaintenanceCleanupMutation,
     useMaintenanceApiHealthMutation,
@@ -111,5 +120,6 @@ export const {
     useMaintenanceSecurityMutation,
     useMaintenanceDbIntegrityQuery,
     useMaintenanceLoadTestMutation,
+    useMaintenancePlaygroundMutation,
     useMaintenanceEndpointsQuery,
 } = maintenanceApi;
