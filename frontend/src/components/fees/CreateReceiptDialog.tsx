@@ -150,9 +150,11 @@ export function CreateReceiptDialog({ onSuccess }: CreateReceiptDialogProps) {
     const [searchTerm, setSearchTerm] = useState("")
 
     const { data: batches = [] } = useGetAllBatchesQuery()
-    const { data: students = [] } = useGetStudentsQuery(selectedBatchId ? Number(selectedBatchId) : undefined, {
-        skip: !selectedBatchId
-    })
+    const { data: studentsPageData } = useGetStudentsQuery(
+        selectedBatchId ? { batchId: Number(selectedBatchId), limit: 500 } : undefined,
+        { skip: !selectedBatchId }
+    )
+    const students = studentsPageData?.students ?? []
     const { data: feeStructures = [] } = useGetFeeStructuresByBatchQuery(
         selectedBatchId ? Number(selectedBatchId) : 0,
         { skip: !selectedBatchId }

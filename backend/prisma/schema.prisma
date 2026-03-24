@@ -73,6 +73,8 @@ model Student {
 
   @@index([batchId])
   @@index([userId])
+  @@index([batchId, isDeleted])   // Paginated student list: WHERE batchId=? AND isDeleted=false
+  @@index([isDeleted, createdAt]) // Deleted list sorted by recency
   @@map("students")
 }
 
@@ -190,6 +192,7 @@ model YoutubeVideo {
   createdAt DateTime? @default(now())
 
   @@index([batchId])
+  @@index([batchId, isDeleted])   // Dashboard list: WHERE batchId=? AND isDeleted=false
   @@map("youtube_videos")
 }
 
@@ -208,6 +211,7 @@ model Note {
   createdAt DateTime? @default(now())
 
   @@index([batchId])
+  @@index([batchId, isDeleted])   // Dashboard list: WHERE batchId=? AND isDeleted=false
   @@map("notes")
 }
 
@@ -711,6 +715,7 @@ model Test {
   @@index([teacherId])
   @@index([batchId, date])
   @@index([status, isDeleted])
+  @@index([isDeleted, date])      // List all tests sorted by date (no batchId filter)
   @@map("tests")
 }
 
@@ -739,6 +744,7 @@ model TestScore {
 
   @@unique([testId, studentId])
   @@index([testId])
+  @@index([testId, marksObtained]) // Paginated score list sorted by marks DESC
   @@index([studentId])
   @@map("test_scores")
 }
