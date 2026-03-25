@@ -225,40 +225,61 @@ export async function sendToBatchStudents(
   const students = await prisma.student.findMany({
     where: { batchId, isDeleted: false },
     select: {
+      id: true,
       userId: true,
       notificationPreference: true,
     },
   });
 
+  logger.info(`[OneSignal] sendToBatchStudents: found ${students.length} students in batch ${batchId}`, {
+    studentIds: students.map(s => s.id),
+    userIds: students.map(s => s.userId),
+  });
+
   const eligibleUserIds: string[] = [];
+  const skippedReasons: string[] = [];
 
   for (const student of students) {
-    if (!student.userId) continue;
+    if (!student.userId) {
+      skippedReasons.push(`student#${student.id}: no userId`);
+      continue;
+    }
 
     const pref = student.notificationPreference;
 
     // Default: send if no preference record
     const prefValue = pref ? (pref as Record<string, unknown>)[prefKey] as boolean : true;
-    if (prefValue === false) continue;
+    if (prefValue === false) {
+      skippedReasons.push(`student#${student.id}: pref ${prefKey}=false`);
+      continue;
+    }
 
     // Quiet hours check
     if (
       pref &&
       isInQuietHours(pref.quietHoursEnabled, pref.quietHoursFrom, pref.quietHoursTo)
     ) {
+      skippedReasons.push(`student#${student.id}: quiet hours`);
       continue;
     }
 
     eligibleUserIds.push(getExternalUserId(student.userId));
   }
 
+  if (skippedReasons.length > 0) {
+    logger.info(`[OneSignal] sendToBatchStudents: skipped reasons:`, { skippedReasons });
+  }
+
   logger.info(`[OneSignal] sendToBatchStudents: ${eligibleUserIds.length}/${students.length} eligible`, {
     batchId,
     prefKey,
+    externalIds: eligibleUserIds,
   });
 
   if (eligibleUserIds.length > 0) {
     await sendOneSignalNotification(eligibleUserIds, title, body, data);
+  } else {
+    logger.warn(`[OneSignal] sendToBatchStudents: NO eligible users for batch ${batchId}, skipping push send`);
   }
 }
 
