@@ -400,6 +400,7 @@ model FeeReceipt {
   status          PaymentStatus @default(PENDING)
   dueDate         DateTime
   paymentDate     DateTime?
+  pdfUrl          String?       // Cloudinary URL, stored after first generation
   generatedBy     String
   generatedById   Int?
   modifiedBy      String?
