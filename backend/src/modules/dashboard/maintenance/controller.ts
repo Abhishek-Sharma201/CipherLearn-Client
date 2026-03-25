@@ -205,7 +205,7 @@ export default class MaintenanceController {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Basic ${apiKey}`,
+            Authorization: apiKey.startsWith("os_v2_") ? `Key ${apiKey}` : `Basic ${apiKey}`,
           },
           body: JSON.stringify({
             app_id: appId,

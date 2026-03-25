@@ -113,7 +113,7 @@ async function sendOneSignalNotification(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Basic ${apiKey}`,
+        Authorization: apiKey.startsWith("os_v2_") ? `Key ${apiKey}` : `Basic ${apiKey}`,
       },
       body: JSON.stringify(payload),
     });
